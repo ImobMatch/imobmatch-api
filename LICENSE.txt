@@ -1,0 +1,9 @@
+Copyright © 2025 ImobMatch
+All rights reserved.
+
+ImobMatch API is proprietary software.
+
+This software may not be copied, modified, distributed, or used for commercial purposes
+without the express written permission of ImobMatch.
+
+Repository is public for academic review only.
