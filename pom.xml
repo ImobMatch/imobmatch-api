@@ -12,7 +12,10 @@
 	<artifactId>imobmatch-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ImobMatch API</name>
-	<description>API responsável por cadastro de imóveis, buscas avançadas, integração com corretores e sistema de recomendação inteligente.</description>
+	<description>API responsável por cadastro de imóveis, buscas avançadas,
+		integração com corretores e sistema de
+		recomendação inteligente.
+	</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -65,8 +68,15 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-        <dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
+		<dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.2.0</version>
