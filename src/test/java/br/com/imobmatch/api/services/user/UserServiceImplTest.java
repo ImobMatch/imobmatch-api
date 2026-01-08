@@ -1,8 +1,8 @@
 package br.com.imobmatch.api.services.user;
 
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
-import br.com.imobmatch.api.exceptions.user.UserExists;
-import br.com.imobmatch.api.exceptions.user.UserNotFound;
+import br.com.imobmatch.api.exceptions.user.UserExistsException;
+import br.com.imobmatch.api.exceptions.user.UserNotFoundException;
 import br.com.imobmatch.api.models.user.UserRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void testCreateUser_Success() throws UserExists {
+    void testCreateUser_Success() throws UserExistsException {
         String email = "owner@example.com";
         String password = "123456";
         UserRole role = UserRole.OWNER;
@@ -42,11 +42,11 @@ class UserServiceImplTest {
     }
 
     @Test
-    void testCreateUser_UserExists() throws UserExists {
+    void testCreateUser_UserExists() throws UserExistsException {
         String email = "owner@example.com";
         userService.create(email, "123456", UserRole.OWNER);
 
-        assertThrows(UserExists.class, () -> userService.create(email, "123456", UserRole.OWNER));
+        assertThrows(UserExistsException.class, () -> userService.create(email, "123456", UserRole.OWNER));
     }
 
     @Test
@@ -62,7 +62,7 @@ class UserServiceImplTest {
     @Test
     void testGetById_UserNotFound() {
         UUID randomId = UUID.randomUUID();
-        assertThrows(UserNotFound.class, () -> userService.getById(randomId));
+        assertThrows(UserNotFoundException.class, () -> userService.getById(randomId));
     }
 
     @Test
@@ -77,6 +77,6 @@ class UserServiceImplTest {
 
     @Test
     void testGetByEmail_UserNotFound() {
-        assertThrows(UserNotFound.class, () -> userService.getByEmail("notfound@example.com"));
+        assertThrows(UserNotFoundException.class, () -> userService.getByEmail("notfound@example.com"));
     }
 }
