@@ -4,6 +4,8 @@ import br.com.imobmatch.api.dtos.error.ErrorResponseDTO;
 import br.com.imobmatch.api.exceptions.auth.CreateTokenException;
 import br.com.imobmatch.api.exceptions.auth.TokenExpiredException;
 import br.com.imobmatch.api.exceptions.auth.TokenInvalidException;
+import br.com.imobmatch.api.exceptions.user.PhoneExistsException;
+import br.com.imobmatch.api.exceptions.user.UserExistsException;
 import br.com.imobmatch.api.exceptions.user.UserNotFoundException;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
@@ -101,6 +103,45 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(error);
     }
+
+
+    @ExceptionHandler(UserExistsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleUserExists(
+            UserExistsException ex,
+            HttpServletRequest request
+    ) {
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(error);
+    }
+
+
+    @ExceptionHandler(PhoneExistsException.class)
+    public ResponseEntity<ErrorResponseDTO> handlePhoneExists(
+            PhoneExistsException ex,
+            HttpServletRequest request
+    ) {
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(error);
+    }
+
 
 }
 

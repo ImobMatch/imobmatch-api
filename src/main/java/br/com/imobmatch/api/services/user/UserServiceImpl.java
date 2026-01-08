@@ -3,10 +3,13 @@ package br.com.imobmatch.api.services.user;
 import br.com.imobmatch.api.dtos.phone.PhonePostDTO;
 import br.com.imobmatch.api.dtos.phone.PhoneResponseDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
+import br.com.imobmatch.api.exceptions.user.PhoneExistsException;
 import br.com.imobmatch.api.exceptions.user.UserExistsException;
 import br.com.imobmatch.api.exceptions.user.UserNotFoundException;
+import br.com.imobmatch.api.models.phone.Phone;
 import br.com.imobmatch.api.models.user.User;
 import br.com.imobmatch.api.models.user.UserRole;
+import br.com.imobmatch.api.repositories.PhoneRepository;
 import br.com.imobmatch.api.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +22,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final PhoneRepository phoneRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
@@ -67,7 +71,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PhoneResponseDTO addPhone(PhonePostDTO phonePostDTO, UUID id) throws UserNotFoundException {
-        return null;
+        User user = this.userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        if(this.phoneRepository.findByDddAndNumber(phonePostDTO.getDdd(), phonePostDTO.getNumber()).isPresent()){
+            throw new PhoneExistsException("Phone Exists");
+        }
+
+        Phone phone = new Phone();
+        phone.setNumber(phonePostDTO.getNumber());
+        phone.setUser(user);
+        phone.setDdd(phonePostDTO.getDdd());
+        phone.setPrimary(phonePostDTO.isPrimary());
+
+        this.phoneRepository.save(phone);
+        return  new PhoneResponseDTO(
+                phone.getUser().getId(),
+                phone.getId(),
+                phone.getDdd(),
+                phone.getNumber()
+        );
+
     }
 
     @Override
