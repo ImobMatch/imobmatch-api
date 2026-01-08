@@ -1,6 +1,9 @@
-package br.com.imobmatch.api.infra.security;
+package br.com.imobmatch.api.infra.security.service.token;
 
 import br.com.imobmatch.api.dtos.auth.TokenDataDTO;
+import br.com.imobmatch.api.exceptions.auth.CreateTokenException;
+import br.com.imobmatch.api.exceptions.auth.TokenExpiredException;
+import br.com.imobmatch.api.exceptions.auth.TokenInvalidException;
 import br.com.imobmatch.api.models.user.UserRole;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -22,7 +25,7 @@ import br.com.imobmatch.api.models.user.User;
 
 
 @Service
-public class TokenService {
+public class TokenServiceImpl implements TokenService{
     @Autowired
     @Qualifier("jwtSecret")
     private String secret;
@@ -31,7 +34,7 @@ public class TokenService {
     private String expirationInMinutes;
 
 
-
+    @Override
     public String generateToken(User user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(this.secret);
@@ -45,12 +48,12 @@ public class TokenService {
                     .sign(algorithm);
             return token;
         } catch (JWTCreationException exception) {
-            throw new RuntimeException("Error while creating JWT", exception);
+            throw new CreateTokenException("Error while creating JWT" +exception.getMessage());
         }
     }
 
-
-    public TokenDataDTO validateToken(String token) {
+    @Override
+    public TokenDataDTO validateToken(String token) throws TokenInvalidException {
         try {
             Algorithm algorithm = Algorithm.HMAC256(this.secret);
             JWTVerifier verifier = JWT.require(algorithm)
@@ -67,9 +70,10 @@ public class TokenService {
             return new TokenDataDTO(id, email, role, expiration);
 
         } catch (JWTVerificationException exception) {
-            throw new RuntimeException("Error while verifying JWT", exception);
+            throw new TokenInvalidException();
         }
     }
+
 
     private Instant getExpirationDate() {
         int temp = Integer.parseInt(this.expirationInMinutes);

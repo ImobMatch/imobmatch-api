@@ -1,7 +1,8 @@
-package br.com.imobmatch.api.infra.security;
+package br.com.imobmatch.api.infra.security.config;
 
-import br.com.imobmatch.api.models.user.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.imobmatch.api.infra.security.handlers.CustomAccessDeniedHandler;
+import br.com.imobmatch.api.infra.security.handlers.CustomAuthenticationEntryPoint;
+import br.com.imobmatch.api.infra.security.filters.SecurityFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,8 +19,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfigurations {
-    @Autowired
     private SecurityFilter securityFilter;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
+
+    public SecurityConfigurations(SecurityFilter securityFilter, CustomAuthenticationEntryPoint authenticationEntryPoint, CustomAccessDeniedHandler accessDeniedHandler) {
+        this.securityFilter = securityFilter;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        this.accessDeniedHandler = accessDeniedHandler;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -34,6 +42,10 @@ public class SecurityConfigurations {
                                 "/swagger-ui.html").permitAll()
 
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
                 )
                 .addFilterBefore(this.securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

@@ -28,5 +28,15 @@ public class AuthController {
         return  ResponseEntity.ok(this.authService.getMe());
     }
 
+    @PostMapping("/refresh")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<LoginResponseDTO> refresh(
+            @RequestHeader("Authorization") String authorization
+    ) {
+        String token = authorization.replace("Bearer ", "");
+        return ResponseEntity.ok(authService.refreshToken(token));
+    }
+
+
 
 }
