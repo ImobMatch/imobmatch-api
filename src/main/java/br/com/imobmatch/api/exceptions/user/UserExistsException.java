@@ -1,7 +1,7 @@
 package br.com.imobmatch.api.exceptions.user;
 
-public class UserExists extends RuntimeException {
-    public UserExists() {
+public class UserExistsException extends RuntimeException {
+    public UserExistsException() {
         super("User with email already exists");
     }
 }
