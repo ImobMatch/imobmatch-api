@@ -81,7 +81,7 @@ class AuthServiceImplTest {
         LoginResponseDTO login = authService.login(dto);
 
         User userEntity = userService.findEntityById(userId);
-        userService.deleteById(userEntity.getId());
+        userService.deleteById(userEntity.getId(), "123456");
 
         assertThrows(
                 TokenInvalidException.class,

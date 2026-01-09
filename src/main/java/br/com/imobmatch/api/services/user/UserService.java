@@ -18,5 +18,5 @@ public interface UserService {
     PhoneResponseDTO addPhone(PhonePostDTO phonePostDTO, UUID id) throws UserNotFoundException;
     User findEntityById(UUID id) throws UserNotFoundException;
 
-    UserResponseDTO deleteById(UUID id);
+    UserResponseDTO deleteById(UUID id, String password);
 }

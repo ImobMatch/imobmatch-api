@@ -3,6 +3,7 @@ package br.com.imobmatch.api.services.user;
 import br.com.imobmatch.api.dtos.phone.PhonePostDTO;
 import br.com.imobmatch.api.dtos.phone.PhoneResponseDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
+import br.com.imobmatch.api.exceptions.auth.AuthenticationException;
 import br.com.imobmatch.api.exceptions.user.PhoneExistsException;
 import br.com.imobmatch.api.exceptions.user.UserExistsException;
 import br.com.imobmatch.api.exceptions.user.UserNotFoundException;
@@ -100,15 +101,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDTO deleteById(UUID id) {
+    public UserResponseDTO deleteById(UUID id, String password) throws UserNotFoundException {
         User user = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
 
+        boolean passwordMatches = bCryptPasswordEncoder.matches(password, user.getPassword());
+
+        if (!passwordMatches) {
+            throw new AuthenticationException("Password not equals");
+        }
+
         userRepository.delete(user);
+
         UserResponseDTO userResponseDTO = new UserResponseDTO();
         userResponseDTO.setId(user.getId());
         userResponseDTO.setEmail(user.getEmail());
         userResponseDTO.setRole(user.getRole());
+
         return userResponseDTO;
     }
+
 }
