@@ -1,0 +1,22 @@
+-- Cria o tipo enum para os tipos de propiedades.
+CREATE TYPE property_type_enum AS ENUM ('APARTMENT', 'HOUSE', 'LOFT', 'PENTHOUSE', 'STUDIO');
+
+-- Cria o tipo enum para os tipos de negócios.
+CREATE TYPE business_type_enum AS ENUM ('SALE', 'RENTAL', 'LEASE');
+
+-- Cria a tabela brokers
+CREATE TABLE brokers (
+    id UUID PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    creci VARCHAR(255) NOT NULL UNIQUE,
+    cpf CHAR(11) NOT NULL UNIQUE,
+    user_id UUID NOT NULL UNIQUE,
+    region_interest VARCHAR(255),
+    property_type property_type_enum, -- New Table?
+    operation_city VARCHAR(255),
+    business_type business_type_enum, -- New Table?
+    CONSTRAINT fk_user
+        FOREIGN KEY(user_id)
+            REFERENCES users(id)
+            ON DELETE CASCADE
+);
