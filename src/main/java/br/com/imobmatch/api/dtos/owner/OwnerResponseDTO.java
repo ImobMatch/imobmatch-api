@@ -7,8 +7,9 @@ import java.util.UUID;
 
 @Getter
 @AllArgsConstructor
-public class OwnerResponseDto {
+public class OwnerResponseDTO {
 
     public UUID id;
     public String name;
 }
+

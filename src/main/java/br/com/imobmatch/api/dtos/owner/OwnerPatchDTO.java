@@ -1,18 +1,15 @@
 package br.com.imobmatch.api.dtos.owner;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.validator.constraints.br.CPF;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class OwnerPatchDto {
+@NoArgsConstructor
+public class OwnerPatchDTO {
 
     private String name;
 
     @CPF
     private String cpf;
-
 }

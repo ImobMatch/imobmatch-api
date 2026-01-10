@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PasswordUserDeleteDto {
+public class PasswordUserDeleteDTO {
 
     @NotNull
     @NotEmpty
