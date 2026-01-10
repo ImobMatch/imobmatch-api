@@ -14,6 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * <p>ontroller responsible for the <code>owner</code> entity's endpoints.</p>
+ * <p>All endpoints require an authenticated user, except for the POST endpoint.<br>
+ * URL-BASE = <code>/owner</code> for <code>POST </code>, <code>PATCH</code>, <code>GET</code>.<br>
+ * DELETE-URL = <code>/delete-confirm</code></p>
+ */
 @RestController
 @RequestMapping("/owner")
 @AllArgsConstructor
@@ -24,8 +30,14 @@ public class OwnerController {
     /**
      * Create a new owner associated a new user
      *
-     * @param postDto Data requested for the endpoint
-     * @return Name of created user for confirm
+     * @param postDto Data requested for the endpoint.
+     *                The requested data is:<code>email</code>, <code>password</code>, <code>name</code>,
+     *                <code>cpf</code>, <code>phones</code> All are not null, except for the telephones,
+     *                which are optional.
+     * @return <code>Name</code> and <code>Id</code> of created user for confirm operation
+     * @apiNote This endpoint assumes the user has not been created previously.
+     * The data sent is validated and exceptions are returned in case of violation or incorrect formatting.
+     * If the value does not exist, it is assumed that it will not be updated.
      */
     @PostMapping()
     @SecurityRequirement(name = "bearerAuth")
@@ -40,8 +52,14 @@ public class OwnerController {
     /**
      * Update authenticated owner data.
      *
-     * @param putDto Possible Data requested for the endpoint.
-     * @return Name of created user for confirm.
+     * @param putDto New data for update. Only data unique to the owner entity can be updated.
+     *               Possible data to be entered are: name
+     * @return <code>Name</code> and <code>Id</code> of created user for confirm operation
+     *
+     * @apiNote You only need to send the data that will be updated.
+     * It is not necessary to specify null values.
+     * If the value does not exist, it is assumed that it will not be updated.
+     * If all requested data are null, an exception is returned.
      */
     @PatchMapping
     @SecurityRequirement(name = "bearerAuth")
@@ -56,7 +74,12 @@ public class OwnerController {
     /**
      * Get data from an authenticated owner.
      *
-     * @return A more details owner data.
+     * @return A more detailed information about the owner.
+     * The data returned is: id, name, cpf, email, role, primaryPhone;
+     * If the primaryPhone does not exist, it returns an empty string ""
+     *
+     * @apiNote The endpoint doesn't need a body or parameters.
+     * it simply returns the non-sensitive information of the authenticated user owner.
      */
     @GetMapping()
     @SecurityRequirement(name = "bearerAuth")
@@ -69,11 +92,14 @@ public class OwnerController {
     }
 
     /**
-     * It permanently removes an owner and their user from the system.
-     * You need to be logged into the system and re-enter your credentials.
+     * Permanently removes an owner and their user from the system.
+     * You must be logged into the system and submit the user's password to confirm the operation.
      *
-     * @PasswordUserDeleteDto user password for confirm delete.
-     * @return A confirm response dto.
+     * @PasswordUserDeleteDto user password
+     * @apiNote The exclusion do cannot be undone.
+     * <p>This operation will fail if the owner has any properties  or any other entity linked to them.</p>
+     * <p>BEWARE: This endpoint does not guarantee the integrity of the deletion if the owner is linked to a property
+     * or any other entity outside their User domain. However, it guarantees integrity if they are not.</p>
      */
     @DeleteMapping("/confirm-delete")
     @SecurityRequirement(name = "bearerAuth")

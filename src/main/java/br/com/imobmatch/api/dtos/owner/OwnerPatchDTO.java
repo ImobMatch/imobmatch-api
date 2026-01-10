@@ -9,7 +9,4 @@ import org.hibernate.validator.constraints.br.CPF;
 public class OwnerPatchDTO {
 
     private String name;
-
-    @CPF
-    private String cpf;
 }

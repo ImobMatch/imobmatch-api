@@ -69,7 +69,7 @@ public class OwnerServiceImpl implements OwnerService {
     @Override
     public OwnerResponseDTO updateOwner(OwnerPatchDTO ownerDto) {
 
-        if(ownerDto.getCpf() == null && ownerDto.getName() == null){
+        if(ownerDto.getName() == null){
 
             throw new NoValidDataProvideException();
         }
@@ -80,10 +80,6 @@ public class OwnerServiceImpl implements OwnerService {
         if(!(ownerDto.getName() == null) && !ownerDto.getName().isBlank()){
 
             owner.setName(ownerDto.getName());
-        }
-        if(!(ownerDto.getCpf() == null) && !ownerDto.getCpf().isBlank()){
-
-            owner.setCpf(ownerDto.getCpf());
         }
 
         ownerRepository.save(owner);
@@ -117,7 +113,6 @@ public class OwnerServiceImpl implements OwnerService {
      *Deletes the system owner and the user associated with them.
      *Requires the user's password to confirm the deletion.
      *It does not return any values.
-     *
      *NOTE: The code written for this function is deprecated and inefficient.
      *
      * @param passwordUserDeleteDto User password.
