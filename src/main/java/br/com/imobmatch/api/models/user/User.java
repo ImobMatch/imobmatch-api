@@ -36,7 +36,6 @@ public class User implements UserDetails {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "role", nullable = false)
     private UserRole role;
 
