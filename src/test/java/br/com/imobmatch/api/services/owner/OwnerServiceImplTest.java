@@ -1,0 +1,145 @@
+package br.com.imobmatch.api.services.owner;
+
+import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerGetResponseDto;
+import br.com.imobmatch.api.dtos.owner.OwnerPatchDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
+import br.com.imobmatch.api.dtos.phone.PhonePostDTO;
+import br.com.imobmatch.api.dtos.user.UserResponseDTO;
+import br.com.imobmatch.api.exceptions.owner.OwnerNotExistsException;
+import br.com.imobmatch.api.models.owner.Owner;
+import br.com.imobmatch.api.repositories.OwnerRepository;
+import br.com.imobmatch.api.repositories.UserRepository;
+import br.com.imobmatch.api.services.auth.AuthService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+/**
+ * Test the ownerService
+ * Ignore authentication and security rules
+ */
+@SpringBootTest
+@ActiveProfiles("test")
+@Transactional
+class OwnerServiceImplTest {
+
+    @Autowired
+    private OwnerService ownerService;
+
+    @Autowired
+    private OwnerRepository ownerRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @MockitoBean
+    private BCryptPasswordEncoder passwordEncoder;
+
+    @MockitoBean
+    private AuthService authService;
+
+    @BeforeEach
+    void setup() {
+
+        // Generated security hash
+        when(passwordEncoder.encode(any())).thenReturn("$2a$10$FakeHashForTestingPurposesOnly");
+        // Allow returns true for all entered passwords.
+        when(passwordEncoder.matches(any(), any())).thenReturn(true);
+    }
+
+    @Test
+    @DisplayName("Create an owner and user")
+    void testCreateOwner_Success() {
+
+        OwnerPostDTO dto = createValidOwnerDTO("newowner@test.com", "11122233344");
+        OwnerResponseDTO response = ownerService.createOwner(dto);
+        assertNotNull(response.getId());
+        assertEquals(dto.getName(), response.getName());
+
+        boolean userExists = userRepository.existsById(response.getId());
+        boolean ownerExists = ownerRepository.existsById(response.getId());
+
+        assertTrue(userExists, "User not created");
+        assertTrue(ownerExists, "The owner must be created in the owners table");
+    }
+
+    @Test
+    @DisplayName("Update Owner")
+    void testUpdateOwner_Success() {
+
+        OwnerResponseDTO created = ownerService.createOwner(createValidOwnerDTO("update@test.com", "99988877766"));
+        mockAuthenticatedUser(created.getId());
+
+        OwnerPatchDTO patchDto = new OwnerPatchDTO();
+        patchDto.setName("Updated Name");
+
+        OwnerResponseDTO updated = ownerService.updateOwner(patchDto);
+        assertEquals("Updated Name", updated.getName());
+
+        Owner ownerInDb = ownerRepository.findById(created.getId()).orElseThrow();
+        assertEquals("Updated Name", ownerInDb.getName());
+    }
+
+    @Test
+    @DisplayName("Delete Owner")
+    void testDeleteOwner_Success() {
+        OwnerResponseDTO created = ownerService.createOwner(createValidOwnerDTO("delete@test.com", "00000000000"));
+        UUID id = created.getId();
+        mockAuthenticatedUser(id);
+
+        PasswordUserDeleteDTO deleteDto = new PasswordUserDeleteDTO("123456");
+        ownerService.deleteOwner(deleteDto);
+
+        assertTrue(ownerRepository.findById(id).isEmpty(), "Owner must be removed");
+        assertTrue(userRepository.findById(id).isEmpty(), "User must be removed");
+    }
+
+    @Test
+    @DisplayName("Get owner by id")
+    void testGetOwnerById_Success() {
+        OwnerResponseDTO created = ownerService.createOwner(createValidOwnerDTO("find@test.com", "77777777777"));
+
+        OwnerGetResponseDto result = ownerService.getOwnerByid(created.getId());
+
+        assertEquals(created.getName(), result.getName());
+        assertEquals("find@test.com", result.getEmail());
+    }
+
+    @Test
+    @DisplayName("OwnerNotExist")
+    void testGetOwnerById_NotFound() {
+        assertThrows(OwnerNotExistsException.class,
+                () -> ownerService.getOwnerByid(UUID.randomUUID()));
+    }
+
+    private void mockAuthenticatedUser(UUID userId) {
+        UserResponseDTO mockUser = new UserResponseDTO();
+        mockUser.setId(userId);
+        when(authService.getMe()).thenReturn(mockUser);
+    }
+
+    private OwnerPostDTO createValidOwnerDTO(String email, String cpf) {
+        PhonePostDTO phone = new PhonePostDTO("11", "999999999", true);
+        OwnerPostDTO dto = new OwnerPostDTO();
+        dto.setName("Test Silva");
+        dto.setEmail(email);
+        dto.setCpf(cpf);
+        dto.setPassword("123456");
+        dto.setPhone(phone);
+        return dto;
+    }
+}
