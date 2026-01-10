@@ -20,6 +20,7 @@ import br.com.imobmatch.api.services.auth.AuthService;
 import br.com.imobmatch.api.services.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -40,6 +41,7 @@ public class OwnerServiceImpl implements OwnerService {
      * @return Informative information's. contains name and id of owner
      */
     @Override
+    @Transactional
     public OwnerResponseDTO createOwner(OwnerPostDTO postDto) {
 
         if(ownerRepository.existsOwnerByCpf(postDto.getCpf())){throw new OwnerExistsException();}
@@ -89,7 +91,7 @@ public class OwnerServiceImpl implements OwnerService {
         Owner owner = ownerRepository.findById(authService.getMe().getId())
                 .orElseThrow(OwnerNotExistsException::new);
 
-        if(!(ownerDto.getName() == null) && !ownerDto.getName().isBlank()){
+        if(!ownerDto.getName().isBlank()){
 
             owner.setName(ownerDto.getName());
         }
@@ -130,20 +132,13 @@ public class OwnerServiceImpl implements OwnerService {
      * @param passwordUserDeleteDto User password.
      */
     @Override
+    @Transactional
     public void deleteOwner(PasswordUserDeleteDTO passwordUserDeleteDto)throws AuthenticationException
             , OwnerNotExistsException {
 
         UUID userId = authService.getMe().getId();
-        Owner backupOwner = ownerRepository.findById(userId).orElseThrow(OwnerNotExistsException::new);
-
-        try{
-            ownerRepository.deleteById(authService.getMe().getId());
-            userService.deleteById(userId, passwordUserDeleteDto.getPassword());
-        }catch (AuthenticationException ex){
-
-            ownerRepository.save(backupOwner);
-            throw new AuthenticationException(ex.getMessage());
-        }
+        ownerRepository.deleteById(userId);
+        userService.deleteById(userId, passwordUserDeleteDto.getPassword());
     }
 
     /**
