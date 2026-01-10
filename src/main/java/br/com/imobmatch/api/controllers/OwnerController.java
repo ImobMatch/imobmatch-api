@@ -78,8 +78,9 @@ public class OwnerController {
     @DeleteMapping("/confirm-delete")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<OwnerResponseDTO> deleteOwner(@RequestBody PasswordUserDeleteDTO passwordComfirm){
+    public ResponseEntity<OwnerResponseDTO> deleteOwner(@RequestBody PasswordUserDeleteDTO passwordConfirm){
 
+        ownerService.deleteOwner(passwordConfirm);
         return ResponseEntity.noContent().build();
     }
 

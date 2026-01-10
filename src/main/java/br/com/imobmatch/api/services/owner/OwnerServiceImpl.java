@@ -118,6 +118,8 @@ public class OwnerServiceImpl implements OwnerService {
      *Requires the user's password to confirm the deletion.
      *It does not return any values.
      *
+     *NOTE: The code written for this function is deprecated and inefficient.
+     *
      * @param passwordUserDeleteDto User password.
      */
     @Override
@@ -125,8 +127,16 @@ public class OwnerServiceImpl implements OwnerService {
             , OwnerNotExistsException {
 
         UUID userId = authService.getMe().getId();
-        userService.deleteById(userId, passwordUserDeleteDto.getPassword());
-        ownerRepository.deleteById(authService.getMe().getId());
+        Owner backupOwner = ownerRepository.findById(userId).orElseThrow(OwnerNotExistsException::new);
+
+        try{
+            ownerRepository.deleteById(authService.getMe().getId());
+            userService.deleteById(userId, passwordUserDeleteDto.getPassword());
+        }catch (AuthenticationException ex){
+
+            ownerRepository.save(backupOwner);
+            throw new AuthenticationException(ex.getMessage());
+        }
     }
 
     /**
