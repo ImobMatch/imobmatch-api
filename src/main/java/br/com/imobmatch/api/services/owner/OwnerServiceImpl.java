@@ -6,6 +6,7 @@ import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerPatchDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
+import br.com.imobmatch.api.exceptions.auth.AuthenticationException;
 import br.com.imobmatch.api.exceptions.owner.NoValidDataProvideException;
 import br.com.imobmatch.api.exceptions.owner.OwnerExistsException;
 import br.com.imobmatch.api.exceptions.owner.OwnerNotExistsException;
@@ -34,8 +35,8 @@ public class OwnerServiceImpl implements OwnerService {
      * Creates a new owner and a new user.
      * The Owner and User are unique and permanently linked to each other until their complete deletion.
      *
-     * @param postDto required data for create owner
-     * @return informative information's. contains name and id of owner
+     * @param postDto Required data for create owner
+     * @return Informative information's. contains name and id of owner
      */
     @Override
     public OwnerResponseDTO createOwner(OwnerPostDTO postDto) {
@@ -63,7 +64,7 @@ public class OwnerServiceImpl implements OwnerService {
      *The editable information is name and CPF
      *
      * @param ownerDto New value to be updated. Only valid and present (not null) data will be updated.
-     * @return informative information's. contains name and id of owner
+     * @returnI informative information's. contains name and id of owner
      */
     @Override
     public OwnerResponseDTO updateOwner(OwnerPatchDTO ownerDto) {
@@ -91,7 +92,7 @@ public class OwnerServiceImpl implements OwnerService {
 
     /**
      * Returns a detailed view of the authenticated owner in the system.
-     * including their CPF and email address.
+     * Including their CPF and email address.
      *
      * @return DTO containing id, name, cpf, email, role and primary phone of the owner
      */
@@ -120,15 +121,18 @@ public class OwnerServiceImpl implements OwnerService {
      * @param passwordUserDeleteDto User password
      */
     @Override
-    public void deleteOwner(PasswordUserDeleteDTO passwordUserDeleteDto) {
+    public void deleteOwner(PasswordUserDeleteDTO passwordUserDeleteDto)throws AuthenticationException
+            , OwnerNotExistsException {
 
-        //como vou confirmar a senha se não tenho acesso formal ao autenticador?
+        UUID userId = authService.getMe().getId();
+        UserResponseDTO userDto = userService.deleteById(userId, passwordUserDeleteDto.getPassword());
+        ownerRepository.deleteById(authService.getMe().getId());
     }
 
     /**
      * Search for an owner in the repository and return a getDTO containing detailed information.
      *
-     * @param id the owner id
+     * @param id The owner id
      * @return DTO containing id, name, cpf, email, role and primary phone of the owner or empty string
      */
     @Override
@@ -149,8 +153,8 @@ public class OwnerServiceImpl implements OwnerService {
     /**
      * Search for the desired owner and return an instance of the owner entity.
      *
-     * @param id the owner id.
-     * @return one instance of owner
+     * @param id The owner id.
+     * @return One instance of owner
      */
     @Override
     public Owner findEntityById(UUID id) {
