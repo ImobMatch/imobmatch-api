@@ -24,8 +24,8 @@ public class OwnerController {
     /**
      * Create a new owner associated a new user
      *
-     * @param postDto data requested for the endpoint
-     * @return name of created user for confirm
+     * @param postDto Data requested for the endpoint
+     * @return Name of created user for confirm
      */
     @PostMapping()
     @SecurityRequirement(name = "bearerAuth")
@@ -38,10 +38,10 @@ public class OwnerController {
 
 
     /**
-     * update authenticated owner data
+     * Update authenticated owner data.
      *
-     * @param putDto data requested for the endpoint
-     * @return name of created user for confirm
+     * @param putDto Possible Data requested for the endpoint.
+     * @return Name of created user for confirm.
      */
     @PatchMapping
     @SecurityRequirement(name = "bearerAuth")
@@ -56,7 +56,7 @@ public class OwnerController {
     /**
      * Get data from an authenticated owner.
      *
-     * @return A more details owner data
+     * @return A more details owner data.
      */
     @GetMapping()
     @SecurityRequirement(name = "bearerAuth")
@@ -72,8 +72,8 @@ public class OwnerController {
      * It permanently removes an owner and their user from the system.
      * You need to be logged into the system and re-enter your credentials.
      *
-     * @PasswordUserDeleteDto user password for confirm delete
-     * @return A confirm response dto
+     * @PasswordUserDeleteDto user password for confirm delete.
+     * @return A confirm response dto.
      */
     @DeleteMapping("/confirm-delete")
     @SecurityRequirement(name = "bearerAuth")
