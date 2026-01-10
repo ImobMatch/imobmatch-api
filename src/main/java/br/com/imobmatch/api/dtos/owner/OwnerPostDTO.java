@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CPF;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,5 +27,9 @@ public class OwnerPostDTO {
     @NotBlank
     @CPF(message = "Invalid CPF")
     private String cpf;
+
+    private String phoneDddNumber;
+    private String phoneNumber;
+    private Boolean isPrimaryPhone;
 
 }

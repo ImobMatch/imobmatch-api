@@ -32,12 +32,18 @@ public class OwnerController {
      *
      * @param postDto Data requested for the endpoint.
      *                The requested data is:<code>email</code>, <code>password</code>, <code>name</code>,
-     *                <code>cpf</code>, <code>phones</code> All are not null, except for the telephones,
-     *                which are optional.
+     *                <code>cpf</code>, <code>phoneNumber</code> <code>phoneDddNumber</code>
+     *                <code>phoneNumber</code><code>isPrimaryPhone</code>;
+     *                All are not null, except for the telephone, which are optional.
+     *
      * @return <code>Name</code> and <code>Id</code> of created user for confirm operation
-     * @apiNote This endpoint assumes the user has not been created previously.
+     * @apiNote <p>This endpoint assumes the user has not been created previously.
      * The data sent is validated and exceptions are returned in case of violation or incorrect formatting.
-     * If the value does not exist, it is assumed that it will not be updated.
+     * If the value does not exist, it is assumed that it will not be updated.</p>
+     * <p>If a phone number is provided, all information should be entered.
+     * If no phone number is provided, then all information should be null.
+     * If this condition is violated, an exception is thrown.</p>
+     *
      */
     @PostMapping()
     @SecurityRequirement(name = "bearerAuth")
@@ -53,7 +59,7 @@ public class OwnerController {
      * Update authenticated owner data.
      *
      * @param putDto New data for update. Only data unique to the owner entity can be updated.
-     *               Possible data to be entered are: name
+     *               Possible data to be entered are: <code>name</code>
      * @return <code>Name</code> and <code>Id</code> of created user for confirm operation
      *
      * @apiNote You only need to send the data that will be updated.
@@ -75,8 +81,9 @@ public class OwnerController {
      * Get data from an authenticated owner.
      *
      * @return A more detailed information about the owner.
-     * The data returned is: id, name, cpf, email, role, primaryPhone;
-     * If the primaryPhone does not exist, it returns an empty string ""
+     * The data returned is: <code>id</code>, <code>name</code>, <code>cpf</code>,
+     * <code>email</code>, <code>role</code>, <code>primaryPhone</code>;
+     * If the <code>primaryPhone</code> does not exist, it returns an empty string ""
      *
      * @apiNote The endpoint doesn't need a body or parameters.
      * it simply returns the non-sensitive information of the authenticated user owner.
@@ -92,10 +99,10 @@ public class OwnerController {
     }
 
     /**
-     * Permanently removes an owner and their user from the system.
+     * Permanently removes an <code>owner</code> and their <code>user</code> from the system.
      * You must be logged into the system and submit the user's password to confirm the operation.
      *
-     * @PasswordUserDeleteDto user password
+     * @PasswordUserDeleteDto User <code>password</code>
      * @apiNote The exclusion do cannot be undone.
      * <p>This operation will fail if the owner has any properties  or any other entity linked to them.</p>
      * <p>BEWARE: This endpoint does not guarantee the integrity of the deletion if the owner is linked to a property

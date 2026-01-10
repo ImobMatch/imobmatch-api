@@ -5,6 +5,7 @@ import br.com.imobmatch.api.dtos.owner.OwnerGetResponseDto;
 import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerPatchDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
+import br.com.imobmatch.api.dtos.phone.PhonePostDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.exceptions.auth.AuthenticationException;
 import br.com.imobmatch.api.exceptions.owner.NoValidDataProvideException;
@@ -47,6 +48,17 @@ public class OwnerServiceImpl implements OwnerService {
                 postDto.getPassword(),
                 UserRole.OWNER
         );
+
+        if(validPhoneData(postDto.getPhoneDddNumber(),
+                postDto.getPhoneNumber(), postDto.getIsPrimaryPhone())){
+            PhonePostDTO phoneDto = new PhonePostDTO(
+                    postDto.getPhoneDddNumber(),
+                    postDto.getPhoneNumber(),
+                    postDto.getIsPrimaryPhone()
+            );
+            userService.addPhone(phoneDto, userDto.getId());
+        }
+
 
         User user = userService.findEntityById(userDto.getId());
         Owner owner = new Owner();
@@ -173,6 +185,21 @@ public class OwnerServiceImpl implements OwnerService {
             if(phone.isPrimary()){return phone.getNumber();}
         }
         return "";
+    }
+
+    private boolean validPhoneData(String ddd, String phoneNumber, Boolean isPrimaryPhone){
+
+        int count = 0;
+        if (ddd != null) count++;
+        if (phoneNumber != null) count++;
+        if (isPrimaryPhone != null) count++;
+
+        if (count > 0 && count < 3) {
+            throw new NoValidDataProvideException();
+
+        }else return count == 3;
+
+
     }
 
 }
