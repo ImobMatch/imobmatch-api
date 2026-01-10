@@ -1,10 +1,10 @@
 package br.com.imobmatch.api.controllers;
 
-import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDto;
+import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerGetResponseDto;
-import br.com.imobmatch.api.dtos.owner.OwnerPostDto;
-import br.com.imobmatch.api.dtos.owner.OwnerPatchDto;
-import br.com.imobmatch.api.dtos.owner.OwnerResponseDto;
+import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerPatchDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.services.owner.OwnerService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -29,7 +29,7 @@ public class OwnerController {
      */
     @PostMapping()
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<OwnerResponseDto> createOwner(@Valid @RequestBody OwnerPostDto postDto) {
+    public ResponseEntity<OwnerResponseDTO> createOwner(@Valid @RequestBody OwnerPostDTO postDto) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -46,7 +46,7 @@ public class OwnerController {
     @PatchMapping
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<OwnerResponseDto> updateOwner(@RequestBody OwnerPatchDto putDto){
+    public ResponseEntity<OwnerResponseDTO> updateOwner(@RequestBody OwnerPatchDTO putDto){
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -78,7 +78,7 @@ public class OwnerController {
     @DeleteMapping("/confirm-delete")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<OwnerResponseDto> deleteOwner(@RequestBody PasswordUserDeleteDto passwordComfirm){
+    public ResponseEntity<OwnerResponseDTO> deleteOwner(@RequestBody PasswordUserDeleteDTO passwordComfirm){
 
         return ResponseEntity.noContent().build();
     }

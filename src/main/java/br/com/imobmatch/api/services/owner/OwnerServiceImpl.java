@@ -1,10 +1,10 @@
 package br.com.imobmatch.api.services.owner;
 
-import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDto;
+import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerGetResponseDto;
-import br.com.imobmatch.api.dtos.owner.OwnerPostDto;
-import br.com.imobmatch.api.dtos.owner.OwnerPatchDto;
-import br.com.imobmatch.api.dtos.owner.OwnerResponseDto;
+import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerPatchDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.exceptions.owner.NoValidDataProvideException;
 import br.com.imobmatch.api.exceptions.owner.OwnerExistsException;
@@ -19,6 +19,7 @@ import br.com.imobmatch.api.services.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -37,7 +38,7 @@ public class OwnerServiceImpl implements OwnerService {
      * @return informative information's. contains name and id of owner
      */
     @Override
-    public OwnerResponseDto createOwner(OwnerPostDto postDto) {
+    public OwnerResponseDTO createOwner(OwnerPostDTO postDto) {
 
         if(ownerRepository.existsOwnerByCpf(postDto.getCpf())){throw new OwnerExistsException();}
         UserResponseDTO userDto = userService.create(
@@ -46,14 +47,14 @@ public class OwnerServiceImpl implements OwnerService {
                 UserRole.OWNER
         );
 
-        User user = getObjectUser(userDto.getId());
+        User user = userService.findEntityById(userDto.getId());
         Owner owner = new Owner();
         owner.setCpf(postDto.getCpf());
         owner.setName(postDto.getName());
         owner.setUser(user);
 
         ownerRepository.save(owner);
-        return new OwnerResponseDto(owner.getId(), owner.getName());
+        return new OwnerResponseDTO(owner.getId(), owner.getName());
 
     }
 
@@ -65,14 +66,15 @@ public class OwnerServiceImpl implements OwnerService {
      * @return informative information's. contains name and id of owner
      */
     @Override
-    public OwnerResponseDto updateOwner(OwnerPatchDto ownerDto) {
+    public OwnerResponseDTO updateOwner(OwnerPatchDTO ownerDto) {
 
         if(ownerDto.getCpf() == null && ownerDto.getName() == null){
 
             throw new NoValidDataProvideException();
         }
 
-        Owner owner = getObjectOwner(authService.getMe().getId());
+        Owner owner = ownerRepository.findById(authService.getMe().getId())
+                .orElseThrow(OwnerNotExistsException::new);
 
         if(!(ownerDto.getName() == null) && !ownerDto.getName().isBlank()){
 
@@ -84,7 +86,7 @@ public class OwnerServiceImpl implements OwnerService {
         }
 
         ownerRepository.save(owner);
-        return new OwnerResponseDto(owner.getId(), owner.getName());
+        return new OwnerResponseDTO(owner.getId(), owner.getName());
     }
 
     /**
@@ -96,17 +98,16 @@ public class OwnerServiceImpl implements OwnerService {
     @Override
     public OwnerGetResponseDto getAuthenticatedOwner() {
 
-        UUID userId = authService.getMe().getId();
-        Owner owner = getObjectOwner(userId);
-        User user = getObjectUser(userId);
+        Owner owner = ownerRepository.findById(authService.getMe().getId())
+                .orElseThrow(OwnerNotExistsException::new);
 
         return new OwnerGetResponseDto(
                 owner.getId(),
                 owner.getName(),
                 owner.getCpf(),
-                user.getEmail(),
-                user.getRole(),
-                getUserPrimaryPhone(user)
+                owner.getUser().getEmail(),
+                owner.getUser().getRole(),
+                getUserPrimaryPhone(owner.getUser().getPhones())
 
         );
     }
@@ -119,7 +120,7 @@ public class OwnerServiceImpl implements OwnerService {
      * @param passwordUserDeleteDto User password
      */
     @Override
-    public void deleteOwner(PasswordUserDeleteDto passwordUserDeleteDto) {
+    public void deleteOwner(PasswordUserDeleteDTO passwordUserDeleteDto) {
 
         //como vou confirmar a senha se não tenho acesso formal ao autenticador?
     }
@@ -140,7 +141,7 @@ public class OwnerServiceImpl implements OwnerService {
                 owner.getCpf(),
                 owner.getUser().getEmail(),
                 owner.getUser().getRole(),
-                getUserPrimaryPhone(owner.getUser())
+                getUserPrimaryPhone(owner.getUser().getPhones())
         );
 
     }
@@ -156,30 +157,13 @@ public class OwnerServiceImpl implements OwnerService {
         return ownerRepository.findById(id).orElseThrow(OwnerNotExistsException::new);
     }
 
-    private String getUserPrimaryPhone(User user){
+    private String getUserPrimaryPhone(List<Phone> phones ) {
 
-        for(Phone phone : user.getPhones()){
+        for(Phone phone : phones){
 
             if(phone.isPrimary()){return phone.getNumber();}
         }
         return "";
-
-
-    }
-
-    private Owner getObjectOwner(UUID userId) throws OwnerNotExistsException{
-
-        User user = userService.findEntityById(userId);
-        return ownerRepository.findByUser(user)
-                .orElseThrow(OwnerNotExistsException :: new);
-
-
-    }
-
-    private User getObjectUser(UUID userId){
-
-
-        return userService.findEntityById(userId);
     }
 
 }

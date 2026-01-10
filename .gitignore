@@ -32,7 +32,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
-## Code Tokes and Secrets ##
-/src/main/resources/application-dev.properties
-/src/main/resources/application.properties

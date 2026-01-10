@@ -19,13 +19,14 @@ import java.util.UUID;
 public class Owner {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.UUID)
+    @Column(name = "user_id")
     private UUID id;
 
     @Column(name = "name", nullable = false, length = 255)
     private String name;
 
     @OneToOne
+    @MapsId //enable shared primary keys in JPA
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 

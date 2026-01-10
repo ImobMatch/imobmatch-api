@@ -1,6 +1,7 @@
 package br.com.imobmatch.api.exceptions;
 
 import br.com.imobmatch.api.dtos.error.ErrorResponseDTO;
+import br.com.imobmatch.api.exceptions.auth.AuthenticationException;
 import br.com.imobmatch.api.exceptions.auth.CreateTokenException;
 import br.com.imobmatch.api.exceptions.auth.TokenExpiredException;
 import br.com.imobmatch.api.exceptions.auth.TokenInvalidException;
@@ -147,6 +148,25 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.CONFLICT)
                 .body(error);
     }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponseDTO> handleAuthenticationException(
+            AuthenticationException ex,
+            HttpServletRequest request
+    ) {
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                LocalDateTime.now(),
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(error);
+    }
+
 
     @ExceptionHandler(InappropriateUserRoleException.class)
     public ResponseEntity<ErrorResponseDTO> handleInappropriateUserRole(
