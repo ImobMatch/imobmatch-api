@@ -61,10 +61,10 @@ public class OwnerServiceImpl implements OwnerService {
 
     /**
      *Update authenticated owner information in the system.
-     *The editable information is name and CPF
+     *The editable information is name and CPF.
      *
      * @param ownerDto New value to be updated. Only valid and present (not null) data will be updated.
-     * @returnI informative information's. contains name and id of owner
+     * @return informative information's. contains name and id of owner.
      */
     @Override
     public OwnerResponseDTO updateOwner(OwnerPatchDTO ownerDto) {
@@ -118,14 +118,14 @@ public class OwnerServiceImpl implements OwnerService {
      *Requires the user's password to confirm the deletion.
      *It does not return any values.
      *
-     * @param passwordUserDeleteDto User password
+     * @param passwordUserDeleteDto User password.
      */
     @Override
     public void deleteOwner(PasswordUserDeleteDTO passwordUserDeleteDto)throws AuthenticationException
             , OwnerNotExistsException {
 
         UUID userId = authService.getMe().getId();
-        UserResponseDTO userDto = userService.deleteById(userId, passwordUserDeleteDto.getPassword());
+        userService.deleteById(userId, passwordUserDeleteDto.getPassword());
         ownerRepository.deleteById(authService.getMe().getId());
     }
 
@@ -154,7 +154,7 @@ public class OwnerServiceImpl implements OwnerService {
      * Search for the desired owner and return an instance of the owner entity.
      *
      * @param id The owner id.
-     * @return One instance of owner
+     * @return One instance of owner.
      */
     @Override
     public Owner findEntityById(UUID id) {
