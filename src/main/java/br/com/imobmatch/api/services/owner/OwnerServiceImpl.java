@@ -44,6 +44,8 @@ public class OwnerServiceImpl implements OwnerService {
     @Transactional
     public OwnerResponseDTO createOwner(OwnerPostDTO postDto) {
 
+        PhonePostDTO phone = postDto.getPhone();
+
         if(ownerRepository.existsOwnerByCpf(postDto.getCpf())){throw new OwnerExistsException();}
         UserResponseDTO userDto = userService.create(
                 postDto.getEmail(),
@@ -51,15 +53,7 @@ public class OwnerServiceImpl implements OwnerService {
                 UserRole.OWNER
         );
 
-        if(validPhoneData(postDto.getPhoneDddNumber(),
-                postDto.getPhoneNumber(), postDto.getIsPrimaryPhone())){
-            PhonePostDTO phoneDto = new PhonePostDTO(
-                    postDto.getPhoneDddNumber(),
-                    postDto.getPhoneNumber(),
-                    postDto.getIsPrimaryPhone()
-            );
-            userService.addPhone(phoneDto, userDto.getId());
-        }
+        userService.addPhone(phone, userDto.getId());
 
 
         User user = userService.findEntityById(userDto.getId());
@@ -180,21 +174,6 @@ public class OwnerServiceImpl implements OwnerService {
             if(phone.isPrimary()){return phone.getNumber();}
         }
         return "";
-    }
-
-    private boolean validPhoneData(String ddd, String phoneNumber, Boolean isPrimaryPhone){
-
-        int count = 0;
-        if (ddd != null) count++;
-        if (phoneNumber != null) count++;
-        if (isPrimaryPhone != null) count++;
-
-        if (count > 0 && count < 3) {
-            throw new NoValidDataProvideException();
-
-        }else return count == 3;
-
-
     }
 
 }

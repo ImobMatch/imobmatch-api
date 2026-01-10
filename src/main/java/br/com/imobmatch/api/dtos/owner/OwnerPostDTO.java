@@ -1,5 +1,7 @@
 package br.com.imobmatch.api.dtos.owner;
 
+import br.com.imobmatch.api.dtos.phone.PhonePostDTO;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -28,8 +30,7 @@ public class OwnerPostDTO {
     @CPF(message = "Invalid CPF")
     private String cpf;
 
-    private String phoneDddNumber;
-    private String phoneNumber;
-    private Boolean isPrimaryPhone;
+    @Valid
+    private PhonePostDTO phone;
 
 }

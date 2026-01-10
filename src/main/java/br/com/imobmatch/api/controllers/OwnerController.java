@@ -2,8 +2,8 @@ package br.com.imobmatch.api.controllers;
 
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerGetResponseDto;
-import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerPatchDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.services.owner.OwnerService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -32,9 +32,9 @@ public class OwnerController {
      *
      * @param postDto Data requested for the endpoint.
      *                The requested data is:<code>email</code>, <code>password</code>, <code>name</code>,
-     *                <code>cpf</code>, <code>phoneNumber</code> <code>phoneDddNumber</code>
-     *                <code>phoneNumber</code><code>isPrimaryPhone</code>;
-     *                All are not null, except for the telephone, which are optional.
+     *                <code>cpf</code> and <code>phone</code>. <code>phone</code> contains:
+     *                <code>ddd</code>, <code>number</code>, <code>isPrimary</code>
+     *                All are not null
      *
      * @return <code>Name</code> and <code>Id</code> of created user for confirm operation
      * @apiNote <p>This endpoint assumes the user has not been created previously.
