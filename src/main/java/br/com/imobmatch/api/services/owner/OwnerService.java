@@ -2,12 +2,10 @@ package br.com.imobmatch.api.services.owner;
 
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerGetResponseDto;
-import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerPatchDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.exceptions.owner.OwnerExistsException;
-import br.com.imobmatch.api.models.owner.Owner;
-
 import java.util.UUID;
 
 public interface OwnerService {
@@ -50,13 +48,5 @@ public interface OwnerService {
      * @return ADTO containing owner data.
      */
     OwnerGetResponseDto getOwnerByid(UUID id);
-
-    /**
-     * Get the owner entity and returns.
-     *
-     * @param id userId.
-     * @return The instance of owner.
-     */
-    Owner findEntityById(UUID id);
 
 }

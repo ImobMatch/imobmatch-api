@@ -2,13 +2,12 @@ package br.com.imobmatch.api.services.owner;
 
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerGetResponseDto;
-import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerPatchDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.dtos.phone.PhonePostDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.exceptions.auth.AuthenticationException;
-import br.com.imobmatch.api.exceptions.owner.NoValidDataProvideException;
 import br.com.imobmatch.api.exceptions.owner.OwnerExistsException;
 import br.com.imobmatch.api.exceptions.owner.OwnerNotFoundException;
 import br.com.imobmatch.api.models.owner.Owner;
@@ -18,12 +17,11 @@ import br.com.imobmatch.api.models.user.UserRole;
 import br.com.imobmatch.api.repositories.OwnerRepository;
 import br.com.imobmatch.api.services.auth.AuthService;
 import br.com.imobmatch.api.services.user.UserService;
+import java.util.List;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -146,17 +144,6 @@ public class OwnerServiceImpl implements OwnerService {
                 getUserPrimaryPhone(owner.getUser().getPhones())
         );
 
-    }
-
-    /**
-     * Search for the desired owner and return an instance of the owner entity.
-     *
-     * @param id The owner id.
-     * @return One instance of owner.
-     */
-    @Override
-    public Owner findEntityById(UUID id) {
-        return ownerRepository.findById(id).orElseThrow(OwnerNotFoundException::new);
     }
 
     private String getUserPrimaryPhone(List<Phone> phones ) {
