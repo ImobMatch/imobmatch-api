@@ -37,29 +37,29 @@ public class OwnerServiceImpl implements OwnerService {
      * Creates a new owner and a new user.
      * The Owner and User are unique and permanently linked to each other until their complete deletion.
      *
-     * @param postDto Required data for create owner
+     * @param ownerPostDTO Required data for create owner
      * @return Informative information's. contains name and id of owner
      */
     @Override
     @Transactional
-    public OwnerResponseDTO createOwner(OwnerPostDTO postDto) {
+    public OwnerResponseDTO createOwner(OwnerPostDTO ownerPostDTO) {
 
-        PhonePostDTO phone = postDto.getPhone();
+        PhonePostDTO phonePostDTO = ownerPostDTO.getPhone();
 
-        if(ownerRepository.existsOwnerByCpf(postDto.getCpf())){throw new OwnerExistsException();}
+        if(ownerRepository.existsOwnerByCpf(ownerPostDTO.getCpf())){throw new OwnerExistsException();}
         UserResponseDTO userDto = userService.create(
-                postDto.getEmail(),
-                postDto.getPassword(),
+                ownerPostDTO.getEmail(),
+                ownerPostDTO.getPassword(),
                 UserRole.OWNER
         );
 
-        userService.addPhone(phone, userDto.getId());
+        userService.addPhone(phonePostDTO, userDto.getId());
 
 
         User user = userService.findEntityById(userDto.getId());
         Owner owner = new Owner();
-        owner.setCpf(postDto.getCpf());
-        owner.setName(postDto.getName());
+        owner.setCpf(ownerPostDTO.getCpf());
+        owner.setName(ownerPostDTO.getName());
         owner.setUser(user);
 
         ownerRepository.save(owner);
@@ -71,13 +71,13 @@ public class OwnerServiceImpl implements OwnerService {
      *Update authenticated owner information in the system.
      *The editable information is name and CPF.
      *
-     * @param ownerDto New value to be updated. Only valid and present (not null) data will be updated.
+     * @param ownerPatchDTO New value to be updated. Only valid and present (not null) data will be updated.
      * @return informative information's. contains name and id of owner.
      */
     @Override
-    public OwnerResponseDTO updateOwner(OwnerPatchDTO ownerDto) {
+    public OwnerResponseDTO updateOwner(OwnerPatchDTO ownerPatchDTO) {
 
-        if(ownerDto.getName() == null){
+        if(ownerPatchDTO.getName() == null){
 
             throw new NoValidDataProvideException();
         }
@@ -85,9 +85,9 @@ public class OwnerServiceImpl implements OwnerService {
         Owner owner = ownerRepository.findById(authService.getMe().getId())
                 .orElseThrow(OwnerNotFoundException::new);
 
-        if(!ownerDto.getName().isBlank()){
+        if(!ownerPatchDTO.getName().isBlank()){
 
-            owner.setName(ownerDto.getName());
+            owner.setName(ownerPatchDTO.getName());
         }
 
         ownerRepository.save(owner);
@@ -123,16 +123,16 @@ public class OwnerServiceImpl implements OwnerService {
      *It does not return any values.
      *NOTE: The code written for this function is deprecated and inefficient.
      *
-     * @param passwordUserDeleteDto User password.
+     * @param passwordUserDeleteDTO User password.
      */
     @Override
     @Transactional
-    public void deleteOwner(PasswordUserDeleteDTO passwordUserDeleteDto)throws AuthenticationException
+    public void deleteOwner(PasswordUserDeleteDTO passwordUserDeleteDTO)throws AuthenticationException
             , OwnerNotFoundException {
 
         UUID userId = authService.getMe().getId();
         ownerRepository.deleteById(userId);
-        userService.deleteById(userId, passwordUserDeleteDto.getPassword());
+        userService.deleteById(userId, passwordUserDeleteDTO.getPassword());
     }
 
     /**

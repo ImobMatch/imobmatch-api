@@ -30,7 +30,7 @@ public class OwnerController {
     /**
      * Create a new owner associated a new user
      *
-     * @param postDto Data requested for the endpoint.
+     * @param ownerPostDTO Data requested for the endpoint.
      *                The requested data is:<code>email</code>, <code>password</code>, <code>name</code>,
      *                <code>cpf</code> and <code>phone</code>. <code>phone</code> contains:
      *                <code>ddd</code>, <code>number</code>, <code>isPrimary</code>
@@ -47,18 +47,18 @@ public class OwnerController {
      */
     @PostMapping()
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<OwnerResponseDTO> createOwner(@Valid @RequestBody OwnerPostDTO postDto) {
+    public ResponseEntity<OwnerResponseDTO> createOwner(@Valid @RequestBody OwnerPostDTO ownerPostDTO) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(this.ownerService.createOwner(postDto));
+                .body(this.ownerService.createOwner(ownerPostDTO));
     }
 
 
     /**
      * Update authenticated owner data.
      *
-     * @param putDto New data for update. Only data unique to the owner entity can be updated.
+     * @param ownerPatchDTO New data for update. Only data unique to the owner entity can be updated.
      *               Possible data to be entered are: <code>name</code>
      * @return <code>Name</code> and <code>Id</code> of created user for confirm operation
      *
@@ -70,11 +70,11 @@ public class OwnerController {
     @PatchMapping
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<OwnerResponseDTO> updateOwner(@RequestBody OwnerPatchDTO putDto){
+    public ResponseEntity<OwnerResponseDTO> updateOwner(@RequestBody OwnerPatchDTO ownerPatchDTO){
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ownerService.updateOwner(putDto));
+                .body(ownerService.updateOwner(ownerPatchDTO));
     }
 
     /**
@@ -111,9 +111,9 @@ public class OwnerController {
     @DeleteMapping("/confirm-delete")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<OwnerResponseDTO> deleteOwner(@RequestBody PasswordUserDeleteDTO passwordConfirm){
+    public ResponseEntity<OwnerResponseDTO> deleteOwner(@RequestBody PasswordUserDeleteDTO passwordUserDeleteDTO){
 
-        ownerService.deleteOwner(passwordConfirm);
+        ownerService.deleteOwner(passwordUserDeleteDTO);
         return ResponseEntity.noContent().build();
     }
 

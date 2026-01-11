@@ -15,18 +15,18 @@ public interface OwnerService {
      * Creates a new  and a new user.
      * The Owner and User are unique and permanently linked to each other until their complete deletion.
      *
-     * @param postDto Required data for create owner
+     * @param ownerPostDTO Required data for create owner
      * @return Informative information's. contains name and id of owner
      */
-    OwnerResponseDTO createOwner(OwnerPostDTO postDto) throws OwnerExistsException;
+    OwnerResponseDTO createOwner(OwnerPostDTO ownerPostDTO) throws OwnerExistsException;
     /**
      *Update authenticated owner information in the system.
      *The editable information is name and CPF.
      *
-     * @param ownerDto New value to be updated. Only valid and present (not null) data will be updated.
+     * @param ownerPatchDTO New value to be updated. Only valid and present (not null) data will be updated.
      * @return informative information's. contains name and id of owner.
      */
-    OwnerResponseDTO updateOwner(OwnerPatchDTO ownerDto );
+    OwnerResponseDTO updateOwner(OwnerPatchDTO ownerPatchDTO );
     /**
      * Returns a detailed view of the authenticated owner in the system.
      * Including their CPF and email address.
@@ -39,9 +39,9 @@ public interface OwnerService {
      *Requires the user's password to confirm the deletion.
      *It does not return any values.
      *
-     * @param passwordConfirm User password.
+     * @param passwordUserDeleteDTO User password.
      */
-    void deleteOwner(PasswordUserDeleteDTO passwordConfirm);
+    void deleteOwner(PasswordUserDeleteDTO passwordUserDeleteDTO);
 
     /**
      * Retrieves a DTO with more detailed information about the owner and their user.
