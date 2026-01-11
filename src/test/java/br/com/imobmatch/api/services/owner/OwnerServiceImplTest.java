@@ -1,7 +1,13 @@
 package br.com.imobmatch.api.services.owner;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
-import br.com.imobmatch.api.dtos.owner.OwnerGetResponseDto;
 import br.com.imobmatch.api.dtos.owner.OwnerPatchDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
@@ -12,6 +18,7 @@ import br.com.imobmatch.api.models.owner.Owner;
 import br.com.imobmatch.api.repositories.OwnerRepository;
 import br.com.imobmatch.api.repositories.UserRepository;
 import br.com.imobmatch.api.services.auth.AuthService;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,12 +28,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 /**
  * Test the ownerService
@@ -113,7 +114,7 @@ class OwnerServiceImplTest {
     void testGetOwnerById_Success() {
         OwnerResponseDTO created = ownerService.createOwner(createValidOwnerDTO("find@test.com", "77777777777"));
 
-        OwnerGetResponseDto result = ownerService.getOwnerByid(created.getId());
+        OwnerResponseDTO result = ownerService.getOwnerByid(created.getId());
 
         assertEquals(created.getName(), result.getName());
         assertEquals("find@test.com", result.getEmail());

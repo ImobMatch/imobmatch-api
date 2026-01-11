@@ -1,7 +1,6 @@
 package br.com.imobmatch.api.services.owner;
 
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
-import br.com.imobmatch.api.dtos.owner.OwnerGetResponseDto;
 import br.com.imobmatch.api.dtos.owner.OwnerPatchDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
@@ -61,7 +60,15 @@ public class OwnerServiceImpl implements OwnerService {
         owner.setUser(user);
 
         ownerRepository.save(owner);
-        return new OwnerResponseDTO(owner.getId(), owner.getName());
+        return new OwnerResponseDTO(
+            owner.getId(),
+            owner.getName(),
+            owner.getCpf(),
+            user.getEmail(),
+            user.getRole(),
+            getUserPrimaryPhone(user.getPhones()),
+            user.isEmailVerified()
+        );
 
     }
 
@@ -81,7 +88,15 @@ public class OwnerServiceImpl implements OwnerService {
         owner.setName(ownerPatchDTO.getName());
 
         ownerRepository.save(owner);
-        return new OwnerResponseDTO(owner.getId(), owner.getName());
+        return new OwnerResponseDTO(
+            owner.getId(),
+            owner.getName(),
+            owner.getCpf(),
+            owner.getUser().getEmail(),
+            owner.getUser().getRole(),
+            getUserPrimaryPhone(owner.getUser().getPhones()),
+            owner.getUser().isEmailVerified()
+        );
     }
 
     /**
@@ -91,18 +106,19 @@ public class OwnerServiceImpl implements OwnerService {
      * @return DTO containing id, name, cpf, email, role and primary phone of the owner
      */
     @Override
-    public OwnerGetResponseDto getAuthenticatedOwner() {
+    public OwnerResponseDTO getAuthenticatedOwner() {
 
         Owner owner = ownerRepository.findById(authService.getMe().getId())
                 .orElseThrow(OwnerNotFoundException::new);
 
-        return new OwnerGetResponseDto(
+        return new OwnerResponseDTO(
                 owner.getId(),
                 owner.getName(),
                 owner.getCpf(),
                 owner.getUser().getEmail(),
                 owner.getUser().getRole(),
-                getUserPrimaryPhone(owner.getUser().getPhones())
+                getUserPrimaryPhone(owner.getUser().getPhones()),
+                owner.getUser().isEmailVerified()
 
         );
     }
@@ -132,16 +148,17 @@ public class OwnerServiceImpl implements OwnerService {
      * @return DTO containing id, name, cpf, email, role and primary phone of the owner or empty string
      */
     @Override
-    public OwnerGetResponseDto getOwnerByid(UUID id) {
+    public OwnerResponseDTO getOwnerByid(UUID id) {
         Owner owner = ownerRepository.findById(id).orElseThrow(OwnerNotFoundException::new);
 
-        return new OwnerGetResponseDto(
+        return new OwnerResponseDTO(
                 owner.getId(),
                 owner.getName(),
                 owner.getCpf(),
                 owner.getUser().getEmail(),
                 owner.getUser().getRole(),
-                getUserPrimaryPhone(owner.getUser().getPhones())
+                getUserPrimaryPhone(owner.getUser().getPhones()),
+                owner.getUser().isEmailVerified()
         );
 
     }

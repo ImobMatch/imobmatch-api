@@ -1,7 +1,6 @@
 package br.com.imobmatch.api.services.owner;
 
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
-import br.com.imobmatch.api.dtos.owner.OwnerGetResponseDto;
 import br.com.imobmatch.api.dtos.owner.OwnerPatchDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
@@ -31,7 +30,7 @@ public interface OwnerService {
      *
      * @return DTO containing id, name, cpf, email, role and primary phone of the owner
      */
-    OwnerGetResponseDto getAuthenticatedOwner();
+    OwnerResponseDTO getAuthenticatedOwner();
     /**
      *Deletes the system owner and the user associated with them.
      *Requires the user's password to confirm the deletion.
@@ -47,6 +46,6 @@ public interface OwnerService {
      * @param id userId.
      * @return ADTO containing owner data.
      */
-    OwnerGetResponseDto getOwnerByid(UUID id);
+    OwnerResponseDTO getOwnerByid(UUID id);
 
 }

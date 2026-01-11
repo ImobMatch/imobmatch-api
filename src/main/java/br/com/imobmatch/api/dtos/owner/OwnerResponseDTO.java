@@ -1,5 +1,6 @@
 package br.com.imobmatch.api.dtos.owner;
 
+import br.com.imobmatch.api.models.user.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -9,7 +10,12 @@ import java.util.UUID;
 @AllArgsConstructor
 public class OwnerResponseDTO {
 
-    public UUID id;
-    public String name;
+    private UUID id;
+    private String name;
+    private String cpf;
+    private String email;
+    private UserRole role;
+    private String primaryPhone;
+    private boolean isEmailVerified;
 }
 
