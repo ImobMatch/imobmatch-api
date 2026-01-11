@@ -10,7 +10,7 @@ import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.exceptions.auth.AuthenticationException;
 import br.com.imobmatch.api.exceptions.owner.NoValidDataProvideException;
 import br.com.imobmatch.api.exceptions.owner.OwnerExistsException;
-import br.com.imobmatch.api.exceptions.owner.OwnerNotExistsException;
+import br.com.imobmatch.api.exceptions.owner.OwnerNotFoundException;
 import br.com.imobmatch.api.models.owner.Owner;
 import br.com.imobmatch.api.models.phone.Phone;
 import br.com.imobmatch.api.models.user.User;
@@ -83,7 +83,7 @@ public class OwnerServiceImpl implements OwnerService {
         }
 
         Owner owner = ownerRepository.findById(authService.getMe().getId())
-                .orElseThrow(OwnerNotExistsException::new);
+                .orElseThrow(OwnerNotFoundException::new);
 
         if(!ownerDto.getName().isBlank()){
 
@@ -104,7 +104,7 @@ public class OwnerServiceImpl implements OwnerService {
     public OwnerGetResponseDto getAuthenticatedOwner() {
 
         Owner owner = ownerRepository.findById(authService.getMe().getId())
-                .orElseThrow(OwnerNotExistsException::new);
+                .orElseThrow(OwnerNotFoundException::new);
 
         return new OwnerGetResponseDto(
                 owner.getId(),
@@ -128,7 +128,7 @@ public class OwnerServiceImpl implements OwnerService {
     @Override
     @Transactional
     public void deleteOwner(PasswordUserDeleteDTO passwordUserDeleteDto)throws AuthenticationException
-            , OwnerNotExistsException {
+            , OwnerNotFoundException {
 
         UUID userId = authService.getMe().getId();
         ownerRepository.deleteById(userId);
@@ -143,7 +143,7 @@ public class OwnerServiceImpl implements OwnerService {
      */
     @Override
     public OwnerGetResponseDto getOwnerByid(UUID id) {
-        Owner owner = ownerRepository.findById(id).orElseThrow(OwnerNotExistsException::new);
+        Owner owner = ownerRepository.findById(id).orElseThrow(OwnerNotFoundException::new);
 
         return new OwnerGetResponseDto(
                 owner.getId(),
@@ -164,7 +164,7 @@ public class OwnerServiceImpl implements OwnerService {
      */
     @Override
     public Owner findEntityById(UUID id) {
-        return ownerRepository.findById(id).orElseThrow(OwnerNotExistsException::new);
+        return ownerRepository.findById(id).orElseThrow(OwnerNotFoundException::new);
     }
 
     private String getUserPrimaryPhone(List<Phone> phones ) {

@@ -7,7 +7,7 @@ import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.dtos.phone.PhonePostDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
-import br.com.imobmatch.api.exceptions.owner.OwnerNotExistsException;
+import br.com.imobmatch.api.exceptions.owner.OwnerNotFoundException;
 import br.com.imobmatch.api.models.owner.Owner;
 import br.com.imobmatch.api.repositories.OwnerRepository;
 import br.com.imobmatch.api.repositories.UserRepository;
@@ -122,7 +122,7 @@ class OwnerServiceImplTest {
     @Test
     @DisplayName("OwnerNotExist")
     void testGetOwnerById_NotFound() {
-        assertThrows(OwnerNotExistsException.class,
+        assertThrows(OwnerNotFoundException.class,
                 () -> ownerService.getOwnerByid(UUID.randomUUID()));
     }
 

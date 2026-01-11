@@ -8,14 +8,12 @@ import br.com.imobmatch.api.exceptions.auth.TokenInvalidException;
 import br.com.imobmatch.api.exceptions.owner.InappropriateUserRoleException;
 import br.com.imobmatch.api.exceptions.owner.NoValidDataProvideException;
 import br.com.imobmatch.api.exceptions.owner.OwnerExistsException;
-import br.com.imobmatch.api.exceptions.owner.OwnerNotExistsException;
+import br.com.imobmatch.api.exceptions.owner.OwnerNotFoundException;
 import br.com.imobmatch.api.exceptions.user.PhoneExistsException;
 import br.com.imobmatch.api.exceptions.user.UserExistsException;
 import br.com.imobmatch.api.exceptions.user.UserNotFoundException;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.EqualsAndHashCode;
-import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -227,9 +225,9 @@ public class GlobalExceptionHandler {
                 .body(error);
     }
 
-    @ExceptionHandler(OwnerNotExistsException.class)
+    @ExceptionHandler(OwnerNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleOwnerNotExists(
-            OwnerNotExistsException ex,
+            OwnerNotFoundException ex,
             HttpServletRequest request
     )
     {
