@@ -12,5 +12,4 @@ public interface OwnerRepository extends JpaRepository<Owner, UUID> {
 
   Optional<Owner> findByCpf(String cpf);
   boolean existsOwnerByCpf(String cpf);
-  Optional<Owner> findByUser(User user);
 }
