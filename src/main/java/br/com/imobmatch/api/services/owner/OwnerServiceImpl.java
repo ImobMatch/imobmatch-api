@@ -77,18 +77,10 @@ public class OwnerServiceImpl implements OwnerService {
     @Override
     public OwnerResponseDTO updateOwner(OwnerPatchDTO ownerPatchDTO) {
 
-        if(ownerPatchDTO.getName() == null){
-
-            throw new NoValidDataProvideException();
-        }
-
         Owner owner = ownerRepository.findById(authService.getMe().getId())
                 .orElseThrow(OwnerNotFoundException::new);
 
-        if(!ownerPatchDTO.getName().isBlank()){
-
-            owner.setName(ownerPatchDTO.getName());
-        }
+        owner.setName(ownerPatchDTO.getName());
 
         ownerRepository.save(owner);
         return new OwnerResponseDTO(owner.getId(), owner.getName());
