@@ -141,28 +141,6 @@ public class OwnerServiceImpl implements OwnerService {
         userService.deleteById(userId, passwordUserDeleteDTO.getPassword());
     }
 
-    /**
-     * Search for an owner in the repository and return a getDTO containing detailed information.
-     *
-     * @param id The owner id
-     * @return DTO containing id, name, cpf, email, role and primary phone of the owner or empty string
-     */
-    @Override
-    public OwnerResponseDTO getOwnerByid(UUID id) {
-        Owner owner = ownerRepository.findById(id).orElseThrow(OwnerNotFoundException::new);
-
-        return new OwnerResponseDTO(
-                owner.getId(),
-                owner.getName(),
-                owner.getCpf(),
-                owner.getUser().getEmail(),
-                owner.getUser().getRole(),
-                getUserPrimaryPhone(owner.getUser().getPhones()),
-                owner.getUser().isEmailVerified()
-        );
-
-    }
-
     private String getUserPrimaryPhone(List<Phone> phones ) {
 
         for(Phone phone : phones){

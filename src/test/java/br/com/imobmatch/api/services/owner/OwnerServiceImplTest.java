@@ -2,7 +2,6 @@ package br.com.imobmatch.api.services.owner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -13,7 +12,6 @@ import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.dtos.phone.PhonePostDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
-import br.com.imobmatch.api.exceptions.owner.OwnerNotFoundException;
 import br.com.imobmatch.api.models.owner.Owner;
 import br.com.imobmatch.api.repositories.OwnerRepository;
 import br.com.imobmatch.api.repositories.UserRepository;
@@ -107,24 +105,6 @@ class OwnerServiceImplTest {
 
         assertTrue(ownerRepository.findById(id).isEmpty(), "Owner must be removed");
         assertTrue(userRepository.findById(id).isEmpty(), "User must be removed");
-    }
-
-    @Test
-    @DisplayName("Get owner by id")
-    void testGetOwnerById_Success() {
-        OwnerResponseDTO created = ownerService.createOwner(createValidOwnerDTO("find@test.com", "77777777777"));
-
-        OwnerResponseDTO result = ownerService.getOwnerByid(created.getId());
-
-        assertEquals(created.getName(), result.getName());
-        assertEquals("find@test.com", result.getEmail());
-    }
-
-    @Test
-    @DisplayName("OwnerNotExist")
-    void testGetOwnerById_NotFound() {
-        assertThrows(OwnerNotFoundException.class,
-                () -> ownerService.getOwnerByid(UUID.randomUUID()));
     }
 
     private void mockAuthenticatedUser(UUID userId) {

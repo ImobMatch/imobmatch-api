@@ -5,7 +5,6 @@ import br.com.imobmatch.api.dtos.owner.OwnerPatchDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.exceptions.owner.OwnerExistsException;
-import java.util.UUID;
 
 public interface OwnerService {
     /**
@@ -40,12 +39,5 @@ public interface OwnerService {
      */
     void deleteOwner(PasswordUserDeleteDTO passwordUserDeleteDTO);
 
-    /**
-     * Retrieves a DTO with more detailed information about the owner and their user.
-     *
-     * @param id userId.
-     * @return ADTO containing owner data.
-     */
-    OwnerResponseDTO getOwnerByid(UUID id);
 
 }
