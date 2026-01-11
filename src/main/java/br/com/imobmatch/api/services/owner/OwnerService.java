@@ -30,7 +30,7 @@ public interface OwnerService {
      *
      * @return DTO containing id, name, cpf, email, role and primary phone of the owner
      */
-    OwnerResponseDTO getAuthenticatedOwner();
+    OwnerResponseDTO getOwner();
     /**
      *Deletes the system owner and the user associated with them.
      *Requires the user's password to confirm the deletion.

@@ -106,7 +106,7 @@ public class OwnerServiceImpl implements OwnerService {
      * @return DTO containing id, name, cpf, email, role and primary phone of the owner
      */
     @Override
-    public OwnerResponseDTO getAuthenticatedOwner() {
+    public OwnerResponseDTO getOwner() {
 
         Owner owner = ownerRepository.findById(authService.getMe().getId())
                 .orElseThrow(OwnerNotFoundException::new);

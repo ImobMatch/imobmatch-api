@@ -96,11 +96,11 @@ public class OwnerController {
     @GetMapping()
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<OwnerResponseDTO> getAuthenticatedOwner(){
+    public ResponseEntity<OwnerResponseDTO> getOwner(){
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ownerService.getAuthenticatedOwner());
+                .body(ownerService.getOwner());
     }
 
     /**
