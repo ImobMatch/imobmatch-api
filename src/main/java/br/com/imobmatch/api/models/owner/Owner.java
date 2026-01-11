@@ -19,7 +19,7 @@ import java.util.UUID;
 public class Owner {
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "id")
     private UUID id;
 
     @Column(name = "name", nullable = false, length = 255)
@@ -27,7 +27,7 @@ public class Owner {
 
     @OneToOne
     @MapsId //enable shared primary keys in JPA
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    @JoinColumn(name = "id", nullable = false, unique = true)
     private User user;
 
     @Column(name = "cpf", nullable = false, length = 11,  unique = true)
