@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
  * DELETE-URL = <code>/delete-confirm</code></p>
  */
 @RestController
-@RequestMapping("/owner")
+@RequestMapping("/owners")
 @AllArgsConstructor
 public class OwnerController {
 
