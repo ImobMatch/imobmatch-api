@@ -2,6 +2,7 @@ package br.com.imobmatch.api.models.broker;
 
 import java.util.UUID;
 
+import br.com.imobmatch.api.models.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +16,6 @@ import lombok.*;
 public class Broker {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private UUID id;
 
@@ -27,9 +27,6 @@ public class Broker {
 
     @Column(name = "cpf", nullable = false)
     private String cpf;
-
-    @Column(name = "user_id", nullable = false)
-    private UUID userId;
 
     @Column(name = "region_interest", nullable = true)
     private String regionInterest;
@@ -44,4 +41,9 @@ public class Broker {
     @Enumerated(EnumType.STRING)
     @Column(name = "business_type", nullable = true)
     private BrokerBusinessType businessType;
+
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "id", nullable = false, unique = true)
+    private User user;
 }
