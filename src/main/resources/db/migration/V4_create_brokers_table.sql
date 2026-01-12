@@ -10,13 +10,12 @@ CREATE TABLE brokers (
     name VARCHAR(255) NOT NULL,
     creci VARCHAR(255) NOT NULL UNIQUE,
     cpf CHAR(11) NOT NULL UNIQUE,
-    user_id UUID NOT NULL UNIQUE,
     region_interest VARCHAR(255),
     property_type property_type_enum, -- New Table?
     operation_city VARCHAR(255),
     business_type business_type_enum, -- New Table?
     CONSTRAINT fk_user
-        FOREIGN KEY(user_id)
+        FOREIGN KEY(id)
             REFERENCES users(id)
             ON DELETE CASCADE
 );
