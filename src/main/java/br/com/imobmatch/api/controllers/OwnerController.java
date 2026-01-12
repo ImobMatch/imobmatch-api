@@ -1,8 +1,8 @@
 package br.com.imobmatch.api.controllers;
 
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
-import br.com.imobmatch.api.dtos.owner.OwnerPatchDTO;
-import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerUpdateDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerCreateDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.services.owner.OwnerService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -35,7 +35,7 @@ public class OwnerController {
     /**
      * Create a new owner associated a new user
      *
-     * @param ownerPostDTO Data requested for the endpoint.
+     * @param ownerCreateDTO Data requested for the endpoint.
      *                The requested data is:<code>email</code>, <code>password</code>, <code>name</code>,
      *                <code>cpf</code> and <code>phone</code>. <code>phone</code> contains:
      *                <code>ddd</code>, <code>number</code>, <code>isPrimary</code>
@@ -52,18 +52,18 @@ public class OwnerController {
      */
     @PostMapping()
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<OwnerResponseDTO> createOwner(@Valid @RequestBody OwnerPostDTO ownerPostDTO) {
+    public ResponseEntity<OwnerResponseDTO> createOwner(@Valid @RequestBody OwnerCreateDTO ownerCreateDTO) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(this.ownerService.createOwner(ownerPostDTO));
+                .body(this.ownerService.createOwner(ownerCreateDTO));
     }
 
 
     /**
      * Update authenticated owner data.
      *
-     * @param ownerPatchDTO New data for update. Only data unique to the owner entity can be updated.
+     * @param ownerUpdateDTO New data for update. Only data unique to the owner entity can be updated.
      *               Possible data to be entered are: <code>name</code>
      * @return <code>Name</code> and <code>Id</code> of created user for confirm operation
      *
@@ -75,11 +75,11 @@ public class OwnerController {
     @PatchMapping
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<OwnerResponseDTO> updateOwner(@RequestBody OwnerPatchDTO ownerPatchDTO){
+    public ResponseEntity<OwnerResponseDTO> updateOwner(@RequestBody OwnerUpdateDTO ownerUpdateDTO){
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(ownerService.updateOwner(ownerPatchDTO));
+                .body(ownerService.updateOwner(ownerUpdateDTO));
     }
 
     /**

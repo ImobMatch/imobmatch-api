@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OwnerPatchDTO {
+public class OwnerUpdateDTO {
 
     private String name;
     private String phoneNumber;

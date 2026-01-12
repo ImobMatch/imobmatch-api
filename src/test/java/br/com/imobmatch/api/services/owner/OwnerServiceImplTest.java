@@ -7,8 +7,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
-import br.com.imobmatch.api.dtos.owner.OwnerPatchDTO;
-import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerUpdateDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerCreateDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.models.owner.Owner;
@@ -63,7 +63,7 @@ class OwnerServiceImplTest {
     @DisplayName("Create an owner and user")
     void testCreateOwner_Success() {
 
-        OwnerPostDTO dto = createValidOwnerDTO("newowner@test.com", "11122233344");
+        OwnerCreateDTO dto = createValidOwnerDTO("newowner@test.com", "11122233344");
         OwnerResponseDTO response = ownerService.createOwner(dto);
         assertNotNull(response.getId());
         assertEquals(dto.getName(), response.getName());
@@ -82,7 +82,7 @@ class OwnerServiceImplTest {
         OwnerResponseDTO created = ownerService.createOwner(createValidOwnerDTO("update@test.com", "99988877766"));
         mockAuthenticatedUser(created.getId());
 
-        OwnerPatchDTO patchDto = new OwnerPatchDTO();
+        OwnerUpdateDTO patchDto = new OwnerUpdateDTO();
         patchDto.setName("Updated Name");
 
         OwnerResponseDTO updated = ownerService.updateOwner(patchDto);
@@ -112,8 +112,8 @@ class OwnerServiceImplTest {
         when(authService.getMe()).thenReturn(mockUser);
     }
 
-    private OwnerPostDTO createValidOwnerDTO(String email, String cpf) {
-        OwnerPostDTO dto = new OwnerPostDTO();
+    private OwnerCreateDTO createValidOwnerDTO(String email, String cpf) {
+        OwnerCreateDTO dto = new OwnerCreateDTO();
         dto.setName("Test Silva");
         dto.setEmail(email);
         dto.setCpf(cpf);

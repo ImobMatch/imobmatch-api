@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.br.CPF;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OwnerPostDTO {
+public class OwnerCreateDTO {
 
     @NotBlank
     @Email

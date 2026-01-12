@@ -1,8 +1,8 @@
 package br.com.imobmatch.api.services.owner;
 
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
-import br.com.imobmatch.api.dtos.owner.OwnerPatchDTO;
-import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerUpdateDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerCreateDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.exceptions.auth.AuthenticationException;
@@ -32,27 +32,27 @@ public class OwnerServiceImpl implements OwnerService {
      * Creates a new owner and a new user.
      * The Owner and User are unique and permanently linked to each other until their complete deletion.
      *
-     * @param ownerPostDTO Required data for create owner
+     * @param ownerCreateDTO Required data for create owner
      * @return Informative information's. contains name and id of owner
      */
     @Override
     @Transactional
-    public OwnerResponseDTO createOwner(OwnerPostDTO ownerPostDTO) {
+    public OwnerResponseDTO createOwner(OwnerCreateDTO ownerCreateDTO) {
 
-        if(ownerRepository.existsOwnerByCpf(ownerPostDTO.getCpf())){throw new OwnerExistsException();}
+        if(ownerRepository.existsOwnerByCpf(ownerCreateDTO.getCpf())){throw new OwnerExistsException();}
         UserResponseDTO userDto = userService.create(
-                ownerPostDTO.getEmail(),
-                ownerPostDTO.getPassword(),
+                ownerCreateDTO.getEmail(),
+                ownerCreateDTO.getPassword(),
                 UserRole.OWNER
         );
 
         User user = userService.findEntityById(userDto.getId());
         Owner owner = new Owner();
-        owner.setCpf(ownerPostDTO.getCpf());
-        owner.setName(ownerPostDTO.getName());
+        owner.setCpf(ownerCreateDTO.getCpf());
+        owner.setName(ownerCreateDTO.getName());
         owner.setUser(user);
-        owner.setPhoneNumber(ownerPostDTO.getPhoneNumber());
-        owner.setPhoneDdd(ownerPostDTO.getPhoneDdd());
+        owner.setPhoneNumber(ownerCreateDTO.getPhoneNumber());
+        owner.setPhoneDdd(ownerCreateDTO.getPhoneDdd());
 
         ownerRepository.save(owner);
         return new OwnerResponseDTO(
@@ -72,29 +72,29 @@ public class OwnerServiceImpl implements OwnerService {
      *Update authenticated owner information in the system.
      *The editable information is name and CPF.
      *
-     * @param ownerPatchDTO New value to be updated. Only valid and present (not null) data will be updated.
+     * @param ownerUpdateDTO New value to be updated. Only valid and present (not null) data will be updated.
      * @return informative information's. contains name and id of owner.
      */
     @Override
-    public OwnerResponseDTO updateOwner(OwnerPatchDTO ownerPatchDTO) {
+    public OwnerResponseDTO updateOwner(OwnerUpdateDTO ownerUpdateDTO) {
 
         Owner owner = ownerRepository.findById(authService.getMe().getId())
                 .orElseThrow(OwnerNotFoundException::new);
 
         boolean isUpdated = false;
 
-        if (ownerPatchDTO.getName() != null && !ownerPatchDTO.getName().isBlank()) {
-            owner.setName(ownerPatchDTO.getName());
+        if (ownerUpdateDTO.getName() != null && !ownerUpdateDTO.getName().isBlank()) {
+            owner.setName(ownerUpdateDTO.getName());
             isUpdated = true;
         }
 
-        if (ownerPatchDTO.getPhoneDdd() != null && !ownerPatchDTO.getPhoneDdd().isBlank()) {
-            owner.setPhoneDdd(ownerPatchDTO.getPhoneDdd());
+        if (ownerUpdateDTO.getPhoneDdd() != null && !ownerUpdateDTO.getPhoneDdd().isBlank()) {
+            owner.setPhoneDdd(ownerUpdateDTO.getPhoneDdd());
             isUpdated = true;
         }
 
-        if (ownerPatchDTO.getPhoneNumber() != null && !ownerPatchDTO.getPhoneNumber().isBlank()) {
-            owner.setPhoneNumber(ownerPatchDTO.getPhoneNumber());
+        if (ownerUpdateDTO.getPhoneNumber() != null && !ownerUpdateDTO.getPhoneNumber().isBlank()) {
+            owner.setPhoneNumber(ownerUpdateDTO.getPhoneNumber());
             isUpdated = true;
         }
 
