@@ -33,7 +33,7 @@ public class OwnerServiceImpl implements OwnerService {
      * The Owner and User are unique and permanently linked to each other until their complete deletion.
      *
      * @param ownerCreateDTO Required data for create owner
-     * @return Informative information's. contains name and id of owner
+     * @return Informative information's.
      */
     @Override
     @Transactional
@@ -72,10 +72,9 @@ public class OwnerServiceImpl implements OwnerService {
 
     /**
      *Update authenticated owner information in the system.
-     *The editable information is name and CPF.
      *
      * @param ownerUpdateDTO New value to be updated. Only valid and present (not null) data will be updated.
-     * @return informative information's. contains name and id of owner.
+     * @return informative information's.
      */
     @Override
     public OwnerResponseDTO updateOwner(OwnerUpdateDTO ownerUpdateDTO) {
@@ -151,8 +150,6 @@ public class OwnerServiceImpl implements OwnerService {
      *Deletes the system owner and the user associated with them.
      *Requires the user's password to confirm the deletion.
      *It does not return any values.
-     *NOTE: The code written for this function is deprecated and inefficient.
-     *
      * @param passwordUserDeleteDTO User password.
      */
     @Override

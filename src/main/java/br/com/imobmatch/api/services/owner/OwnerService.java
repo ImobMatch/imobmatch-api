@@ -12,22 +12,22 @@ public interface OwnerService {
      * The Owner and User are unique and permanently linked to each other until their complete deletion.
      *
      * @param ownerCreateDTO Required data for create owner
-     * @return Informative information's. contains name and id of owner
+     * @return Informative information's.
      */
     OwnerResponseDTO createOwner(OwnerCreateDTO ownerCreateDTO) throws OwnerExistsException;
     /**
      *Update authenticated owner information in the system.
-     *The editable information is name and CPF.
      *
      * @param ownerUpdateDTO New value to be updated. Only valid and present (not null) data will be updated.
-     * @return informative information's. contains name and id of owner.
+     * @return informative information's.
      */
     OwnerResponseDTO updateOwner(OwnerUpdateDTO ownerUpdateDTO);
     /**
      * Returns a detailed view of the authenticated owner in the system.
      * Including their CPF and email address.
      *
-     * @return DTO containing id, name, cpf, email, role and primary phone of the owner
+     * @return DTO containing id, name, cpf, email, role,
+     * birthDate, phoneDdd, phoneNumber,isEmailVerified
      */
     OwnerResponseDTO getOwner();
     /**
