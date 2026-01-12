@@ -15,7 +15,8 @@ public class OwnerResponseDTO {
     private String cpf;
     private String email;
     private UserRole role;
-    private String primaryPhone;
+    private String phoneNumber;
+    private String phoneDdd;
     private boolean isEmailVerified;
 }
 

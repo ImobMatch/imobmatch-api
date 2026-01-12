@@ -4,19 +4,17 @@ import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerPatchDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
-import br.com.imobmatch.api.dtos.phone.PhonePostDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.exceptions.auth.AuthenticationException;
+import br.com.imobmatch.api.exceptions.owner.NoValidDataProvideException;
 import br.com.imobmatch.api.exceptions.owner.OwnerExistsException;
 import br.com.imobmatch.api.exceptions.owner.OwnerNotFoundException;
 import br.com.imobmatch.api.models.owner.Owner;
-import br.com.imobmatch.api.models.phone.Phone;
 import br.com.imobmatch.api.models.user.User;
 import br.com.imobmatch.api.models.user.UserRole;
 import br.com.imobmatch.api.repositories.OwnerRepository;
 import br.com.imobmatch.api.services.auth.AuthService;
 import br.com.imobmatch.api.services.user.UserService;
-import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,8 +39,6 @@ public class OwnerServiceImpl implements OwnerService {
     @Transactional
     public OwnerResponseDTO createOwner(OwnerPostDTO ownerPostDTO) {
 
-        PhonePostDTO phonePostDTO = ownerPostDTO.getPhone();
-
         if(ownerRepository.existsOwnerByCpf(ownerPostDTO.getCpf())){throw new OwnerExistsException();}
         UserResponseDTO userDto = userService.create(
                 ownerPostDTO.getEmail(),
@@ -50,14 +46,13 @@ public class OwnerServiceImpl implements OwnerService {
                 UserRole.OWNER
         );
 
-        userService.addPhone(phonePostDTO, userDto.getId());
-
-
         User user = userService.findEntityById(userDto.getId());
         Owner owner = new Owner();
         owner.setCpf(ownerPostDTO.getCpf());
         owner.setName(ownerPostDTO.getName());
         owner.setUser(user);
+        owner.setPhoneNumber(ownerPostDTO.getPhoneNumber());
+        owner.setPhoneDdd(ownerPostDTO.getPhoneDdd());
 
         ownerRepository.save(owner);
         return new OwnerResponseDTO(
@@ -66,7 +61,8 @@ public class OwnerServiceImpl implements OwnerService {
             owner.getCpf(),
             user.getEmail(),
             user.getRole(),
-            getUserPrimaryPhone(user.getPhones()),
+            owner.getPhoneNumber(),
+            owner.getPhoneDdd(),
             user.isEmailVerified()
         );
 
@@ -85,7 +81,24 @@ public class OwnerServiceImpl implements OwnerService {
         Owner owner = ownerRepository.findById(authService.getMe().getId())
                 .orElseThrow(OwnerNotFoundException::new);
 
-        owner.setName(ownerPatchDTO.getName());
+        boolean isUpdated = false;
+
+        if (ownerPatchDTO.getName() != null && !ownerPatchDTO.getName().isBlank()) {
+            owner.setName(ownerPatchDTO.getName());
+            isUpdated = true;
+        }
+
+        if (ownerPatchDTO.getPhoneDdd() != null && !ownerPatchDTO.getPhoneDdd().isBlank()) {
+            owner.setPhoneDdd(ownerPatchDTO.getPhoneDdd());
+            isUpdated = true;
+        }
+
+        if (ownerPatchDTO.getPhoneNumber() != null && !ownerPatchDTO.getPhoneNumber().isBlank()) {
+            owner.setPhoneNumber(ownerPatchDTO.getPhoneNumber());
+            isUpdated = true;
+        }
+
+        if(!isUpdated){throw new NoValidDataProvideException();}
 
         ownerRepository.save(owner);
         return new OwnerResponseDTO(
@@ -94,7 +107,8 @@ public class OwnerServiceImpl implements OwnerService {
             owner.getCpf(),
             owner.getUser().getEmail(),
             owner.getUser().getRole(),
-            getUserPrimaryPhone(owner.getUser().getPhones()),
+            owner.getPhoneDdd(),
+            owner.getPhoneNumber(),
             owner.getUser().isEmailVerified()
         );
     }
@@ -117,7 +131,8 @@ public class OwnerServiceImpl implements OwnerService {
                 owner.getCpf(),
                 owner.getUser().getEmail(),
                 owner.getUser().getRole(),
-                getUserPrimaryPhone(owner.getUser().getPhones()),
+                owner.getPhoneDdd(),
+                owner.getPhoneNumber(),
                 owner.getUser().isEmailVerified()
 
         );
@@ -140,14 +155,4 @@ public class OwnerServiceImpl implements OwnerService {
         ownerRepository.deleteById(userId);
         userService.deleteById(userId, passwordUserDeleteDTO.getPassword());
     }
-
-    private String getUserPrimaryPhone(List<Phone> phones ) {
-
-        for(Phone phone : phones){
-
-            if(phone.isPrimary()){return phone.getNumber();}
-        }
-        return "";
-    }
-
 }

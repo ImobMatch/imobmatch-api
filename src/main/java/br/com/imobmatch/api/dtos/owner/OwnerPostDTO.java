@@ -1,15 +1,11 @@
 package br.com.imobmatch.api.dtos.owner;
 
-import br.com.imobmatch.api.dtos.phone.PhonePostDTO;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CPF;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -30,7 +26,10 @@ public class OwnerPostDTO {
     @CPF(message = "Invalid CPF")
     private String cpf;
 
-    @Valid
-    private PhonePostDTO phone;
+    @NotBlank
+    private String phoneNumber;
+
+    @NotBlank
+    private String phoneDdd;
 
 }

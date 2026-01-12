@@ -33,4 +33,9 @@ public class Owner {
     @Column(name = "cpf", nullable = false, length = 11,  unique = true)
     private String cpf;
 
+    @Column(name = "phone_ddd", nullable = false, length = 3)
+    private String phoneDdd;
+
+    @Column(name = "phone_number", nullable = false, length=9)
+    private String phoneNumber;
 }

@@ -1,14 +1,17 @@
 package br.com.imobmatch.api.dtos.owner;
 
-import jakarta.validation.constraints.NotBlank;
-import lombok.*;
-import org.hibernate.validator.constraints.br.CPF;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class OwnerPatchDTO {
 
-    @NotBlank
     private String name;
+    private String phoneNumber;
+    private String phoneDdd;
+
+
 }

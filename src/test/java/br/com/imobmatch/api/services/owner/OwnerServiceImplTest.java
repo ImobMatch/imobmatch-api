@@ -10,7 +10,6 @@ import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerPatchDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerPostDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
-import br.com.imobmatch.api.dtos.phone.PhonePostDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.models.owner.Owner;
 import br.com.imobmatch.api.repositories.OwnerRepository;
@@ -114,13 +113,13 @@ class OwnerServiceImplTest {
     }
 
     private OwnerPostDTO createValidOwnerDTO(String email, String cpf) {
-        PhonePostDTO phone = new PhonePostDTO("11", "999999999", true);
         OwnerPostDTO dto = new OwnerPostDTO();
         dto.setName("Test Silva");
         dto.setEmail(email);
         dto.setCpf(cpf);
         dto.setPassword("123456");
-        dto.setPhone(phone);
+        dto.setPhoneDdd("123");
+        dto.setPhoneNumber("123456789");
         return dto;
     }
 }
