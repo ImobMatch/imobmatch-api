@@ -1,5 +1,9 @@
 package br.com.imobmatch.api.services.auth;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import br.com.imobmatch.api.dtos.auth.AuthenticationDTO;
 import br.com.imobmatch.api.dtos.auth.LoginResponseDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
@@ -8,15 +12,12 @@ import br.com.imobmatch.api.models.user.User;
 import br.com.imobmatch.api.models.user.UserRole;
 import br.com.imobmatch.api.services.user.UserService;
 import jakarta.transaction.Transactional;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
