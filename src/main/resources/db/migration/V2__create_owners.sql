@@ -1,4 +1,4 @@
--- V3__create_owners.sql
+-- V2__create_owners.sql
 -- Creates the owners table with shared primary key with users
 CREATE TABLE owners (
     id UUID PRIMARY KEY,
