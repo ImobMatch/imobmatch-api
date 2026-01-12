@@ -1,11 +1,9 @@
 package br.com.imobmatch.api.models.user;
 
-import br.com.imobmatch.api.models.phone.Phone;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -45,10 +43,6 @@ public class User implements UserDetails {
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Phone> phones = new ArrayList<>();
-
 
     public User(String email, String password, UserRole role) {
         this.email = email;
