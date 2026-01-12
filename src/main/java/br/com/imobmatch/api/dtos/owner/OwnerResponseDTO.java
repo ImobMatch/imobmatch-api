@@ -1,6 +1,7 @@
 package br.com.imobmatch.api.dtos.owner;
 
 import br.com.imobmatch.api.models.user.UserRole;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -17,6 +18,7 @@ public class OwnerResponseDTO {
     private UserRole role;
     private String phoneNumber;
     private String phoneDdd;
+    private LocalDate birthDate;
     private boolean isEmailVerified;
 }
 

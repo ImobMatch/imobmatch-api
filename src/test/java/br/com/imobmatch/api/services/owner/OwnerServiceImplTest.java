@@ -15,6 +15,7 @@ import br.com.imobmatch.api.models.owner.Owner;
 import br.com.imobmatch.api.repositories.OwnerRepository;
 import br.com.imobmatch.api.repositories.UserRepository;
 import br.com.imobmatch.api.services.auth.AuthService;
+import java.time.LocalDate;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -113,6 +114,7 @@ class OwnerServiceImplTest {
     }
 
     private OwnerCreateDTO createValidOwnerDTO(String email, String cpf) {
+        LocalDate date = LocalDate.of(2005, 3, 4);
         OwnerCreateDTO dto = new OwnerCreateDTO();
         dto.setName("Test Silva");
         dto.setEmail(email);
@@ -120,6 +122,7 @@ class OwnerServiceImplTest {
         dto.setPassword("123456");
         dto.setPhoneDdd("123");
         dto.setPhoneNumber("123456789");
+        dto.setBirthDate(date);
         return dto;
     }
 }

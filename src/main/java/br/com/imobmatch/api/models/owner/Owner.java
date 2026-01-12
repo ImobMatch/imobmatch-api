@@ -2,6 +2,8 @@ package br.com.imobmatch.api.models.owner;
 
 import br.com.imobmatch.api.models.user.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Past;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,6 +37,10 @@ public class Owner {
 
     @Column(name = "phone_ddd", nullable = false, length = 3)
     private String phoneDdd;
+
+    @Past
+    @Column(name ="birth_date", nullable = false)
+    private LocalDate birthDate;
 
     @Column(name = "phone_number", nullable = false, length=9)
     private String phoneNumber;

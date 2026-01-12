@@ -51,6 +51,7 @@ public class OwnerServiceImpl implements OwnerService {
         owner.setCpf(ownerCreateDTO.getCpf());
         owner.setName(ownerCreateDTO.getName());
         owner.setUser(user);
+        owner.setBirthDate(ownerCreateDTO.getBirthDate());
         owner.setPhoneNumber(ownerCreateDTO.getPhoneNumber());
         owner.setPhoneDdd(ownerCreateDTO.getPhoneDdd());
 
@@ -63,6 +64,7 @@ public class OwnerServiceImpl implements OwnerService {
             user.getRole(),
             owner.getPhoneNumber(),
             owner.getPhoneDdd(),
+            owner.getBirthDate(),
             user.isEmailVerified()
         );
 
@@ -98,6 +100,11 @@ public class OwnerServiceImpl implements OwnerService {
             isUpdated = true;
         }
 
+        if(ownerUpdateDTO.getBirthDate() != null){
+            owner.setBirthDate(ownerUpdateDTO.getBirthDate());
+            isUpdated = true;
+        }
+
         if(!isUpdated){throw new NoValidDataProvideException();}
 
         ownerRepository.save(owner);
@@ -109,6 +116,7 @@ public class OwnerServiceImpl implements OwnerService {
             owner.getUser().getRole(),
             owner.getPhoneDdd(),
             owner.getPhoneNumber(),
+            owner.getBirthDate(),
             owner.getUser().isEmailVerified()
         );
     }
@@ -133,6 +141,7 @@ public class OwnerServiceImpl implements OwnerService {
                 owner.getUser().getRole(),
                 owner.getPhoneDdd(),
                 owner.getPhoneNumber(),
+                owner.getBirthDate(),
                 owner.getUser().isEmailVerified()
 
         );

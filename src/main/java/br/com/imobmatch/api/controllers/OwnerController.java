@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * <p>ontroller responsible for the <code>owner</code> entity's endpoints.</p>
  * <p>All endpoints require an authenticated user, except for the POST endpoint.<br>
- * URL-BASE = <code>/owner</code> for <code>POST </code>, <code>PATCH</code>, <code>GET</code>.<br>
+ * URL-BASE = <code>/owners</code> for <code>POST </code>, <code>PATCH</code>, <code>GET</code>.<br>
  * DELETE-URL = <code>/delete-confirm</code></p>
  */
 @RestController
@@ -37,17 +37,15 @@ public class OwnerController {
      *
      * @param ownerCreateDTO Data requested for the endpoint.
      *                The requested data is:<code>email</code>, <code>password</code>, <code>name</code>,
-     *                <code>cpf</code> and <code>phone</code>. <code>phone</code> contains:
-     *                <code>ddd</code>, <code>number</code>, <code>isPrimary</code>
+     *                <code>cpf</code>, <code>phoneDdd</code>. <code>phoneNumber</code>
      *                All are not null
      *
-     * @return <code>Name</code> and <code>Id</code> of created user for confirm operation
+     * @return Return ResponseDTO contains: <code>name</code>, <code>cpf</code>, <code>email</code>
+     * <code>phoneNumber</code>, <code>phoneDdd</code>, <code>isEmailVerified</code>
      * @apiNote <p>This endpoint assumes the user has not been created previously.
      * The data sent is validated and exceptions are returned in case of violation or incorrect formatting.
      * If the value does not exist, it is assumed that it will not be updated.</p>
-     * <p>If a phone number is provided, all information should be entered.
-     * If no phone number is provided, then all information should be null.
-     * If this condition is violated, an exception is thrown.</p>
+     * <p>Cpf and email </p>
      *
      */
     @PostMapping()
