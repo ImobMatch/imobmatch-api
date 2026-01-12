@@ -12,10 +12,10 @@ import java.util.UUID;
 @Embeddable
 public class Phone {
 
-    @Column(name = "ddd", nullable = false)
+    @Column(name = "phone_ddd")
     private String ddd;
 
-    @Column(name = "number", nullable = false)
+    @Column(name = "phone_number")
     private String number;
 
     public String getFormatedNumber(){
