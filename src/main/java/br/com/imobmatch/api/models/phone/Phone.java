@@ -6,22 +6,11 @@ import lombok.*;
 
 import java.util.UUID;
 
-@Entity
-@Table(name = "phones")
-@Getter
-@Setter
-@EqualsAndHashCode(of = "id")
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Embeddable
 public class Phone {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id")
-    private UUID id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
 
     @Column(name = "ddd", nullable = false)
     private String ddd;
@@ -29,6 +18,8 @@ public class Phone {
     @Column(name = "number", nullable = false)
     private String number;
 
-    @Column(name = "is_primary", nullable = false)
-    private boolean isPrimary = true;
+    public String getFormatedNumber(){
+
+        return "(" + ddd + ") " + number;
+    }
 }
