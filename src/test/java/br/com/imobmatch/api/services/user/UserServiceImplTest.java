@@ -16,7 +16,7 @@ import br.com.imobmatch.api.exceptions.user.UserExistsException;
 import br.com.imobmatch.api.exceptions.user.UserNotFoundException;
 import br.com.imobmatch.api.infra.email.services.EmailService;
 import br.com.imobmatch.api.models.user.UserVerificationCode;
-import br.com.imobmatch.api.models.user.enums.UserRole;
+import br.com.imobmatch.api.models.enums.UserRole;
 import br.com.imobmatch.api.repositories.UserVerificationCodeRepository;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
