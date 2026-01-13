@@ -2,6 +2,8 @@ package br.com.imobmatch.api.models.broker;
 
 import java.util.UUID;
 
+import br.com.imobmatch.api.models.broker.enums.BrokerBusinessType;
+import br.com.imobmatch.api.models.broker.enums.BrokerPropertyType;
 import br.com.imobmatch.api.models.user.User;
 import jakarta.persistence.*;
 import lombok.*;
