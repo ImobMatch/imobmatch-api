@@ -40,6 +40,7 @@ public class TokenServiceImpl implements TokenService{
             String token = JWT.create()
                     .withIssuer("imobmatch-api")
                     .withSubject(user.getEmail())
+                    .withJWTId(UUID.randomUUID().toString())
                     .withClaim("id", user.getId().toString())
                     .withClaim("email", user.getEmail())
                     .withClaim("role", user.getRole().name())
