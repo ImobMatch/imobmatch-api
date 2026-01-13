@@ -1,4 +1,4 @@
-package br.com.imobmatch.api.infra.security.service.token;
+package br.com.imobmatch.api.infra.security.services.token;
 
 import br.com.imobmatch.api.dtos.auth.TokenDataDTO;
 import br.com.imobmatch.api.exceptions.auth.CreateTokenException;

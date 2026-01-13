@@ -8,7 +8,7 @@ import br.com.imobmatch.api.exceptions.auth.TokenExpiredException;
 import br.com.imobmatch.api.exceptions.auth.TokenInvalidException;
 import br.com.imobmatch.api.exceptions.email.EmailNotVerifiedException;
 import br.com.imobmatch.api.exceptions.user.UserNotFoundException;
-import br.com.imobmatch.api.infra.security.service.token.TokenService;
+import br.com.imobmatch.api.infra.security.services.token.TokenService;
 import br.com.imobmatch.api.models.user.User;
 import br.com.imobmatch.api.services.user.UserService;
 import lombok.AllArgsConstructor;

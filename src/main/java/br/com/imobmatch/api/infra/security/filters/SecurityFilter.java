@@ -1,7 +1,7 @@
 package br.com.imobmatch.api.infra.security.filters;
 
 import br.com.imobmatch.api.dtos.auth.TokenDataDTO;
-import br.com.imobmatch.api.infra.security.service.token.TokenService;
+import br.com.imobmatch.api.infra.security.services.token.TokenService;
 import br.com.imobmatch.api.repositories.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
