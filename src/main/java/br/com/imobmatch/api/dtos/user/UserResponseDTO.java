@@ -1,6 +1,6 @@
 package br.com.imobmatch.api.dtos.user;
 
-import br.com.imobmatch.api.models.user.UserRole;
+import br.com.imobmatch.api.models.user.enums.UserRole;
 import lombok.*;
 
 import java.util.UUID;

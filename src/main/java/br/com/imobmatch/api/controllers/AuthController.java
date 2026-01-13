@@ -1,8 +1,17 @@
 package br.com.imobmatch.api.controllers;
 
 import br.com.imobmatch.api.dtos.auth.LoginResponseDTO;
+import br.com.imobmatch.api.dtos.email.RequestValidationEmailDTO;
+import br.com.imobmatch.api.dtos.email.RequestValidationEmailResponseDTO;
+import br.com.imobmatch.api.dtos.email.ValidateEmailRequestDTO;
+import br.com.imobmatch.api.dtos.email.ValidateEmailResponseDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
+import br.com.imobmatch.api.exceptions.email.InvalidCodeException;
+import br.com.imobmatch.api.exceptions.email.RequestCodeExpiredException;
+import br.com.imobmatch.api.exceptions.email.RequestNotFoundException;
+import br.com.imobmatch.api.exceptions.user.UserNotFoundException;
 import br.com.imobmatch.api.services.auth.AuthService;
+import br.com.imobmatch.api.services.user.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -16,6 +25,17 @@ import br.com.imobmatch.api.dtos.auth.AuthenticationDTO;
 @AllArgsConstructor
 public class AuthController {
     private final AuthService authService;
+    private final UserService userService;
+
+    @PostMapping("/send-email-code")
+    public RequestValidationEmailResponseDTO sendEmailCode(@RequestBody RequestValidationEmailDTO request) {
+        return userService.sendEmailVerificationCodeForEmail(request);
+    }
+
+    @PostMapping("/validate-email")
+    public ValidateEmailResponseDTO validateEmail(@RequestBody ValidateEmailRequestDTO request) {
+        return userService.validateEmail(request);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthenticationDTO data){
@@ -36,7 +56,5 @@ public class AuthController {
         String token = authorization.replace("Bearer ", "");
         return ResponseEntity.ok(authService.refreshToken(token));
     }
-
-
 
 }
