@@ -1,7 +1,6 @@
 package br.com.imobmatch.api.repositories;
 
 import br.com.imobmatch.api.models.owner.Owner;
-import br.com.imobmatch.api.models.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

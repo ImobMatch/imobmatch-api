@@ -2,9 +2,8 @@ package br.com.imobmatch.api.infra.security.service.token;
 
 import br.com.imobmatch.api.dtos.auth.TokenDataDTO;
 import br.com.imobmatch.api.exceptions.auth.CreateTokenException;
-import br.com.imobmatch.api.exceptions.auth.TokenExpiredException;
 import br.com.imobmatch.api.exceptions.auth.TokenInvalidException;
-import br.com.imobmatch.api.models.user.UserRole;
+import br.com.imobmatch.api.models.user.enums.UserRole;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -41,6 +40,7 @@ public class TokenServiceImpl implements TokenService{
             String token = JWT.create()
                     .withIssuer("imobmatch-api")
                     .withSubject(user.getEmail())
+                    .withJWTId(UUID.randomUUID().toString())
                     .withClaim("id", user.getId().toString())
                     .withClaim("email", user.getEmail())
                     .withClaim("role", user.getRole().name())
@@ -48,7 +48,7 @@ public class TokenServiceImpl implements TokenService{
                     .sign(algorithm);
             return token;
         } catch (JWTCreationException exception) {
-            throw new CreateTokenException("Error while creating JWT" +exception.getMessage());
+            throw new CreateTokenException();
         }
     }
 

@@ -1,23 +1,43 @@
 package br.com.imobmatch.api.services.user;
 
+import br.com.imobmatch.api.dtos.email.RequestValidationEmailResponseDTO;
+import br.com.imobmatch.api.dtos.email.RequestValidationEmailDTO;
+import br.com.imobmatch.api.dtos.email.ValidateEmailRequestDTO;
+import br.com.imobmatch.api.dtos.email.ValidateEmailResponseDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.exceptions.auth.AuthenticationException;
+import br.com.imobmatch.api.exceptions.email.ErroSendEmailException;
+import br.com.imobmatch.api.exceptions.email.InvalidCodeException;
+import br.com.imobmatch.api.exceptions.email.RequestCodeExpiredException;
+import br.com.imobmatch.api.exceptions.email.RequestNotFoundException;
 import br.com.imobmatch.api.exceptions.user.UserExistsException;
 import br.com.imobmatch.api.exceptions.user.UserNotFoundException;
+import br.com.imobmatch.api.infra.email.services.EmailService;
 import br.com.imobmatch.api.models.user.User;
-import br.com.imobmatch.api.models.user.UserRole;
+import br.com.imobmatch.api.models.user.UserVerificationCode;
+import br.com.imobmatch.api.models.user.enums.UserRole;
+import br.com.imobmatch.api.models.user.enums.VerificationType;
 import br.com.imobmatch.api.repositories.UserRepository;
+import br.com.imobmatch.api.utils.Utils;
+
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
+
+import br.com.imobmatch.api.repositories.UserVerificationCodeRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder cryptPasswordEncoder;
+    private final UserVerificationCodeRepository userVerificationRepository;
+    private final EmailService emailService;
 
 
     public UserResponseDTO create(String email, String password, UserRole role) {
@@ -25,7 +45,7 @@ public class UserServiceImpl implements UserService {
             throw new UserExistsException();
         }
 
-        String encryptedPassword = this.bCryptPasswordEncoder.encode(password);
+        String encryptedPassword = this.cryptPasswordEncoder.encode(password);
         User newUser = new User(
             email,
             encryptedPassword,
@@ -74,10 +94,10 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
 
-        boolean passwordMatches = bCryptPasswordEncoder.matches(password, user.getPassword());
+        boolean passwordMatches = cryptPasswordEncoder.matches(password, user.getPassword());
 
         if (!passwordMatches) {
-            throw new AuthenticationException("Password not equals");
+            throw new AuthenticationException();
         }
 
         userRepository.delete(user);
@@ -88,5 +108,68 @@ public class UserServiceImpl implements UserService {
         userResponseDTO.setRole(user.getRole());
 
         return userResponseDTO;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ValidateEmailResponseDTO validateEmail(ValidateEmailRequestDTO request) throws RequestNotFoundException,
+            RequestCodeExpiredException, InvalidCodeException {
+        UUID verificationId = request.getVerificationId();
+        String code = request.getCode();
+
+        UserVerificationCode verification = this.userVerificationRepository.findById(verificationId)
+                .orElseThrow(RequestNotFoundException::new);
+
+        if (!verification.getCode().equals(code)){
+            throw new InvalidCodeException();
+        }
+
+        if(!Utils.isCodeValid(verification.getGeneratedAt())){
+            throw  new RequestCodeExpiredException();
+        }
+
+        User user = verification.getUser();
+        user.setEmailVerified(true);
+        this.userRepository.save(user);
+        verification.setVerified(true);
+
+        return ValidateEmailResponseDTO.builder()
+                .email(user.getEmail())
+                .verified(true)
+                .build();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public RequestValidationEmailResponseDTO sendEmailVerificationCodeForEmail(RequestValidationEmailDTO request) throws UserNotFoundException {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(UserNotFoundException::new);
+
+        UUID id = this.sendEmail(user);
+        return RequestValidationEmailResponseDTO.builder()
+                .verificationId(id)
+                .build();
+    }
+
+    protected UUID sendEmail(User user){
+        try {
+            String code = Utils.generateVerificationCode();
+            UserVerificationCode verification = UserVerificationCode.builder()
+                    .user(user)
+                    .code(code)
+                    .type(VerificationType.EMAIL)
+                    .generatedAt(LocalDateTime.now())
+                    .verified(false)
+                    .build();
+            this.emailService.sendEmail(
+                    user.getEmail(),
+                    "Email verification for ImobMatch",
+                    "Hello\nYour verification code is: " + code
+            );
+            this.userVerificationRepository.save(verification);
+            return verification.getId();
+        } catch (Exception e) {
+            throw new ErroSendEmailException();
+        }
     }
 }
