@@ -147,7 +147,7 @@ public class UserServiceImpl implements UserService {
 
         UUID id = this.sendEmail(user);
         return RequestValidationEmailResponseDTO.builder()
-                .id(id)
+                .verificationId(id)
                 .build();
     }
 

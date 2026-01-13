@@ -16,5 +16,5 @@ import java.util.UUID;
 @Setter
 @Builder
 public class RequestValidationEmailResponseDTO {
-    private UUID id;
+    private UUID verificationId;
 }
