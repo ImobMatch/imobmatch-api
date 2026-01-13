@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -16,9 +15,9 @@ import java.time.LocalDateTime;
 @RestControllerAdvice(basePackages = "br.com.imobmatch.api.controllers")
 public class EmailExceptionHandler {
 
-    @ExceptionHandler(EmailNotVerified.class)
+    @ExceptionHandler(EmailNotVerifiedException.class)
     public ResponseEntity<ErrorResponseDTO> handleEmailNotVerified(
-            EmailNotVerified ex,
+            EmailNotVerifiedException ex,
             HttpServletRequest request
     ) {
         ErrorResponseDTO error = new ErrorResponseDTO(
