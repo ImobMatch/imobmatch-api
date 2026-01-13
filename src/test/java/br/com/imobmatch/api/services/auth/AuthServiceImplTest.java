@@ -9,7 +9,7 @@ import br.com.imobmatch.api.dtos.auth.LoginResponseDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.exceptions.auth.TokenInvalidException;
 import br.com.imobmatch.api.models.user.User;
-import br.com.imobmatch.api.models.user.UserRole;
+import br.com.imobmatch.api.models.user.enums.UserRole;
 import br.com.imobmatch.api.services.user.UserService;
 import jakarta.transaction.Transactional;
 import java.util.UUID;

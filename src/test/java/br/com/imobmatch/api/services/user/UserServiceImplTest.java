@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.exceptions.user.UserExistsException;
 import br.com.imobmatch.api.exceptions.user.UserNotFoundException;
-import br.com.imobmatch.api.models.user.UserRole;
+import br.com.imobmatch.api.models.user.enums.UserRole;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
