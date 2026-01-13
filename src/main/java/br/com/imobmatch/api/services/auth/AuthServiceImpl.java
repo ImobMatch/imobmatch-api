@@ -7,6 +7,7 @@ import br.com.imobmatch.api.dtos.auth.TokenDataDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.exceptions.auth.TokenExpiredException;
 import br.com.imobmatch.api.exceptions.auth.TokenInvalidException;
+import br.com.imobmatch.api.exceptions.email.EmailNotVerified;
 import br.com.imobmatch.api.exceptions.user.UserNotFoundException;
 import br.com.imobmatch.api.infra.security.service.token.TokenService;
 import br.com.imobmatch.api.models.user.User;
@@ -29,7 +30,16 @@ public class AuthServiceImpl implements AuthService{
     public LoginResponseDTO login(AuthenticationDTO data) {
         var emailPassword = new UsernamePasswordAuthenticationToken(data.getEmail(), data.getPassword());
         var auth = this.authenticationManager.authenticate(emailPassword);
-        var token =  this.tokenService.generateToken((User) auth.getPrincipal());
+        User user = (User) auth.getPrincipal();
+
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+
+        if(!user.isEmailVerified()){
+            throw new EmailNotVerified();        }
+
+        var token =  this.tokenService.generateToken(user);
         return  new LoginResponseDTO(token);
     }
 

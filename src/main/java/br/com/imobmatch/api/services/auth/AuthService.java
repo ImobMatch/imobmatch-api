@@ -12,4 +12,5 @@ public interface AuthService {
     LoginResponseDTO login(AuthenticationDTO data);
     UserResponseDTO getMe()throws TokenExpiredException, TokenInvalidException;
     LoginResponseDTO refreshToken(String token) throws TokenExpiredException, TokenInvalidException;
+
 }
