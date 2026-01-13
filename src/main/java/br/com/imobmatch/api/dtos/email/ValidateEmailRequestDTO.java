@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Builder;
 
+import java.util.UUID;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -13,7 +15,7 @@ import lombok.Builder;
 @Builder
 public class ValidateEmailRequestDTO {
 
-    private Long verificationId;
+    private UUID verificationId;
 
     private String code;
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Builder;
 
+import java.util.UUID;
 
 
 @AllArgsConstructor
@@ -15,5 +16,5 @@ import lombok.Builder;
 @Setter
 @Builder
 public class RequestValidationEmailResponseDTO {
-    private  long id;
+    private UUID id;
 }

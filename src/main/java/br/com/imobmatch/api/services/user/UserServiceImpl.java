@@ -114,7 +114,7 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     public ValidateEmailResponseDTO validateEmail(ValidateEmailRequestDTO request) throws RequestNotFoundException,
             RequestCodeExpiredException, InvalidCodeException {
-        long verificationId = request.getVerificationId();
+        UUID verificationId = request.getVerificationId();
         String code = request.getCode();
 
         UserVerificationCode verification = this.userVerificationRepository.findById(verificationId)
@@ -145,13 +145,13 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(UserNotFoundException::new);
 
-        long id = this.sendEmail(user);
+        UUID id = this.sendEmail(user);
         return RequestValidationEmailResponseDTO.builder()
                 .id(id)
                 .build();
     }
 
-    protected long sendEmail(User user){
+    protected UUID sendEmail(User user){
         try {
             String code = Utils.generateVerificationCode();
             UserVerificationCode verification = UserVerificationCode.builder()
