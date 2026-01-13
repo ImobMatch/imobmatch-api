@@ -1,5 +1,6 @@
 package br.com.imobmatch.api.dtos.email;
 
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
 @AllArgsConstructor
@@ -8,5 +9,6 @@ import lombok.*;
 @Setter
 @Builder
 public class RequestValidationEmailDTO {
+    @Email
     private String email;
 }
