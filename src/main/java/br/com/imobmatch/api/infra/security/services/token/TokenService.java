@@ -6,6 +6,8 @@ import br.com.imobmatch.api.exceptions.auth.TokenInvalidException;
 import br.com.imobmatch.api.models.user.User;
 
 public interface TokenService {
-    String generateToken(User user) throws CreateTokenException;
-    TokenDataDTO validateToken(String token) throws TokenInvalidException;
+    String generateAccessToken(User user) throws CreateTokenException;
+    String generateRefreshToken(User user) throws CreateTokenException;
+    TokenDataDTO validateRefreshToken(String token) throws TokenInvalidException;
+    TokenDataDTO validateAccessToken(String token) throws TokenInvalidException;
 }

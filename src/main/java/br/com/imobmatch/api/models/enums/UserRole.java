@@ -1,4 +1,4 @@
-package br.com.imobmatch.api.models.user.enums;
+package br.com.imobmatch.api.models.enums;
 
 public enum UserRole {
     OWNER("owner"),

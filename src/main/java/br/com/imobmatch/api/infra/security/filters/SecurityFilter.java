@@ -2,6 +2,7 @@ package br.com.imobmatch.api.infra.security.filters;
 
 import br.com.imobmatch.api.dtos.auth.TokenDataDTO;
 import br.com.imobmatch.api.infra.security.services.token.TokenService;
+import br.com.imobmatch.api.models.enums.TokenType;
 import br.com.imobmatch.api.repositories.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -25,6 +26,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
     private UserRepository userRepository;
 
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -37,14 +39,26 @@ public class SecurityFilter extends OncePerRequestFilter {
             return;
         }
 
-        TokenDataDTO subject = this.tokenService.validateToken(token);
+        try {
+            TokenDataDTO subject;
 
-        UserDetails user = this.userRepository.findByUsername(subject.getEmail());
+            if (request.getServletPath().equals("/auth/refresh")) {
+                subject = this.tokenService.validateRefreshToken(token);
+            } else {
+                subject = this.tokenService.validateAccessToken(token);
+            }
 
-        UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            UserDetails user = this.userRepository.findByUsername(subject.getEmail());
 
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid token or incorrect type.\n");
+            return;
+        }
         filterChain.doFilter(request, response);
     }
 
