@@ -5,15 +5,18 @@ import br.com.imobmatch.api.exceptions.owner.InappropriateUserRoleException;
 import br.com.imobmatch.api.exceptions.owner.NoValidDataProvideException;
 import br.com.imobmatch.api.exceptions.owner.OwnerExistsException;
 import br.com.imobmatch.api.exceptions.owner.OwnerNotFoundException;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
 
-@ControllerAdvice
+@Hidden
+@RestControllerAdvice(basePackages = "br.com.imobmatch.api.controllers")
 public class OwnerExceptionHandler {
     @ExceptionHandler(InappropriateUserRoleException.class)
     public ResponseEntity<ErrorResponseDTO> handleInappropriateUserRole(
