@@ -1,4 +1,4 @@
-package br.com.imobmatch.api.services.broker; // Ou services.auth, conforme sua estrutura
+package br.com.imobmatch.api.services.broker;
 
 import br.com.imobmatch.api.dtos.broker.BrokerPostDTO;
 import org.springframework.stereotype.Service;
@@ -10,9 +10,9 @@ public class BrokerValidationService {
     /*
         Serviço responsável por validar os dados e arquivos enviados no cadastro de corretor.
         Inclui validações como:
-        - Presença e formato dos arquivos PDF (CPF e CRECI)
-        - Formato válido do CRECI via regex
-        - Outras validações de negócio conforme necessário
+        Presença e formato dos arquivos PDF (CPF e CRECI)
+        Formato válido do CRECI via regex!
+        Outras validações de negócio conforme necessário
      */
 
 
