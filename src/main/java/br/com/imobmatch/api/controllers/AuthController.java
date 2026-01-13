@@ -24,13 +24,13 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/send-email-code")
-    public RequestValidationEmailResponseDTO sendEmailCode(@RequestBody RequestValidationEmailDTO request) {
-        return userService.sendEmailVerificationCodeForEmail(request);
+    public ResponseEntity<RequestValidationEmailResponseDTO> sendEmailCode(@RequestBody RequestValidationEmailDTO request) {
+        return ResponseEntity.ok(userService.sendEmailVerificationCodeForEmail(request));
     }
 
     @PostMapping("/validate-email")
-    public ValidateEmailResponseDTO validateEmail(@RequestBody ValidateEmailRequestDTO request) {
-        return userService.validateEmail(request);
+    public ResponseEntity<ValidateEmailResponseDTO> validateEmail(@RequestBody ValidateEmailRequestDTO request) {
+        return ResponseEntity.ok(this.userService.validateEmail(request));
     }
 
     @PostMapping("/login")
