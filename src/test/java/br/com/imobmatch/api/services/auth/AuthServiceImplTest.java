@@ -1,8 +1,6 @@
 package br.com.imobmatch.api.services.auth;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 import br.com.imobmatch.api.dtos.auth.AuthenticationDTO;
 import br.com.imobmatch.api.dtos.auth.LoginResponseDTO;
@@ -12,12 +10,19 @@ import br.com.imobmatch.api.models.user.User;
 import br.com.imobmatch.api.models.user.enums.UserRole;
 import br.com.imobmatch.api.services.user.UserService;
 import jakarta.transaction.Transactional;
+
+import java.util.List;
 import java.util.UUID;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -39,15 +44,22 @@ class AuthServiceImplTest {
                 "123456",
                 UserRole.OWNER
         );
+
+        User userEntity = userService.findEntityById(userDTO.getId());
+        userEntity.setEmailVerified(true);
+
         userId = userDTO.getId();
+    }
+
+    @AfterEach
+    void clearSecurityContext() {
+        SecurityContextHolder.clearContext();
     }
 
     @Test
     void shouldLoginSuccessfully() {
-        AuthenticationDTO dto = new AuthenticationDTO(
-                "test@email.com",
-                "123456"
-        );
+        AuthenticationDTO dto =
+                new AuthenticationDTO("test@email.com", "123456");
 
         LoginResponseDTO response = authService.login(dto);
 
@@ -57,10 +69,8 @@ class AuthServiceImplTest {
 
     @Test
     void shouldRefreshTokenSuccessfully() {
-        AuthenticationDTO dto = new AuthenticationDTO(
-                "test@email.com",
-                "123456"
-        );
+        AuthenticationDTO dto =
+                new AuthenticationDTO("test@email.com", "123456");
 
         LoginResponseDTO login = authService.login(dto);
 
@@ -69,15 +79,13 @@ class AuthServiceImplTest {
 
         assertNotNull(refreshed);
         assertNotNull(refreshed.getToken());
-        assertEquals(login.getToken(), refreshed.getToken());
+        assertNotEquals(login.getToken(), refreshed.getToken());
     }
 
     @Test
     void shouldThrowTokenInvalidWhenUserDoesNotExist() {
-        AuthenticationDTO dto = new AuthenticationDTO(
-                "test@email.com",
-                "123456"
-        );
+        AuthenticationDTO dto =
+                new AuthenticationDTO("test@email.com", "123456");
 
         LoginResponseDTO login = authService.login(dto);
 
@@ -88,5 +96,27 @@ class AuthServiceImplTest {
                 TokenInvalidException.class,
                 () -> authService.refreshToken(login.getToken())
         );
+    }
+
+    @Test
+    void shouldReturnLoggedUser() {
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(
+                        "test@email.com",
+                        null,
+                        List.of()
+                );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        UserResponseDTO me = authService.getMe();
+
+        assertEquals("test@email.com", me.getEmail());
+    }
+
+
+    @Test
+    void securityContextShouldBeCleanBetweenTests() {
+        assertNull(SecurityContextHolder.getContext().getAuthentication());
     }
 }
