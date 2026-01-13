@@ -48,7 +48,7 @@ public class TokenServiceImpl implements TokenService{
                     .sign(algorithm);
             return token;
         } catch (JWTCreationException exception) {
-            throw new CreateTokenException("Error while creating JWT" +exception.getMessage());
+            throw new CreateTokenException();
         }
     }
 

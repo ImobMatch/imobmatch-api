@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
         boolean passwordMatches = cryptPasswordEncoder.matches(password, user.getPassword());
 
         if (!passwordMatches) {
-            throw new AuthenticationException("Password not equals");
+            throw new AuthenticationException();
         }
 
         userRepository.delete(user);
@@ -169,7 +169,7 @@ public class UserServiceImpl implements UserService {
             this.userVerificationRepository.save(verification);
             return verification.getId();
         } catch (Exception e) {
-            throw new ErroSendEmailException("Failed to send verification email" + e.toString());
+            throw new ErroSendEmailException();
         }
     }
 }
