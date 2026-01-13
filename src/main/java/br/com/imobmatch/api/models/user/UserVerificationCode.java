@@ -42,17 +42,17 @@ public class UserVerificationCode {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    @Column(nullable = false, length = 6)
+    @Column(name = "code", nullable = false, length = 6)
     private String code;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(name = "type", nullable = false, length = 20)
     private VerificationType type;
 
     @Column(name = "generated_at", nullable = false)
     private LocalDateTime generatedAt = LocalDateTime.now();
 
-    @Column(nullable = false)
+    @Column(name = "verified", nullable = false)
     private boolean verified = false;
 
 }
