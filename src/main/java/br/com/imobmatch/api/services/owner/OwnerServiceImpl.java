@@ -6,7 +6,7 @@ import br.com.imobmatch.api.dtos.owner.OwnerCreateDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.exceptions.auth.AuthenticationException;
-import br.com.imobmatch.api.exceptions.owner.NoValidDataProvideException;
+import br.com.imobmatch.api.exceptions.owner.OwnerNoValidDataProvideException;
 import br.com.imobmatch.api.exceptions.owner.OwnerExistsException;
 import br.com.imobmatch.api.exceptions.owner.OwnerNotFoundException;
 import br.com.imobmatch.api.models.owner.Owner;
@@ -52,21 +52,21 @@ public class OwnerServiceImpl implements OwnerService {
         owner.setName(ownerCreateDTO.getName());
         owner.setUser(user);
         owner.setBirthDate(ownerCreateDTO.getBirthDate());
-        owner.setPhoneNumber(ownerCreateDTO.getPhoneNumber());
-        owner.setPhoneDdd(ownerCreateDTO.getPhoneDdd());
+        owner.setWhatsAppPhoneNumber(ownerCreateDTO.getWhatsAppPhoneNumber());
+        owner.setPersonalPhoneNumber(ownerCreateDTO.getPersonalPhoneNumber());
 
         ownerRepository.save(owner);
-        return new OwnerResponseDTO(
-            owner.getId(),
-            owner.getName(),
-            owner.getCpf(),
-            user.getEmail(),
-            user.getRole(),
-            owner.getPhoneNumber(),
-            owner.getPhoneDdd(),
-            owner.getBirthDate(),
-            user.isEmailVerified()
-        );
+        return OwnerResponseDTO.builder()
+            .id(owner.getId())
+            .name(owner.getName())
+            .cpf(owner.getCpf())
+            .email(owner.getUser().getEmail())
+            .role(owner.getUser().getRole())
+            .whatsAppPhoneNumber(owner.getWhatsAppPhoneNumber())
+            .personalPhoneNumber(owner.getPersonalPhoneNumber())
+            .birthDate(owner.getBirthDate())
+            .isEmailVerified(owner.getUser().isEmailVerified())
+            .build();
 
     }
 
@@ -89,13 +89,13 @@ public class OwnerServiceImpl implements OwnerService {
             isUpdated = true;
         }
 
-        if (ownerUpdateDTO.getPhoneDdd() != null && !ownerUpdateDTO.getPhoneDdd().isBlank()) {
-            owner.setPhoneDdd(ownerUpdateDTO.getPhoneDdd());
+        if (ownerUpdateDTO.getPersonalPhoneNumber()!= null && !ownerUpdateDTO.getPersonalPhoneNumber().isBlank()) {
+            owner.setPersonalPhoneNumber(ownerUpdateDTO.getPersonalPhoneNumber());
             isUpdated = true;
         }
 
-        if (ownerUpdateDTO.getPhoneNumber() != null && !ownerUpdateDTO.getPhoneNumber().isBlank()) {
-            owner.setPhoneNumber(ownerUpdateDTO.getPhoneNumber());
+        if (ownerUpdateDTO.getWhatsAppPhoneNumber() != null && !ownerUpdateDTO.getWhatsAppPhoneNumber().isBlank()) {
+            owner.setWhatsAppPhoneNumber(ownerUpdateDTO.getWhatsAppPhoneNumber());
             isUpdated = true;
         }
 
@@ -104,20 +104,20 @@ public class OwnerServiceImpl implements OwnerService {
             isUpdated = true;
         }
 
-        if(!isUpdated){throw new NoValidDataProvideException();}
+        if(!isUpdated){throw new OwnerNoValidDataProvideException();}
 
         ownerRepository.save(owner);
-        return new OwnerResponseDTO(
-            owner.getId(),
-            owner.getName(),
-            owner.getCpf(),
-            owner.getUser().getEmail(),
-            owner.getUser().getRole(),
-            owner.getPhoneDdd(),
-            owner.getPhoneNumber(),
-            owner.getBirthDate(),
-            owner.getUser().isEmailVerified()
-        );
+        return OwnerResponseDTO.builder()
+            .id(owner.getId())
+            .name(owner.getName())
+            .cpf(owner.getCpf())
+            .email(owner.getUser().getEmail())
+            .role(owner.getUser().getRole())
+            .whatsAppPhoneNumber(owner.getWhatsAppPhoneNumber())
+            .personalPhoneNumber(owner.getPersonalPhoneNumber())
+            .birthDate(owner.getBirthDate())
+            .isEmailVerified(owner.getUser().isEmailVerified())
+            .build();
     }
 
     /**
@@ -132,18 +132,17 @@ public class OwnerServiceImpl implements OwnerService {
         Owner owner = ownerRepository.findById(authService.getMe().getId())
                 .orElseThrow(OwnerNotFoundException::new);
 
-        return new OwnerResponseDTO(
-                owner.getId(),
-                owner.getName(),
-                owner.getCpf(),
-                owner.getUser().getEmail(),
-                owner.getUser().getRole(),
-                owner.getPhoneDdd(),
-                owner.getPhoneNumber(),
-                owner.getBirthDate(),
-                owner.getUser().isEmailVerified()
-
-        );
+        return OwnerResponseDTO.builder()
+            .id(owner.getId())
+            .name(owner.getName())
+            .cpf(owner.getCpf())
+            .email(owner.getUser().getEmail())
+            .role(owner.getUser().getRole())
+            .whatsAppPhoneNumber(owner.getWhatsAppPhoneNumber())
+            .personalPhoneNumber(owner.getPersonalPhoneNumber())
+            .birthDate(owner.getBirthDate())
+            .isEmailVerified(owner.getUser().isEmailVerified())
+            .build();
     }
 
     /**
