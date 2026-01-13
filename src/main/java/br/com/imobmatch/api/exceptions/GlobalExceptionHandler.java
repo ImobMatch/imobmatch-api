@@ -5,6 +5,12 @@ import br.com.imobmatch.api.exceptions.auth.AuthenticationException;
 import br.com.imobmatch.api.exceptions.auth.CreateTokenException;
 import br.com.imobmatch.api.exceptions.auth.TokenExpiredException;
 import br.com.imobmatch.api.exceptions.auth.TokenInvalidException;
+import br.com.imobmatch.api.exceptions.broker.BrokerExistsException;
+import br.com.imobmatch.api.exceptions.broker.BrokerNotFoundException;
+import br.com.imobmatch.api.exceptions.owner.InappropriateUserRoleException;
+import br.com.imobmatch.api.exceptions.owner.NoValidDataProvideException;
+import br.com.imobmatch.api.exceptions.owner.OwnerExistsException;
+import br.com.imobmatch.api.exceptions.owner.OwnerNotFoundException;
 import br.com.imobmatch.api.exceptions.user.PhoneExistsException;
 import br.com.imobmatch.api.exceptions.user.UserExistsException;
 import br.com.imobmatch.api.exceptions.user.UserNotFoundException;
@@ -162,6 +168,123 @@ public class GlobalExceptionHandler {
     }
 
 
+    @ExceptionHandler(InappropriateUserRoleException.class)
+    public ResponseEntity<ErrorResponseDTO> handleInappropriateUserRole(
+
+            InappropriateUserRoleException ex,
+            HttpServletRequest request
+    ){
+
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                LocalDateTime.now(),
+                HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+
+
+        );
+
+        return  ResponseEntity
+                .status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(error);
+    }
+
+    @ExceptionHandler(OwnerExistsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleOwnerExists(
+            OwnerExistsException ex,
+            HttpServletRequest request
+    ){
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(error);
+    }
+
+    @ExceptionHandler(NoValidDataProvideException.class)
+    public ResponseEntity<ErrorResponseDTO> handleNoValidDataProvide(
+            NoValidDataProvideException ex,
+            HttpServletRequest request
+    )
+    {
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(error);
+    }
+
+    @ExceptionHandler(OwnerNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleOwnerNotExists(
+            OwnerNotFoundException ex,
+            HttpServletRequest request
+    )
+    {
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(error);
+
+    }
+
+    @ExceptionHandler(BrokerExistsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleBrokerExists(
+            BrokerExistsException ex,
+            HttpServletRequest request
+    ){
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                HttpStatus.CONFLICT.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(error);
+    }
+
+    @ExceptionHandler(BrokerNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleBrokerNotExists(
+            BrokerNotFoundException ex,
+            HttpServletRequest request
+    )
+    {
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(error);
+
+    }
 
 }
 

@@ -73,7 +73,7 @@ public class BrokerController {
             .body(brokerService.getBroker());
     }
 
-    @DeleteMapping("/confirm-delete")
+    @DeleteMapping()
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('BROKER')")
     public ResponseEntity<BrokerResponseDTO> deleteBroker(@RequestBody PasswordUserDeleteDTO passwordUserDeleteDTO){

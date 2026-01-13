@@ -1,15 +1,15 @@
 package br.com.imobmatch.api.models.user;
 
-import br.com.imobmatch.api.models.phone.Phone;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,10 +46,6 @@ public class User implements UserDetails {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Phone> phones = new ArrayList<>();
-
-
     public User(String email, String password, UserRole role) {
         this.email = email;
         this.password = password;
@@ -61,6 +57,12 @@ public class User implements UserDetails {
         if (this.role == UserRole.ADMIN) {
             return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"),
                     new SimpleGrantedAuthority("ROLE_USER"));
+        }
+        if (this.role == UserRole.OWNER) {
+            return List.of(
+                    new SimpleGrantedAuthority("ROLE_OWNER"),
+                    new SimpleGrantedAuthority("ROLE_USER")
+            );
         }
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
