@@ -1,7 +1,13 @@
 package br.com.imobmatch.api.controllers.advice;
 
 import br.com.imobmatch.api.dtos.error.ErrorResponseDTO;
-import br.com.imobmatch.api.exceptions.email.*;
+import br.com.imobmatch.api.exceptions.email.ErroSendEmailException;
+import br.com.imobmatch.api.exceptions.email.InvalidCodeException;
+import br.com.imobmatch.api.exceptions.email.EmailNotVerifiedException;
+import br.com.imobmatch.api.exceptions.email.RequestCodeExpiredException;
+import br.com.imobmatch.api.exceptions.email.RequestNotFoundException;
+
+
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;

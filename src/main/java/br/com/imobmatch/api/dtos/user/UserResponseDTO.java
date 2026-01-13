@@ -1,7 +1,11 @@
 package br.com.imobmatch.api.dtos.user;
 
 import br.com.imobmatch.api.models.user.enums.UserRole;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.UUID;
 
