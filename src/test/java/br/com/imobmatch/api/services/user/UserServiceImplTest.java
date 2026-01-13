@@ -1,7 +1,6 @@
 package br.com.imobmatch.api.services.user;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
@@ -114,7 +113,7 @@ class UserServiceImplTest {
                                 .build()
                 );
 
-        assertNotNull(response.getId());
+        assertNotNull(response.getVerificationId());
 
         verify(emailService).sendEmail(
                 eq(user.getEmail()),
@@ -125,12 +124,12 @@ class UserServiceImplTest {
 
     @Test
     void testValidateEmail_Success() {
-        Long verificationId =
+        UUID verificationId =
                 userService.sendEmailVerificationCodeForEmail(
                         RequestValidationEmailDTO.builder()
                                 .email(user.getEmail())
                                 .build()
-                ).getId();
+                ).getVerificationId();
 
         UserVerificationCode verification =
                 userVerificationRepository.findById(verificationId)
@@ -150,12 +149,12 @@ class UserServiceImplTest {
 
     @Test
     void testValidateEmail_InvalidCode() {
-        Long verificationId =
+        UUID verificationId =
                 userService.sendEmailVerificationCodeForEmail(
                         RequestValidationEmailDTO.builder()
                                 .email(user.getEmail())
                                 .build()
-                ).getId();
+                ).getVerificationId();
 
         assertThrows(InvalidCodeException.class, () ->
                 userService.validateEmail(
