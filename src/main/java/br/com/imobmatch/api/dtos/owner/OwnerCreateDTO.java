@@ -38,6 +38,5 @@ public class OwnerCreateDTO {
     @NotBlank
     private String whatsAppPhoneNumber;
 
-    @NotBlank
     private String personalPhoneNumber;
 }

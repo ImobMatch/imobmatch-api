@@ -41,10 +41,10 @@ public class Owner {
     @Column(name ="birth_date", nullable = false)
     private LocalDate birthDate;
 
-    @Column(name="whats_app_phone_number",  nullable = false)
+    @Column(name="whats_app_phone_number",  nullable = false, length = 20)
     private String whatsAppPhoneNumber;
 
-    @Column(name="personal_phone_number")
+    @Column(name="personal_phone_number", length = 20)
     private String personalPhoneNumber;
 
 }
