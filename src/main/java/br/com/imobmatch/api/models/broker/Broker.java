@@ -22,10 +22,10 @@ public class Broker {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "creci", nullable = false)
+    @Column(name = "creci", nullable = false, unique = true)
     private String creci;
 
-    @Column(name = "cpf", nullable = false)
+    @Column(name = "cpf", nullable = false, length = 11, unique = true)
     private String cpf;
 
     @Column(name = "region_interest", nullable = true)
