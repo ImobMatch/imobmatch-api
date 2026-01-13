@@ -1,5 +1,6 @@
 package br.com.imobmatch.api.models.user;
 
+import br.com.imobmatch.api.models.user.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,8 +9,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,7 +37,7 @@ public class User implements UserDetails {
     private UserRole role;
 
     @Column(name = "is_email_verified", nullable = false)
-    private boolean isEmailVerified = true;
+    private boolean isEmailVerified = false;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
