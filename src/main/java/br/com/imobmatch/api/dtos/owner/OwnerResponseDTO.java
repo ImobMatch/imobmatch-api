@@ -3,13 +3,13 @@ package br.com.imobmatch.api.dtos.owner;
 import br.com.imobmatch.api.models.user.enums.UserRole;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDate;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+
+import lombok.*;
 
 import java.util.UUID;
 
-@Getter
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class OwnerResponseDTO {

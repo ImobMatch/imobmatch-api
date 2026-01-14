@@ -1,12 +1,10 @@
-package br.com.imobmatch.api.repositories;
+package br.com.imobmatch.api.dtos.owner;
 
-import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
-import br.com.imobmatch.api.models.owner.Owner;
 import lombok.*;
 
 import java.util.List;
 
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

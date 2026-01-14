@@ -5,7 +5,7 @@ import br.com.imobmatch.api.dtos.owner.OwnerCreateDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerUpdateDTO;
 import br.com.imobmatch.api.exceptions.owner.OwnerExistsException;
-import br.com.imobmatch.api.repositories.OwnerGetAllByResponseDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerGetAllByResponseDTO;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -35,6 +35,7 @@ public interface OwnerService {
      */
     OwnerResponseDTO getOwner();
 
+    OwnerResponseDTO getOwnerByCpf(String cpf);
     OwnerResponseDTO getOwnerById(UUID id);
     OwnerResponseDTO getOwnerByEmail(String email);
     OwnerGetAllByResponseDTO getAllOwnersByName(String name);

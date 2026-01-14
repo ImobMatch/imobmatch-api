@@ -2,6 +2,7 @@ package br.com.imobmatch.api.services.owner;
 
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerCreateDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerGetAllByResponseDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerUpdateDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
@@ -12,18 +13,17 @@ import br.com.imobmatch.api.exceptions.owner.OwnerNotFoundException;
 import br.com.imobmatch.api.models.owner.Owner;
 import br.com.imobmatch.api.models.user.User;
 import br.com.imobmatch.api.models.user.enums.UserRole;
-import br.com.imobmatch.api.repositories.OwnerGetAllByResponseDTO;
 import br.com.imobmatch.api.repositories.OwnerRepository;
 import br.com.imobmatch.api.services.auth.AuthService;
 import br.com.imobmatch.api.services.user.UserService;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -44,7 +44,7 @@ public class OwnerServiceImpl implements OwnerService {
     @Transactional
     public OwnerResponseDTO createOwner(OwnerCreateDTO ownerCreateDTO) {
 
-        if(ownerRepository.existsOwnerByCpf(ownerCreateDTO.getCpf())){throw new OwnerExistsException();}
+        if(ownerRepository.existsByCpf(ownerCreateDTO.getCpf())){throw new OwnerExistsException();}
         UserResponseDTO userDto = userService.create(
                 ownerCreateDTO.getEmail(),
                 ownerCreateDTO.getPassword(),
@@ -53,12 +53,13 @@ public class OwnerServiceImpl implements OwnerService {
 
         User user = userService.findEntityById(userDto.getId());
         Owner owner = new Owner();
-        owner.setCpf(ownerCreateDTO.getCpf());
-        owner.setName(ownerCreateDTO.getName());
+        owner.setCpf(ownerCreateDTO.getCpf().replaceAll("\\D", ""));
+        owner.setName(ownerCreateDTO.getName().strip());
         owner.setUser(user);
         owner.setBirthDate(ownerCreateDTO.getBirthDate());
-        owner.setWhatsAppPhoneNumber(ownerCreateDTO.getWhatsAppPhoneNumber());
-        owner.setPersonalPhoneNumber(ownerCreateDTO.getPersonalPhoneNumber());
+        owner.setWhatsAppPhoneNumber(ownerCreateDTO.getWhatsAppPhoneNumber().replaceAll("\\D", ""));
+        owner.setPersonalPhoneNumber(ownerCreateDTO.getPersonalPhoneNumber() != null ?
+                ownerCreateDTO.getPersonalPhoneNumber().replaceAll("\\D", "") : null);
 
         ownerRepository.save(owner);
         return buildOwnerResponseDto(owner);
@@ -80,17 +81,17 @@ public class OwnerServiceImpl implements OwnerService {
         boolean isUpdated = false;
 
         if (ownerUpdateDTO.getName() != null && !ownerUpdateDTO.getName().isBlank()) {
-            owner.setName(ownerUpdateDTO.getName());
+            owner.setName(ownerUpdateDTO.getName().strip());
             isUpdated = true;
         }
 
         if (ownerUpdateDTO.getPersonalPhoneNumber()!= null && !ownerUpdateDTO.getPersonalPhoneNumber().isBlank()) {
-            owner.setPersonalPhoneNumber(ownerUpdateDTO.getPersonalPhoneNumber());
+            owner.setPersonalPhoneNumber(ownerUpdateDTO.getPersonalPhoneNumber().replaceAll("\\D", ""));
             isUpdated = true;
         }
 
         if (ownerUpdateDTO.getWhatsAppPhoneNumber() != null && !ownerUpdateDTO.getWhatsAppPhoneNumber().isBlank()) {
-            owner.setWhatsAppPhoneNumber(ownerUpdateDTO.getWhatsAppPhoneNumber());
+            owner.setWhatsAppPhoneNumber(ownerUpdateDTO.getWhatsAppPhoneNumber().replaceAll("\\D", ""));
             isUpdated = true;
         }
 
@@ -121,6 +122,15 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
+    public OwnerResponseDTO getOwnerByCpf(String cpf) {
+        String cleanCpf = cpf.replaceAll("\\D", "");
+        Owner owner = ownerRepository.findByCpf(cleanCpf)
+                .orElseThrow(OwnerNotFoundException :: new);
+
+        return buildOwnerResponseDto(owner);
+    }
+
+    @Override
     public OwnerResponseDTO getOwnerById(UUID id) {
 
         Owner owner = ownerRepository.findById(id)
@@ -142,7 +152,7 @@ public class OwnerServiceImpl implements OwnerService {
     public OwnerGetAllByResponseDTO getAllOwnersByName(String name) {
 
         return buildOwnerGetAllByResponseDTO(
-                ownerRepository.findAllByName(name));
+                ownerRepository.findAllByNameContainingIgnoreCase(name));
 
     }
 
