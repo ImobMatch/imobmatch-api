@@ -1,20 +1,25 @@
 package br.com.imobmatch.api.services.owner;
 
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
-import br.com.imobmatch.api.dtos.owner.OwnerUpdateDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerCreateDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerUpdateDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.exceptions.auth.AuthenticationException;
-import br.com.imobmatch.api.exceptions.owner.OwnerNoValidDataProvideException;
 import br.com.imobmatch.api.exceptions.owner.OwnerExistsException;
+import br.com.imobmatch.api.exceptions.owner.OwnerNoValidDataProvideException;
 import br.com.imobmatch.api.exceptions.owner.OwnerNotFoundException;
 import br.com.imobmatch.api.models.owner.Owner;
 import br.com.imobmatch.api.models.user.User;
 import br.com.imobmatch.api.models.user.enums.UserRole;
+import br.com.imobmatch.api.repositories.OwnerGetAllByResponseDTO;
 import br.com.imobmatch.api.repositories.OwnerRepository;
 import br.com.imobmatch.api.services.auth.AuthService;
 import br.com.imobmatch.api.services.user.UserService;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -56,17 +61,7 @@ public class OwnerServiceImpl implements OwnerService {
         owner.setPersonalPhoneNumber(ownerCreateDTO.getPersonalPhoneNumber());
 
         ownerRepository.save(owner);
-        return OwnerResponseDTO.builder()
-            .id(owner.getId())
-            .name(owner.getName())
-            .cpf(owner.getCpf())
-            .email(owner.getUser().getEmail())
-            .role(owner.getUser().getRole())
-            .whatsAppPhoneNumber(owner.getWhatsAppPhoneNumber())
-            .personalPhoneNumber(owner.getPersonalPhoneNumber())
-            .birthDate(owner.getBirthDate())
-            .isEmailVerified(owner.getUser().isEmailVerified())
-            .build();
+        return buildOwnerResponseDto(owner);
 
     }
 
@@ -107,17 +102,7 @@ public class OwnerServiceImpl implements OwnerService {
         if(!isUpdated){throw new OwnerNoValidDataProvideException();}
 
         ownerRepository.save(owner);
-        return OwnerResponseDTO.builder()
-            .id(owner.getId())
-            .name(owner.getName())
-            .cpf(owner.getCpf())
-            .email(owner.getUser().getEmail())
-            .role(owner.getUser().getRole())
-            .whatsAppPhoneNumber(owner.getWhatsAppPhoneNumber())
-            .personalPhoneNumber(owner.getPersonalPhoneNumber())
-            .birthDate(owner.getBirthDate())
-            .isEmailVerified(owner.getUser().isEmailVerified())
-            .build();
+        return buildOwnerResponseDto(owner);
     }
 
     /**
@@ -132,18 +117,48 @@ public class OwnerServiceImpl implements OwnerService {
         Owner owner = ownerRepository.findById(authService.getMe().getId())
                 .orElseThrow(OwnerNotFoundException::new);
 
-        return OwnerResponseDTO.builder()
-            .id(owner.getId())
-            .name(owner.getName())
-            .cpf(owner.getCpf())
-            .email(owner.getUser().getEmail())
-            .role(owner.getUser().getRole())
-            .whatsAppPhoneNumber(owner.getWhatsAppPhoneNumber())
-            .personalPhoneNumber(owner.getPersonalPhoneNumber())
-            .birthDate(owner.getBirthDate())
-            .isEmailVerified(owner.getUser().isEmailVerified())
-            .build();
+        return buildOwnerResponseDto(owner);
     }
+
+    @Override
+    public OwnerResponseDTO getOwnerById(UUID id) {
+
+        Owner owner = ownerRepository.findById(id)
+                .orElseThrow(OwnerNotFoundException :: new);
+
+        return buildOwnerResponseDto(owner);
+    }
+
+    @Override
+    public OwnerResponseDTO getOwnerByEmail(String email) {
+
+        Owner owner = ownerRepository.findByUser_Email(email)
+                .orElseThrow(OwnerNotFoundException :: new);
+
+        return buildOwnerResponseDto(owner);
+    }
+
+    @Override
+    public OwnerGetAllByResponseDTO getAllOwnersByName(String name) {
+
+        return buildOwnerGetAllByResponseDTO(
+                ownerRepository.findAllByName(name));
+
+    }
+
+    @Override
+    public OwnerGetAllByResponseDTO getAllOwnersByBirthDate(LocalDate birthDate) {
+
+        return buildOwnerGetAllByResponseDTO(
+                ownerRepository.findAllByBirthDate(birthDate));
+    }
+
+    @Override
+    public OwnerGetAllByResponseDTO getAllOwners() {
+
+        return buildOwnerGetAllByResponseDTO(ownerRepository.findAll());
+    }
+
 
     /**
      *Deletes the system owner and the user associated with them.
@@ -159,5 +174,34 @@ public class OwnerServiceImpl implements OwnerService {
         UUID userId = authService.getMe().getId();
         ownerRepository.deleteById(userId);
         userService.deleteById(userId, passwordUserDeleteDTO.getPassword());
+    }
+
+    private OwnerResponseDTO buildOwnerResponseDto(Owner owner){
+
+        return OwnerResponseDTO.builder()
+                .id(owner.getId())
+                .name(owner.getName())
+                .cpf(owner.getCpf())
+                .email(owner.getUser().getEmail())
+                .role(owner.getUser().getRole())
+                .whatsAppPhoneNumber(owner.getWhatsAppPhoneNumber())
+                .personalPhoneNumber(owner.getPersonalPhoneNumber())
+                .birthDate(owner.getBirthDate())
+                .isEmailVerified(owner.getUser().isEmailVerified())
+                .build();
+    }
+
+    private OwnerGetAllByResponseDTO buildOwnerGetAllByResponseDTO(List<Owner> ownerlist){
+
+        List<OwnerResponseDTO> ownerResponseDtoList = new ArrayList<>();
+
+        for(Owner owner : ownerlist){
+
+            ownerResponseDtoList.add(buildOwnerResponseDto(owner));
+        }
+
+        return OwnerGetAllByResponseDTO.builder()
+                .owners(ownerResponseDtoList)
+                .build();
     }
 }
