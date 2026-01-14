@@ -18,6 +18,9 @@ public interface BrokerRepository extends JpaRepository<Broker, UUID> {
   Optional<Broker> findByCreci(String creci);
   boolean existsBrokerByCreci(String creci );
 
+  Optional<Broker> findByUser_Email(String email);
+  boolean existsByUser_Email(String email );
+
   List<Broker> findByNameContainingIgnoreCase(String name);
   List<Broker> findByRegionInterestContainingIgnoreCase(String regionInterest);
   List<Broker> findByOperationCityContainingIgnoreCase(String operationCity);

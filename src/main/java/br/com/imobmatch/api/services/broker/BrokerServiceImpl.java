@@ -43,7 +43,9 @@ public class BrokerServiceImpl implements BrokerService {
     @Transactional
     public BrokerResponseDTO createBroker(BrokerPostDTO brokerPostDTO) {
 
-        if(brokerRepository.existsBrokerByCpf(brokerPostDTO.getCpf()) || brokerRepository.existsBrokerByCreci(brokerPostDTO.getCreci())) {
+        if(brokerRepository.existsBrokerByCpf(brokerPostDTO.getCpf()) || 
+        brokerRepository.existsBrokerByCreci(brokerPostDTO.getCreci()) ||
+        brokerRepository.existsByUser_Email(brokerPostDTO.getEmail())) {
             throw new BrokerExistsException();}
         UserResponseDTO userResponseDTO = userService.create(
             brokerPostDTO.getEmail(),
@@ -62,23 +64,13 @@ public class BrokerServiceImpl implements BrokerService {
         broker.setOperationCity(brokerPostDTO.getOperationCity());
         broker.setBusinessType(brokerPostDTO.getBusinessType());
         broker.setUser(user);
+        broker.setBirthDate(brokerPostDTO.getBirthDate());
+        broker.setWhatsAppPhoneNumber(brokerPostDTO.getWhatsAppPhoneNumber());
+        broker.setPersonalPhoneNumber(brokerPostDTO.getPersonalPhoneNumber());
         broker.setAccountStatus(BrokerAccountStatus.PENDING);
 
         brokerRepository.save(broker);
-        return new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            user.getEmail(),
-            user.getRole(),
-            user.isEmailVerified(),
-            broker.getAccountStatus()
-        );
+        return buildBrokerResponseDto(broker);
     }
 
     @Override
@@ -111,24 +103,25 @@ public class BrokerServiceImpl implements BrokerService {
             broker.setBusinessType(brokerPatchDTO.getBusinessType());
             isUpdated = true;
         }
+        if(brokerPatchDTO.getBirthDate() != null) {
+            broker.setBirthDate(brokerPatchDTO.getBirthDate());
+            isUpdated = true;
+        }
+
+        if(brokerPatchDTO.getWhatsAppPhoneNumber() != null && !brokerPatchDTO.getWhatsAppPhoneNumber().isBlank()) {
+            broker.setWhatsAppPhoneNumber(brokerPatchDTO.getWhatsAppPhoneNumber());
+            isUpdated = true;
+        }
+
+        if(brokerPatchDTO.getPersonalPhoneNumber() != null && !brokerPatchDTO.getPersonalPhoneNumber().isBlank()) {
+            broker.setPersonalPhoneNumber(brokerPatchDTO.getPersonalPhoneNumber());
+            isUpdated = true;
+        }
 
         if(!isUpdated) {throw new BrokerNoValidDataProvideException();}
 
         brokerRepository.save(broker);
-        return new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        );
+        return buildBrokerResponseDto(broker);
     }
 
     @Override
@@ -136,20 +129,7 @@ public class BrokerServiceImpl implements BrokerService {
         Broker broker = brokerRepository.findById(authService.getMe().getId())
             .orElseThrow(BrokerNotFoundException::new);
         
-        return new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        );
+        return buildBrokerResponseDto(broker);
     }
 
     @Override
@@ -157,61 +137,22 @@ public class BrokerServiceImpl implements BrokerService {
         Broker broker = brokerRepository.findById(id)
             .orElseThrow(BrokerNotFoundException::new);
         
-        return new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        );
+        return buildBrokerResponseDto(broker);
     }
-/*
+
     @Override
     public BrokerResponseDTO getByEmailBroker(String email) {
-        Broker broker = brokerRepository.findByEmail(email)
+        Broker broker = brokerRepository.findByUser_Email(email)
             .orElseThrow(BrokerNotFoundException::new);
         
-        return new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified()
-        );
+        return buildBrokerResponseDto(broker);
     }
-*/
     @Override
     public BrokerResponseDTO getByCreciBroker(String creci) {
         Broker broker = brokerRepository.findByCreci(creci)
             .orElseThrow(BrokerNotFoundException::new);
         
-        return new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        );
+        return buildBrokerResponseDto(broker);
     }
 
     @Override
@@ -219,40 +160,14 @@ public class BrokerServiceImpl implements BrokerService {
         Broker broker = brokerRepository.findByCpf(cpf)
             .orElseThrow(BrokerNotFoundException::new);
         
-        return new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        );
+        return buildBrokerResponseDto(broker);
     }
 
     @Override
     public List<BrokerResponseDTO> ListByNameBroker(String name) {
         List<Broker> brokers = brokerRepository.findByNameContainingIgnoreCase(name);
         return brokers.stream()
-        .map(broker -> new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        ))
+        .map(broker -> buildBrokerResponseDto(broker))
         .collect(Collectors.toList());
     }
 
@@ -260,20 +175,7 @@ public class BrokerServiceImpl implements BrokerService {
     public List<BrokerResponseDTO> ListByRegionInterestBroker(String regionInterest) {
         List<Broker> brokers = brokerRepository.findByRegionInterestContainingIgnoreCase(regionInterest);
         return brokers.stream()
-        .map(broker -> new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        ))
+        .map(broker -> buildBrokerResponseDto(broker))
         .collect(Collectors.toList());
     }
 
@@ -281,20 +183,7 @@ public class BrokerServiceImpl implements BrokerService {
     public List<BrokerResponseDTO> ListByOperationCityBroker(String operationCity) {
         List<Broker> brokers = brokerRepository.findByOperationCityContainingIgnoreCase(operationCity);
         return brokers.stream()
-        .map(broker -> new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        ))
+        .map(broker -> buildBrokerResponseDto(broker))
         .collect(Collectors.toList());
     }
 
@@ -302,20 +191,7 @@ public class BrokerServiceImpl implements BrokerService {
     public List<BrokerResponseDTO> ListByPropertyTypeBroker(BrokerPropertyType propertyType) {
         List<Broker> brokers = brokerRepository.findByPropertyType(propertyType);
         return brokers.stream()
-        .map(broker -> new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        ))
+        .map(broker -> buildBrokerResponseDto(broker))
         .collect(Collectors.toList());
     }
 
@@ -323,20 +199,7 @@ public class BrokerServiceImpl implements BrokerService {
     public List<BrokerResponseDTO> ListByBusinessTypeBroker(BrokerBusinessType businessType) {
         List<Broker> brokers = brokerRepository.findByBusinessType(businessType);
         return brokers.stream()
-        .map(broker -> new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        ))
+        .map(broker -> buildBrokerResponseDto(broker))
         .collect(Collectors.toList());
     }
 
@@ -344,20 +207,7 @@ public class BrokerServiceImpl implements BrokerService {
     public List<BrokerResponseDTO> ListAllBroker() {
         List<Broker> brokers = brokerRepository.findAll();
         return brokers.stream()
-        .map(broker -> new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        ))
+        .map(broker -> buildBrokerResponseDto(broker))
         .collect(Collectors.toList());
     }
 
@@ -369,6 +219,27 @@ public class BrokerServiceImpl implements BrokerService {
         UUID userId = authService.getMe().getId();
         brokerRepository.deleteById(userId);
         userService.deleteById(userId, passwordUserDeleteDTO.getPassword());
+    }
+
+    private BrokerResponseDTO buildBrokerResponseDto(Broker broker){
+
+        return new BrokerResponseDTO(
+            broker.getId(),
+            broker.getName(),
+            broker.getCreci(),
+            broker.getCpf(),
+            broker.getRegionInterest(),
+            broker.getPropertyType(),
+            broker.getOperationCity(),
+            broker.getBusinessType(),
+            broker.getBirthDate(),
+            broker.getWhatsAppPhoneNumber(),
+            broker.getPersonalPhoneNumber(),
+            broker.getUser().getEmail(),
+            broker.getUser().getRole(),
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
+        );
     }
     
 }

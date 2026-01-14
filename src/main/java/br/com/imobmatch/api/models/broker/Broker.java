@@ -51,6 +51,12 @@ public class Broker {
     @Column(name ="birth_date", nullable = false)
     private LocalDate birthDate;
 
+    @Column(name="whats_app_phone_number",  nullable = false, length = 20)
+    private String whatsAppPhoneNumber;
+
+    @Column(name="personal_phone_number", length = 20)
+    private String personalPhoneNumber;
+
     @OneToOne
     @MapsId
     @JoinColumn(name = "id", nullable = false, unique = true)

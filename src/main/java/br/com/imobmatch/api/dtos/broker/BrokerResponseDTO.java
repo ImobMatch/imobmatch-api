@@ -1,5 +1,6 @@
 package br.com.imobmatch.api.dtos.broker;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
@@ -20,6 +21,9 @@ public class BrokerResponseDTO {
     private BrokerPropertyType propertyType;
     private String operationCity;
     private BrokerBusinessType businessType;
+    private LocalDate birthDate;
+    private String whatsAppPhoneNumber;
+    private String personalPhoneNumber;
     private String email;
     private UserRole role;
     private boolean isEmailVerified;

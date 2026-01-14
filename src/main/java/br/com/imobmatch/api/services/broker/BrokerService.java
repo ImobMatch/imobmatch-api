@@ -21,7 +21,7 @@ public interface BrokerService {
 
     BrokerResponseDTO getByIdBroker(UUID id);
 
-//    BrokerResponseDTO getByEmailBroker(String email);
+    BrokerResponseDTO getByEmailBroker(String email);
 
     BrokerResponseDTO getByCreciBroker(String creci);
 
