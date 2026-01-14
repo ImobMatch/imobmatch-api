@@ -1,4 +1,4 @@
-package br.com.imobmatch.api.infra.security.service;
+package br.com.imobmatch.api.infra.security.services.userdetails;
 
 import br.com.imobmatch.api.repositories.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;

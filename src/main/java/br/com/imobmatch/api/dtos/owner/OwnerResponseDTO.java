@@ -1,7 +1,6 @@
 package br.com.imobmatch.api.dtos.owner;
 
-import br.com.imobmatch.api.models.user.enums.UserRole;
-import jakarta.validation.constraints.NotBlank;
+import br.com.imobmatch.api.models.enums.UserRole;
 import java.time.LocalDate;
 
 import lombok.*;

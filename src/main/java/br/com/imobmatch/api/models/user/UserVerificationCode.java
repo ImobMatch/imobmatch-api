@@ -1,7 +1,7 @@
 package br.com.imobmatch.api.models.user;
 
-import br.com.imobmatch.api.models.user.enums.VerificationType;
-import jakarta.persistence.CascadeType;
+import br.com.imobmatch.api.models.enums.VerificationType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

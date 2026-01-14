@@ -12,7 +12,7 @@ import br.com.imobmatch.api.exceptions.owner.OwnerNoValidDataProvideException;
 import br.com.imobmatch.api.exceptions.owner.OwnerNotFoundException;
 import br.com.imobmatch.api.models.owner.Owner;
 import br.com.imobmatch.api.models.user.User;
-import br.com.imobmatch.api.models.user.enums.UserRole;
+import br.com.imobmatch.api.models.enums.UserRole;
 import br.com.imobmatch.api.repositories.OwnerRepository;
 import br.com.imobmatch.api.services.auth.AuthService;
 import br.com.imobmatch.api.services.user.UserService;
