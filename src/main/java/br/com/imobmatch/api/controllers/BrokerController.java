@@ -59,7 +59,7 @@ public class BrokerController {
             .body(brokerService.getMeBroker());
     }
 
-    @GetMapping("/id/{id}")
+    @GetMapping(value = "/search", params = "id")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<BrokerResponseDTO> getByIdBroker(@Valid @RequestBody UUID id) {
 
@@ -68,7 +68,7 @@ public class BrokerController {
             .body(brokerService.getByIdBroker(id));
     }
 
-    @GetMapping("/creci/{creci}")
+    @GetMapping(value = "/search", params = "creci")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<BrokerResponseDTO> getByCreciBroker(@Valid @RequestBody String creci) {
 
@@ -77,7 +77,7 @@ public class BrokerController {
             .body(brokerService.getByCreciBroker(creci));
     }
 
-    @GetMapping("/cpf/{cpf}")
+    @GetMapping(value = "/search", params = "cpf")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<BrokerResponseDTO> getByCpfBroker(@Valid @RequestBody String cpf) {
 
@@ -86,7 +86,7 @@ public class BrokerController {
             .body(brokerService.getByCpfBroker(cpf));
     }
 
-    @GetMapping("/name/{name}")
+    @GetMapping(value = "/search", params = "name")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<List<BrokerResponseDTO>> ListByNameBroker(@Valid @RequestBody String name) {
 
@@ -95,7 +95,7 @@ public class BrokerController {
             .body(brokerService.ListByNameBroker(name));
     }
 
-    @GetMapping("/region-interest/{regionInterest}")
+    @GetMapping(value = "/search", params = "regionInterest")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<List<BrokerResponseDTO>> ListByRegionInterestBroker(@Valid @RequestBody String regionInterest) {
 
@@ -104,7 +104,7 @@ public class BrokerController {
             .body(brokerService.ListByRegionInterestBroker(regionInterest));
     }
 
-    @GetMapping("/operation-city/{operationCity}")
+    @GetMapping(value = "/search", params = "operationCity")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<List<BrokerResponseDTO>> ListByOperationCityBroker(@Valid @RequestBody String operationCity) {
 
@@ -113,7 +113,7 @@ public class BrokerController {
             .body(brokerService.ListByOperationCityBroker(operationCity));
     }
 
-    @GetMapping("/property-type/{propertyType}")
+    @GetMapping(value = "/search", params = "propertyType")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<List<BrokerResponseDTO>> ListByPropertyTypeBroker(@Valid @RequestBody BrokerPropertyType propertyType) {
 
@@ -122,7 +122,7 @@ public class BrokerController {
             .body(brokerService.ListByPropertyTypeBroker(propertyType));
     }
 
-    @GetMapping("/business-type/{businessType}")
+    @GetMapping(value = "/search", params = "businessType")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<List<BrokerResponseDTO>> ListByBusinessTypeBroker(@Valid @RequestBody BrokerBusinessType businessType) {
 
@@ -131,7 +131,7 @@ public class BrokerController {
             .body(brokerService.ListByBusinessTypeBroker(businessType));
     }
 
-    @GetMapping("/all")
+    @GetMapping("/search")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<List<BrokerResponseDTO>> ListAllBroker() {
 
