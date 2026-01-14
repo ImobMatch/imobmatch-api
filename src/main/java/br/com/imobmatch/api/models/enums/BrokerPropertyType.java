@@ -1,4 +1,4 @@
-package br.com.imobmatch.api.models.broker.enums;
+package br.com.imobmatch.api.models.enums;
 
 public enum BrokerPropertyType {
     APARTMENT("apartment"),

@@ -3,9 +3,9 @@ package br.com.imobmatch.api.models.broker;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import br.com.imobmatch.api.models.broker.enums.BrokerAccountStatus;
-import br.com.imobmatch.api.models.broker.enums.BrokerBusinessType;
-import br.com.imobmatch.api.models.broker.enums.BrokerPropertyType;
+import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
+import br.com.imobmatch.api.models.enums.BrokerBusinessType;
+import br.com.imobmatch.api.models.enums.BrokerPropertyType;
 import br.com.imobmatch.api.models.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Past;

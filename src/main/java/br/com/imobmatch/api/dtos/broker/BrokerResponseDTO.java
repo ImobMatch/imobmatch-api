@@ -2,11 +2,10 @@ package br.com.imobmatch.api.dtos.broker;
 
 import java.util.UUID;
 
-import br.com.imobmatch.api.models.broker.Broker;
-import br.com.imobmatch.api.models.broker.enums.BrokerAccountStatus;
-import br.com.imobmatch.api.models.broker.enums.BrokerBusinessType;
-import br.com.imobmatch.api.models.broker.enums.BrokerPropertyType;
-import br.com.imobmatch.api.models.user.enums.UserRole;
+import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
+import br.com.imobmatch.api.models.enums.BrokerBusinessType;
+import br.com.imobmatch.api.models.enums.BrokerPropertyType;
+import br.com.imobmatch.api.models.enums.UserRole;
 import lombok.*;
 
 @Getter

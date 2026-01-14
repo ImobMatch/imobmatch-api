@@ -8,8 +8,8 @@ import br.com.imobmatch.api.dtos.broker.BrokerPatchDTO;
 import br.com.imobmatch.api.dtos.broker.BrokerPostDTO;
 import br.com.imobmatch.api.dtos.broker.BrokerResponseDTO;
 import br.com.imobmatch.api.models.broker.Broker;
-import br.com.imobmatch.api.models.broker.enums.BrokerBusinessType;
-import br.com.imobmatch.api.models.broker.enums.BrokerPropertyType;
+import br.com.imobmatch.api.models.enums.BrokerBusinessType;
+import br.com.imobmatch.api.models.enums.BrokerPropertyType;
 
 public interface BrokerService {
     
