@@ -1,11 +1,14 @@
 package br.com.imobmatch.api.models.broker;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
+import br.com.imobmatch.api.models.broker.enums.BrokerAccountStatus;
 import br.com.imobmatch.api.models.broker.enums.BrokerBusinessType;
 import br.com.imobmatch.api.models.broker.enums.BrokerPropertyType;
 import br.com.imobmatch.api.models.user.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Past;
 import lombok.*;
 
 @Entity(name = "brokers")
@@ -44,8 +47,16 @@ public class Broker {
     @Column(name = "business_type", nullable = true)
     private BrokerBusinessType businessType;
 
+    @Past
+    @Column(name ="birth_date", nullable = false)
+    private LocalDate birthDate;
+
     @OneToOne
     @MapsId
     @JoinColumn(name = "id", nullable = false, unique = true)
     private User user;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "account_status", nullable = false)
+    private BrokerAccountStatus accountStatus;
 }

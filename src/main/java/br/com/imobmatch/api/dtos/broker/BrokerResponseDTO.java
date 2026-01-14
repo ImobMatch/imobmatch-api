@@ -2,6 +2,8 @@ package br.com.imobmatch.api.dtos.broker;
 
 import java.util.UUID;
 
+import br.com.imobmatch.api.models.broker.Broker;
+import br.com.imobmatch.api.models.broker.enums.BrokerAccountStatus;
 import br.com.imobmatch.api.models.broker.enums.BrokerBusinessType;
 import br.com.imobmatch.api.models.broker.enums.BrokerPropertyType;
 import br.com.imobmatch.api.models.user.enums.UserRole;
@@ -22,4 +24,5 @@ public class BrokerResponseDTO {
     private String email;
     private UserRole role;
     private boolean isEmailVerified;
+    private BrokerAccountStatus accountStatus;
 }

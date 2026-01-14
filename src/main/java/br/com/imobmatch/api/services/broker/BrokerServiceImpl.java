@@ -14,6 +14,7 @@ import br.com.imobmatch.api.exceptions.broker.BrokerExistsException;
 import br.com.imobmatch.api.exceptions.broker.BrokerNotFoundException;
 import br.com.imobmatch.api.exceptions.broker.BrokerNoValidDataProvideException;
 import br.com.imobmatch.api.models.broker.Broker;
+import br.com.imobmatch.api.models.broker.enums.BrokerAccountStatus;
 import br.com.imobmatch.api.models.broker.enums.BrokerBusinessType;
 import br.com.imobmatch.api.models.broker.enums.BrokerPropertyType;
 import br.com.imobmatch.api.models.user.User;
@@ -61,6 +62,7 @@ public class BrokerServiceImpl implements BrokerService {
         broker.setOperationCity(brokerPostDTO.getOperationCity());
         broker.setBusinessType(brokerPostDTO.getBusinessType());
         broker.setUser(user);
+        broker.setAccountStatus(BrokerAccountStatus.PENDING);
 
         brokerRepository.save(broker);
         return new BrokerResponseDTO(
@@ -74,7 +76,8 @@ public class BrokerServiceImpl implements BrokerService {
             broker.getBusinessType(),
             user.getEmail(),
             user.getRole(),
-            user.isEmailVerified()
+            user.isEmailVerified(),
+            broker.getAccountStatus()
         );
     }
 
@@ -123,7 +126,8 @@ public class BrokerServiceImpl implements BrokerService {
             broker.getBusinessType(),
             broker.getUser().getEmail(),
             broker.getUser().getRole(),
-            broker.getUser().isEmailVerified()
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
         );
     }
 
@@ -143,7 +147,8 @@ public class BrokerServiceImpl implements BrokerService {
             broker.getBusinessType(),
             broker.getUser().getEmail(),
             broker.getUser().getRole(),
-            broker.getUser().isEmailVerified()
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
         );
     }
 
@@ -163,7 +168,8 @@ public class BrokerServiceImpl implements BrokerService {
             broker.getBusinessType(),
             broker.getUser().getEmail(),
             broker.getUser().getRole(),
-            broker.getUser().isEmailVerified()
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
         );
     }
 /*
@@ -203,7 +209,8 @@ public class BrokerServiceImpl implements BrokerService {
             broker.getBusinessType(),
             broker.getUser().getEmail(),
             broker.getUser().getRole(),
-            broker.getUser().isEmailVerified()
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
         );
     }
 
@@ -223,7 +230,8 @@ public class BrokerServiceImpl implements BrokerService {
             broker.getBusinessType(),
             broker.getUser().getEmail(),
             broker.getUser().getRole(),
-            broker.getUser().isEmailVerified()
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
         );
     }
 
@@ -242,7 +250,8 @@ public class BrokerServiceImpl implements BrokerService {
             broker.getBusinessType(),
             broker.getUser().getEmail(),
             broker.getUser().getRole(),
-            broker.getUser().isEmailVerified()
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
         ))
         .collect(Collectors.toList());
     }
@@ -262,7 +271,8 @@ public class BrokerServiceImpl implements BrokerService {
             broker.getBusinessType(),
             broker.getUser().getEmail(),
             broker.getUser().getRole(),
-            broker.getUser().isEmailVerified()
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
         ))
         .collect(Collectors.toList());
     }
@@ -282,7 +292,8 @@ public class BrokerServiceImpl implements BrokerService {
             broker.getBusinessType(),
             broker.getUser().getEmail(),
             broker.getUser().getRole(),
-            broker.getUser().isEmailVerified()
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
         ))
         .collect(Collectors.toList());
     }
@@ -302,7 +313,8 @@ public class BrokerServiceImpl implements BrokerService {
             broker.getBusinessType(),
             broker.getUser().getEmail(),
             broker.getUser().getRole(),
-            broker.getUser().isEmailVerified()
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
         ))
         .collect(Collectors.toList());
     }
@@ -322,7 +334,8 @@ public class BrokerServiceImpl implements BrokerService {
             broker.getBusinessType(),
             broker.getUser().getEmail(),
             broker.getUser().getRole(),
-            broker.getUser().isEmailVerified()
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
         ))
         .collect(Collectors.toList());
     }
@@ -342,7 +355,8 @@ public class BrokerServiceImpl implements BrokerService {
             broker.getBusinessType(),
             broker.getUser().getEmail(),
             broker.getUser().getRole(),
-            broker.getUser().isEmailVerified()
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
         ))
         .collect(Collectors.toList());
     }
