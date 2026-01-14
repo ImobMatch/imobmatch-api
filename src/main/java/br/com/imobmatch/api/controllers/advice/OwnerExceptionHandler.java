@@ -2,14 +2,13 @@ package br.com.imobmatch.api.controllers.advice;
 
 import br.com.imobmatch.api.dtos.error.ErrorResponseDTO;
 import br.com.imobmatch.api.exceptions.owner.InappropriateUserRoleException;
-import br.com.imobmatch.api.exceptions.owner.NoValidDataProvideException;
+import br.com.imobmatch.api.exceptions.owner.OwnerNoValidDataProvideException;
 import br.com.imobmatch.api.exceptions.owner.OwnerExistsException;
 import br.com.imobmatch.api.exceptions.owner.OwnerNotFoundException;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -59,9 +58,9 @@ public class OwnerExceptionHandler {
                 .body(error);
     }
 
-    @ExceptionHandler(NoValidDataProvideException.class)
+    @ExceptionHandler(OwnerNoValidDataProvideException.class)
     public ResponseEntity<ErrorResponseDTO> handleNoValidDataProvide(
-            NoValidDataProvideException ex,
+            OwnerNoValidDataProvideException ex,
             HttpServletRequest request
     )
     {

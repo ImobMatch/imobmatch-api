@@ -1,10 +1,14 @@
 package br.com.imobmatch.api.services.owner;
 
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
-import br.com.imobmatch.api.dtos.owner.OwnerUpdateDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerCreateDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerUpdateDTO;
 import br.com.imobmatch.api.exceptions.owner.OwnerExistsException;
+import br.com.imobmatch.api.dtos.owner.OwnerGetAllByResponseDTO;
+
+import java.time.LocalDate;
+import java.util.UUID;
 
 public interface OwnerService {
     /**
@@ -30,6 +34,13 @@ public interface OwnerService {
      * birthDate, phoneDdd, phoneNumber,isEmailVerified
      */
     OwnerResponseDTO getOwner();
+
+    OwnerResponseDTO getOwnerByCpf(String cpf);
+    OwnerResponseDTO getOwnerById(UUID id);
+    OwnerResponseDTO getOwnerByEmail(String email);
+    OwnerGetAllByResponseDTO getAllOwnersByName(String name);
+    OwnerGetAllByResponseDTO getAllOwnersByBirthDate(LocalDate birthDate);
+    OwnerGetAllByResponseDTO getAllOwners();
     /**
      *Deletes the system owner and the user associated with them.
      *Requires the user's password to confirm the deletion.
