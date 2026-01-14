@@ -74,11 +74,21 @@ class AuthServiceImplTest {
         LoginResponseDTO login = authService.login(dto);
 
         LoginResponseDTO refreshed =
-                authService.refreshToken(login.getAccessToken());
+                authService.refreshToken(login.getRefreshToken());
 
         assertNotNull(refreshed);
         assertNotNull(refreshed.getAccessToken());
         assertNotEquals(login.getAccessToken(), refreshed.getAccessToken());
+    }
+
+    @Test
+    void shouldRefreshTokenFailure() {
+        AuthenticationDTO dto =
+                new AuthenticationDTO("test@email.com", "123456");
+
+        LoginResponseDTO login = authService.login(dto);
+
+        assertThrows(TokenInvalidException.class, () -> authService.refreshToken(login.getAccessToken()));
     }
 
     @Test
