@@ -46,11 +46,11 @@ public class AuthController {
 
     @PostMapping("/refresh")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<LoginResponseDTO> refresh(
-            @RequestHeader("Authorization") String authorization
-    ) {
-        String token = authorization.replace("Bearer ", "");
-        return ResponseEntity.ok(authService.refreshToken(token));
+    public ResponseEntity<LoginResponseDTO> refreshToken(
+            @RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        LoginResponseDTO response = authService.refreshToken(token);
+        return ResponseEntity.ok(response);
     }
 
 }

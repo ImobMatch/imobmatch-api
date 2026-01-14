@@ -15,8 +15,8 @@ import br.com.imobmatch.api.exceptions.user.UserNotFoundException;
 import br.com.imobmatch.api.infra.email.services.EmailService;
 import br.com.imobmatch.api.models.user.User;
 import br.com.imobmatch.api.models.user.UserVerificationCode;
-import br.com.imobmatch.api.models.user.enums.UserRole;
-import br.com.imobmatch.api.models.user.enums.VerificationType;
+import br.com.imobmatch.api.models.enums.UserRole;
+import br.com.imobmatch.api.models.enums.VerificationType;
 import br.com.imobmatch.api.repositories.UserRepository;
 import br.com.imobmatch.api.utils.Utils;
 

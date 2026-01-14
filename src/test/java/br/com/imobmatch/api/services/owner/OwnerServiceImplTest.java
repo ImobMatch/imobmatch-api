@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +47,7 @@ class OwnerServiceImplTest {
     private UserRepository userRepository;
 
     @MockitoBean
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @MockitoBean
     private AuthService authService;
@@ -120,8 +121,8 @@ class OwnerServiceImplTest {
         dto.setEmail(email);
         dto.setCpf(cpf);
         dto.setPassword("123456");
-        dto.setPhoneDdd("123");
-        dto.setPhoneNumber("123456789");
+        dto.setPersonalPhoneNumber("123456789");
+        dto.setWhatsAppPhoneNumber("987456321");
         dto.setBirthDate(date);
         return dto;
     }

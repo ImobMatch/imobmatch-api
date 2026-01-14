@@ -7,7 +7,7 @@ import br.com.imobmatch.api.dtos.auth.LoginResponseDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.exceptions.auth.TokenInvalidException;
 import br.com.imobmatch.api.models.user.User;
-import br.com.imobmatch.api.models.user.enums.UserRole;
+import br.com.imobmatch.api.models.enums.UserRole;
 import br.com.imobmatch.api.services.user.UserService;
 import jakarta.transaction.Transactional;
 
@@ -21,7 +21,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 
 @SpringBootTest
@@ -64,7 +63,7 @@ class AuthServiceImplTest {
         LoginResponseDTO response = authService.login(dto);
 
         assertNotNull(response);
-        assertNotNull(response.getToken());
+        assertNotNull(response.getAccessToken());
     }
 
     @Test
@@ -75,11 +74,21 @@ class AuthServiceImplTest {
         LoginResponseDTO login = authService.login(dto);
 
         LoginResponseDTO refreshed =
-                authService.refreshToken(login.getToken());
+                authService.refreshToken(login.getRefreshToken());
 
         assertNotNull(refreshed);
-        assertNotNull(refreshed.getToken());
-        assertNotEquals(login.getToken(), refreshed.getToken());
+        assertNotNull(refreshed.getAccessToken());
+        assertNotEquals(login.getAccessToken(), refreshed.getAccessToken());
+    }
+
+    @Test
+    void shouldRefreshTokenFailure() {
+        AuthenticationDTO dto =
+                new AuthenticationDTO("test@email.com", "123456");
+
+        LoginResponseDTO login = authService.login(dto);
+
+        assertThrows(TokenInvalidException.class, () -> authService.refreshToken(login.getAccessToken()));
     }
 
     @Test
@@ -94,7 +103,7 @@ class AuthServiceImplTest {
 
         assertThrows(
                 TokenInvalidException.class,
-                () -> authService.refreshToken(login.getToken())
+                () -> authService.refreshToken(login.getAccessToken())
         );
     }
 
