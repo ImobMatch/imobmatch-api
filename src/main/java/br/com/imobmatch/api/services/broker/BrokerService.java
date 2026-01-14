@@ -15,7 +15,7 @@ import br.com.imobmatch.api.models.broker.enums.BrokerPropertyType;
 
 public interface BrokerService {
     
-    BrokerResponseDTO createBroker(BrokerPostDTO brokerPostDTO, MultipartFile cpfFile, MultipartFile creciFile);
+    BrokerResponseDTO createBroker(BrokerPostDTO brokerPostDTO);
 
     BrokerResponseDTO updateBroker(BrokerPatchDTO brokerPatchDTO);
 

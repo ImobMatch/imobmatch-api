@@ -42,12 +42,13 @@ import lombok.RequiredArgsConstructor;
 
     @Override
     @Transactional
-    public BrokerResponseDTO createBroker(BrokerPostDTO brokerPostDTO, MultipartFile cpfFile, MultipartFile creciFile) {
+    public BrokerResponseDTO createBroker(BrokerPostDTO brokerPostDTO) {
 
-        brokerValidationService.run(brokerPostDTO, cpfFile, creciFile);
+        brokerValidationService.run(brokerPostDTO);
 
         if(brokerRepository.existsBrokerByCpf(brokerPostDTO.getCpf()) || brokerRepository.existsBrokerByCreci(brokerPostDTO.getCreci())) {
             throw new BrokerExistsException();}
+
         UserResponseDTO userResponseDTO = userService.create(
             brokerPostDTO.getEmail(),
             brokerPostDTO.getPassword(),

@@ -37,18 +37,18 @@ public class BrokerController {
 
     private final BrokerService brokerService;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping // Por padrão, o Spring entende que deve consumir application/json ao usar @RequestBody
     public ResponseEntity<BrokerResponseDTO> createBroker(
-            @RequestPart("data") @Valid BrokerPostDTO data,
-            @RequestPart("cpfFile") MultipartFile cpfFile,
-            @RequestPart("creciFile") MultipartFile creciFile
+            @RequestBody @Valid BrokerPostDTO data
     ) {
-        BrokerResponseDTO response = this.brokerService.createBroker(data, cpfFile, creciFile);
+        // Chamada atualizada sem os arquivos
+        BrokerResponseDTO response = this.brokerService.createBroker(data);
         
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(response);
     }
+
 
     @PatchMapping
     @SecurityRequirement(name = "bearerAuth")
