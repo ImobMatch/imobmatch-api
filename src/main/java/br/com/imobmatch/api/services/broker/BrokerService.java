@@ -3,6 +3,8 @@ package br.com.imobmatch.api.services.broker;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 import br.com.imobmatch.api.dtos.broker.BrokerPatchDTO;
 import br.com.imobmatch.api.dtos.broker.BrokerPostDTO;
@@ -13,7 +15,7 @@ import br.com.imobmatch.api.models.broker.enums.BrokerPropertyType;
 
 public interface BrokerService {
     
-    BrokerResponseDTO createBroker(BrokerPostDTO brokerPostDTO);
+    BrokerResponseDTO createBroker(BrokerPostDTO brokerPostDTO, MultipartFile cpfFile, MultipartFile creciFile);
 
     BrokerResponseDTO updateBroker(BrokerPatchDTO brokerPatchDTO);
 

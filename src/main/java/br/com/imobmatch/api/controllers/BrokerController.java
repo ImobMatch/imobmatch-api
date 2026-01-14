@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
-import br.com.imobmatch.api.dtos.broker.BrokerPostDTO;
-import br.com.imobmatch.api.dtos.broker.BrokerResponseDTO;
+
 import org.springframework.http.MediaType;
 import br.com.imobmatch.api.dtos.broker.*;
 import br.com.imobmatch.api.models.broker.enums.BrokerBusinessType;
@@ -37,26 +36,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class BrokerController {
 
     private final BrokerService brokerService;
-    private final BrokerValidationService brokerValidationService;
 
-    @PostMapping
-    @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<BrokerResponseDTO> createBroker(@Valid @RequestBody BrokerPostDTO brokerPostDTO) {
-        return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(this.brokerService.createBroker(brokerPostDTO));
-    }
-
-
-@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<BrokerResponseDTO> create(
-            @RequestPart("data") @Valid BrokerPostDTO data, // @Valid ativa o @CPF do seu DTO
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<BrokerResponseDTO> createBroker(
+            @RequestPart("data") @Valid BrokerPostDTO data,
             @RequestPart("cpfFile") MultipartFile cpfFile,
             @RequestPart("creciFile") MultipartFile creciFile
     ) {
+        BrokerResponseDTO response = this.brokerService.createBroker(data, cpfFile, creciFile);
         
-        brokerValidationService.run(data, cpfFile, creciFile);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(response);
     }
 
     @PatchMapping

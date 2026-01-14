@@ -8,11 +8,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class BrokerValidationService {
 
     /*
-        Serviço responsável por validar os dados e arquivos enviados no cadastro de corretor.
-        Inclui validações como:
-        Presença e formato dos arquivos PDF (CPF e CRECI)
-        Formato válido do CRECI via regex!
-        Outras validações de negócio conforme necessário
+    *   Serviço responsável por validar os dados e arquivos enviados no cadastro de corretor.
+    *   Inclui validações como:
+    *   Presença e formato dos arquivos PDF (CPF e CRECI)
+    *   Formato válido do CRECI via regex!
+    *   Outras validações de negócio conforme necessário
      */
 
 
