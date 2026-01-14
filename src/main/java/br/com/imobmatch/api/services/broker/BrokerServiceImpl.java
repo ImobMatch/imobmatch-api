@@ -7,9 +7,13 @@ import org.springframework.stereotype.Service;
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 import br.com.imobmatch.api.dtos.broker.*;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
+import br.com.imobmatch.api.exceptions.auth.AuthenticationException;
+import br.com.imobmatch.api.exceptions.broker.BrokerExistsException;
+import br.com.imobmatch.api.exceptions.broker.BrokerNotFoundException;
+import br.com.imobmatch.api.exceptions.broker.BrokerNoValidDataProvideException;
 import br.com.imobmatch.api.models.broker.Broker;
 import br.com.imobmatch.api.models.user.User;
-import br.com.imobmatch.api.models.user.UserRole;
+import br.com.imobmatch.api.models.user.enums.UserRole;
 import br.com.imobmatch.api.repositories.BrokerRepository;
 import br.com.imobmatch.api.services.auth.AuthService;
 import br.com.imobmatch.api.services.user.UserService;
@@ -29,7 +33,7 @@ public class BrokerServiceImpl implements BrokerService {
     public BrokerResponseDTO createBroker(BrokerPostDTO brokerPostDTO) {
 
         if(brokerRepository.existsBrokerByCpf(brokerPostDTO.getCpf()) || brokerRepository.existsBrokerByCreci(brokerPostDTO.getCreci())) {
-            throw new IllegalArgumentException("Broker already registered");}
+            throw new BrokerExistsException();}
         UserResponseDTO userResponseDTO = userService.create(
             brokerPostDTO.getEmail(),
             brokerPostDTO.getPassword(),
@@ -37,7 +41,16 @@ public class BrokerServiceImpl implements BrokerService {
         );
 
         User user = userService.findEntityById(userResponseDTO.getId());
-        Broker broker = buildBroker(brokerPostDTO, user);
+        Broker broker = new Broker();
+        broker.setId(user.getId());
+        broker.setName(brokerPostDTO.getName());
+        broker.setCreci(brokerPostDTO.getCreci());
+        broker.setCpf(brokerPostDTO.getCpf());
+        broker.setRegionInterest(brokerPostDTO.getRegionInterest());
+        broker.setPropertyType(brokerPostDTO.getPropertyType());
+        broker.setOperationCity(brokerPostDTO.getOperationCity());
+        broker.setBusinessType(brokerPostDTO.getBusinessType());
+        broker.setUser(user);
 
         brokerRepository.save(broker);
         return new BrokerResponseDTO(
@@ -55,24 +68,10 @@ public class BrokerServiceImpl implements BrokerService {
         );
     }
 
-    private static Broker buildBroker(BrokerPostDTO brokerPostDTO, User user) {
-        Broker broker = new Broker();
-        broker.setId(user.getId());
-        broker.setName(brokerPostDTO.getName());
-        broker.setCreci(brokerPostDTO.getCreci());
-        broker.setCpf(brokerPostDTO.getCpf());
-        broker.setRegionInterest(brokerPostDTO.getRegionInterest());
-        broker.setPropertyType(brokerPostDTO.getPropertyType());
-        broker.setOperationCity(brokerPostDTO.getOperationCity());
-        broker.setBusinessType(brokerPostDTO.getBusinessType());
-        broker.setUser(user);
-        return broker;
-    }
-
     @Override
     public BrokerResponseDTO updateBroker(BrokerPatchDTO brokerPatchDTO) {
         Broker broker = brokerRepository.findById(authService.getMe().getId())
-            .orElseThrow(() -> new IllegalArgumentException("Broker not found"));
+            .orElseThrow(BrokerNotFoundException::new);
 
         boolean isUpdated = false;
         if(brokerPatchDTO.getName() != null && !brokerPatchDTO.getName().isBlank()) {
@@ -100,7 +99,7 @@ public class BrokerServiceImpl implements BrokerService {
             isUpdated = true;
         }
 
-        if(!isUpdated) {throw new IllegalArgumentException("No fields to update");}
+        if(!isUpdated) {throw new BrokerNoValidDataProvideException();}
 
         brokerRepository.save(broker);
         return new BrokerResponseDTO(
@@ -121,7 +120,7 @@ public class BrokerServiceImpl implements BrokerService {
     @Override
     public BrokerResponseDTO getBroker() {
         Broker broker = brokerRepository.findById(authService.getMe().getId())
-            .orElseThrow(() -> new IllegalArgumentException("Broker not found"));
+            .orElseThrow(BrokerNotFoundException::new);
         
         return new BrokerResponseDTO(
             broker.getId(),
@@ -141,7 +140,8 @@ public class BrokerServiceImpl implements BrokerService {
 
     @Override
     @Transactional
-    public void deleteBroker(PasswordUserDeleteDTO passwordUserDeleteDTO) {
+    public void deleteBroker(PasswordUserDeleteDTO passwordUserDeleteDTO)throws AuthenticationException
+            , BrokerNotFoundException {
         
         UUID userId = authService.getMe().getId();
         brokerRepository.deleteById(userId);
