@@ -1,8 +1,8 @@
 package br.com.imobmatch.api.repositories;
 
 import br.com.imobmatch.api.models.broker.Broker;
-import br.com.imobmatch.api.models.broker.BrokerBusinessType;
-import br.com.imobmatch.api.models.broker.BrokerPropertyType;
+import br.com.imobmatch.api.models.broker.enums.BrokerBusinessType;
+import br.com.imobmatch.api.models.broker.enums.BrokerPropertyType;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

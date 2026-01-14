@@ -1,9 +1,11 @@
 package br.com.imobmatch.api.services.broker;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-
+import br.com.imobmatch.api.controllers.AuthController;
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 import br.com.imobmatch.api.dtos.broker.*;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
@@ -12,8 +14,11 @@ import br.com.imobmatch.api.exceptions.broker.BrokerExistsException;
 import br.com.imobmatch.api.exceptions.broker.BrokerNotFoundException;
 import br.com.imobmatch.api.exceptions.broker.BrokerNoValidDataProvideException;
 import br.com.imobmatch.api.models.broker.Broker;
+import br.com.imobmatch.api.models.broker.enums.BrokerAccountStatus;
+import br.com.imobmatch.api.models.broker.enums.BrokerBusinessType;
+import br.com.imobmatch.api.models.broker.enums.BrokerPropertyType;
 import br.com.imobmatch.api.models.user.User;
-import br.com.imobmatch.api.models.user.UserRole;
+import br.com.imobmatch.api.models.user.enums.UserRole;
 import br.com.imobmatch.api.repositories.BrokerRepository;
 import br.com.imobmatch.api.services.auth.AuthService;
 import br.com.imobmatch.api.services.user.UserService;
@@ -24,9 +29,15 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class BrokerServiceImpl implements BrokerService {
 
+    private final AuthController authController;
+
     private BrokerRepository brokerRepository;
     private UserService userService;
     private AuthService authService;
+
+    BrokerServiceImpl(AuthController authController) {
+        this.authController = authController;
+    }
 
     @Override
     @Transactional
@@ -51,6 +62,7 @@ public class BrokerServiceImpl implements BrokerService {
         broker.setOperationCity(brokerPostDTO.getOperationCity());
         broker.setBusinessType(brokerPostDTO.getBusinessType());
         broker.setUser(user);
+        broker.setAccountStatus(BrokerAccountStatus.PENDING);
 
         brokerRepository.save(broker);
         return new BrokerResponseDTO(
@@ -64,7 +76,8 @@ public class BrokerServiceImpl implements BrokerService {
             broker.getBusinessType(),
             user.getEmail(),
             user.getRole(),
-            user.isEmailVerified()
+            user.isEmailVerified(),
+            broker.getAccountStatus()
         );
     }
 
@@ -113,13 +126,56 @@ public class BrokerServiceImpl implements BrokerService {
             broker.getBusinessType(),
             broker.getUser().getEmail(),
             broker.getUser().getRole(),
-            broker.getUser().isEmailVerified()
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
         );
     }
 
     @Override
-    public BrokerResponseDTO getBroker() {
+    public BrokerResponseDTO getMeBroker() {
         Broker broker = brokerRepository.findById(authService.getMe().getId())
+            .orElseThrow(BrokerNotFoundException::new);
+        
+        return new BrokerResponseDTO(
+            broker.getId(),
+            broker.getName(),
+            broker.getCreci(),
+            broker.getCpf(),
+            broker.getRegionInterest(),
+            broker.getPropertyType(),
+            broker.getOperationCity(),
+            broker.getBusinessType(),
+            broker.getUser().getEmail(),
+            broker.getUser().getRole(),
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
+        );
+    }
+
+    @Override
+    public BrokerResponseDTO getByIdBroker(UUID id) {
+        Broker broker = brokerRepository.findById(id)
+            .orElseThrow(BrokerNotFoundException::new);
+        
+        return new BrokerResponseDTO(
+            broker.getId(),
+            broker.getName(),
+            broker.getCreci(),
+            broker.getCpf(),
+            broker.getRegionInterest(),
+            broker.getPropertyType(),
+            broker.getOperationCity(),
+            broker.getBusinessType(),
+            broker.getUser().getEmail(),
+            broker.getUser().getRole(),
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
+        );
+    }
+/*
+    @Override
+    public BrokerResponseDTO getByEmailBroker(String email) {
+        Broker broker = brokerRepository.findByEmail(email)
             .orElseThrow(BrokerNotFoundException::new);
         
         return new BrokerResponseDTO(
@@ -136,7 +192,174 @@ public class BrokerServiceImpl implements BrokerService {
             broker.getUser().isEmailVerified()
         );
     }
+*/
+    @Override
+    public BrokerResponseDTO getByCreciBroker(String creci) {
+        Broker broker = brokerRepository.findByCreci(creci)
+            .orElseThrow(BrokerNotFoundException::new);
+        
+        return new BrokerResponseDTO(
+            broker.getId(),
+            broker.getName(),
+            broker.getCreci(),
+            broker.getCpf(),
+            broker.getRegionInterest(),
+            broker.getPropertyType(),
+            broker.getOperationCity(),
+            broker.getBusinessType(),
+            broker.getUser().getEmail(),
+            broker.getUser().getRole(),
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
+        );
+    }
 
+    @Override
+    public BrokerResponseDTO getByCpfBroker(String cpf) {
+        Broker broker = brokerRepository.findByCpf(cpf)
+            .orElseThrow(BrokerNotFoundException::new);
+        
+        return new BrokerResponseDTO(
+            broker.getId(),
+            broker.getName(),
+            broker.getCreci(),
+            broker.getCpf(),
+            broker.getRegionInterest(),
+            broker.getPropertyType(),
+            broker.getOperationCity(),
+            broker.getBusinessType(),
+            broker.getUser().getEmail(),
+            broker.getUser().getRole(),
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
+        );
+    }
+
+    @Override
+    public List<BrokerResponseDTO> ListByNameBroker(String name) {
+        List<Broker> brokers = brokerRepository.findByNameContainingIgnoreCase(name);
+        return brokers.stream()
+        .map(broker -> new BrokerResponseDTO(
+            broker.getId(),
+            broker.getName(),
+            broker.getCreci(),
+            broker.getCpf(),
+            broker.getRegionInterest(),
+            broker.getPropertyType(),
+            broker.getOperationCity(),
+            broker.getBusinessType(),
+            broker.getUser().getEmail(),
+            broker.getUser().getRole(),
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
+        ))
+        .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BrokerResponseDTO> ListByRegionInterestBroker(String regionInterest) {
+        List<Broker> brokers = brokerRepository.findByRegionInterestContainingIgnoreCase(regionInterest);
+        return brokers.stream()
+        .map(broker -> new BrokerResponseDTO(
+            broker.getId(),
+            broker.getName(),
+            broker.getCreci(),
+            broker.getCpf(),
+            broker.getRegionInterest(),
+            broker.getPropertyType(),
+            broker.getOperationCity(),
+            broker.getBusinessType(),
+            broker.getUser().getEmail(),
+            broker.getUser().getRole(),
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
+        ))
+        .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BrokerResponseDTO> ListByOperationCityBroker(String operationCity) {
+        List<Broker> brokers = brokerRepository.findByOperationCityContainingIgnoreCase(operationCity);
+        return brokers.stream()
+        .map(broker -> new BrokerResponseDTO(
+            broker.getId(),
+            broker.getName(),
+            broker.getCreci(),
+            broker.getCpf(),
+            broker.getRegionInterest(),
+            broker.getPropertyType(),
+            broker.getOperationCity(),
+            broker.getBusinessType(),
+            broker.getUser().getEmail(),
+            broker.getUser().getRole(),
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
+        ))
+        .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BrokerResponseDTO> ListByPropertyTypeBroker(BrokerPropertyType propertyType) {
+        List<Broker> brokers = brokerRepository.findByPropertyType(propertyType);
+        return brokers.stream()
+        .map(broker -> new BrokerResponseDTO(
+            broker.getId(),
+            broker.getName(),
+            broker.getCreci(),
+            broker.getCpf(),
+            broker.getRegionInterest(),
+            broker.getPropertyType(),
+            broker.getOperationCity(),
+            broker.getBusinessType(),
+            broker.getUser().getEmail(),
+            broker.getUser().getRole(),
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
+        ))
+        .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BrokerResponseDTO> ListByBusinessTypeBroker(BrokerBusinessType businessType) {
+        List<Broker> brokers = brokerRepository.findByBusinessType(businessType);
+        return brokers.stream()
+        .map(broker -> new BrokerResponseDTO(
+            broker.getId(),
+            broker.getName(),
+            broker.getCreci(),
+            broker.getCpf(),
+            broker.getRegionInterest(),
+            broker.getPropertyType(),
+            broker.getOperationCity(),
+            broker.getBusinessType(),
+            broker.getUser().getEmail(),
+            broker.getUser().getRole(),
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
+        ))
+        .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BrokerResponseDTO> ListAllBroker() {
+        List<Broker> brokers = brokerRepository.findAll();
+        return brokers.stream()
+        .map(broker -> new BrokerResponseDTO(
+            broker.getId(),
+            broker.getName(),
+            broker.getCreci(),
+            broker.getCpf(),
+            broker.getRegionInterest(),
+            broker.getPropertyType(),
+            broker.getOperationCity(),
+            broker.getBusinessType(),
+            broker.getUser().getEmail(),
+            broker.getUser().getRole(),
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
+        ))
+        .collect(Collectors.toList());
+    }
 
     @Override
     @Transactional
