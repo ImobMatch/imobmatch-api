@@ -121,8 +121,8 @@ class OwnerServiceImplTest {
         dto.setEmail(email);
         dto.setCpf(cpf);
         dto.setPassword("123456");
-        dto.setPhoneDdd("123");
-        dto.setPhoneNumber("123456789");
+        dto.setPersonalPhoneNumber("123456789");
+        dto.setWhatsAppPhoneNumber("987456321");
         dto.setBirthDate(date);
         return dto;
     }
