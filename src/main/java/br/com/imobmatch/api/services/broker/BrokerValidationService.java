@@ -27,7 +27,7 @@ public class BrokerValidationService {
     private boolean isCreciValid(String creci) {
         if (creci == null) return false;
         
-        String cleanCreci = creci.replaceAll("[^a-zA-Z0-9]", "");
+        String cleanCreci = creci.replaceAll("[^a-zA-Z0-9]", "").toUpperCase();
         
         return cleanCreci.matches("^\\d{4,6}[a-zA-Z]?$");
     }

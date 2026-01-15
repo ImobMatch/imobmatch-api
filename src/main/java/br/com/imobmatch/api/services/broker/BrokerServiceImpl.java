@@ -44,10 +44,15 @@ import lombok.RequiredArgsConstructor;
     @Transactional
     public BrokerResponseDTO createBroker(BrokerPostDTO brokerPostDTO) {
 
-        brokerValidationService.run(brokerPostDTO);        
+        brokerValidationService.run(brokerPostDTO);
+        String cleanCpf = removeNonDigits(brokerPostDTO.getCpf()); 
+        String cleanCreci = getCleanCreci(brokerPostDTO.getCreci());
+        String cleanWhatsAppPhoneNumber = removeNonDigits(brokerPostDTO.getWhatsAppPhoneNumber());
+        String cleanPersonalPhoneNumber = brokerPostDTO.getPersonalPhoneNumber() != null ? 
+            removeNonDigits(brokerPostDTO.getPersonalPhoneNumber()) : null;
 
-        if(brokerRepository.existsBrokerByCpf(brokerPostDTO.getCpf()) || 
-        brokerRepository.existsBrokerByCreci(brokerPostDTO.getCreci()) ||
+        if(brokerRepository.existsBrokerByCpf(cleanCpf) || 
+        brokerRepository.existsBrokerByCreci(cleanCreci) ||
         brokerRepository.existsByUser_Email(brokerPostDTO.getEmail())) {
             throw new BrokerExistsException();}
 
@@ -60,17 +65,17 @@ import lombok.RequiredArgsConstructor;
         User user = userService.findEntityById(userResponseDTO.getId());
         Broker broker = new Broker();
         broker.setId(user.getId());
-        broker.setName(brokerPostDTO.getName());
-        broker.setCreci(brokerPostDTO.getCreci());
-        broker.setCpf(brokerPostDTO.getCpf());
-        broker.setRegionInterest(brokerPostDTO.getRegionInterest());
+        broker.setName(brokerPostDTO.getName().strip());
+        broker.setCreci(cleanCreci);
+        broker.setCpf(cleanCpf);
+        broker.setRegionInterest(brokerPostDTO.getRegionInterest().strip());
         broker.setPropertyType(brokerPostDTO.getPropertyType());
-        broker.setOperationCity(brokerPostDTO.getOperationCity());
+        broker.setOperationCity(brokerPostDTO.getOperationCity().strip());
         broker.setBusinessType(brokerPostDTO.getBusinessType());
         broker.setUser(user);
         broker.setBirthDate(brokerPostDTO.getBirthDate());
-        broker.setWhatsAppPhoneNumber(brokerPostDTO.getWhatsAppPhoneNumber());
-        broker.setPersonalPhoneNumber(brokerPostDTO.getPersonalPhoneNumber());
+        broker.setWhatsAppPhoneNumber(cleanWhatsAppPhoneNumber);
+        broker.setPersonalPhoneNumber(cleanPersonalPhoneNumber);
         broker.setAccountStatus(BrokerAccountStatus.PENDING);
 
         brokerRepository.save(broker);
@@ -84,17 +89,17 @@ import lombok.RequiredArgsConstructor;
 
         boolean isUpdated = false;
         if(brokerPatchDTO.getName() != null && !brokerPatchDTO.getName().isBlank()) {
-            broker.setName(brokerPatchDTO.getName());
+            broker.setName(brokerPatchDTO.getName().strip());
             isUpdated = true;
         }
 
         if(brokerPatchDTO.getRegionInterest() != null && !brokerPatchDTO.getRegionInterest().isBlank()) {
-            broker.setRegionInterest(brokerPatchDTO.getRegionInterest());
+            broker.setRegionInterest(brokerPatchDTO.getRegionInterest().strip());
             isUpdated = true;
         }
 
         if(brokerPatchDTO.getOperationCity() != null && !brokerPatchDTO.getOperationCity().isBlank()) {
-            broker.setOperationCity(brokerPatchDTO.getOperationCity());
+            broker.setOperationCity(brokerPatchDTO.getOperationCity().strip());
             isUpdated = true;
         }
 
@@ -113,12 +118,12 @@ import lombok.RequiredArgsConstructor;
         }
 
         if(brokerPatchDTO.getWhatsAppPhoneNumber() != null && !brokerPatchDTO.getWhatsAppPhoneNumber().isBlank()) {
-            broker.setWhatsAppPhoneNumber(brokerPatchDTO.getWhatsAppPhoneNumber());
+            broker.setWhatsAppPhoneNumber(removeNonDigits(brokerPatchDTO.getWhatsAppPhoneNumber()));
             isUpdated = true;
         }
 
         if(brokerPatchDTO.getPersonalPhoneNumber() != null && !brokerPatchDTO.getPersonalPhoneNumber().isBlank()) {
-            broker.setPersonalPhoneNumber(brokerPatchDTO.getPersonalPhoneNumber());
+            broker.setPersonalPhoneNumber(removeNonDigits(brokerPatchDTO.getPersonalPhoneNumber()));
             isUpdated = true;
         }
 
@@ -153,7 +158,7 @@ import lombok.RequiredArgsConstructor;
     }
     @Override
     public BrokerResponseDTO getByCreciBroker(String creci) {
-        Broker broker = brokerRepository.findByCreci(creci)
+        Broker broker = brokerRepository.findByCreci(getCleanCreci(creci))
             .orElseThrow(BrokerNotFoundException::new);
         
         return buildBrokerResponseDto(broker);
@@ -161,7 +166,7 @@ import lombok.RequiredArgsConstructor;
 
     @Override
     public BrokerResponseDTO getByCpfBroker(String cpf) {
-        Broker broker = brokerRepository.findByCpf(cpf)
+        Broker broker = brokerRepository.findByCpf(removeNonDigits(cpf))
             .orElseThrow(BrokerNotFoundException::new);
         
         return buildBrokerResponseDto(broker);
@@ -169,7 +174,7 @@ import lombok.RequiredArgsConstructor;
 
     @Override
     public List<BrokerResponseDTO> ListByNameBroker(String name) {
-        List<Broker> brokers = brokerRepository.findByNameContainingIgnoreCase(name);
+        List<Broker> brokers = brokerRepository.findByNameContainingIgnoreCase(name.strip());
         return brokers.stream()
         .map(broker -> buildBrokerResponseDto(broker))
         .collect(Collectors.toList());
@@ -177,7 +182,7 @@ import lombok.RequiredArgsConstructor;
 
     @Override
     public List<BrokerResponseDTO> ListByRegionInterestBroker(String regionInterest) {
-        List<Broker> brokers = brokerRepository.findByRegionInterestContainingIgnoreCase(regionInterest);
+        List<Broker> brokers = brokerRepository.findByRegionInterestContainingIgnoreCase(regionInterest.strip());
         return brokers.stream()
         .map(broker -> buildBrokerResponseDto(broker))
         .collect(Collectors.toList());
@@ -185,7 +190,7 @@ import lombok.RequiredArgsConstructor;
 
     @Override
     public List<BrokerResponseDTO> ListByOperationCityBroker(String operationCity) {
-        List<Broker> brokers = brokerRepository.findByOperationCityContainingIgnoreCase(operationCity);
+        List<Broker> brokers = brokerRepository.findByOperationCityContainingIgnoreCase(operationCity.strip());
         return brokers.stream()
         .map(broker -> buildBrokerResponseDto(broker))
         .collect(Collectors.toList());
@@ -245,5 +250,12 @@ import lombok.RequiredArgsConstructor;
             broker.getAccountStatus()
         );
     }
-    
+
+    private String getCleanCreci(String creci) {
+        return creci.replaceAll("[^a-zA-Z0-9]", "").toUpperCase();
+    }
+
+    private String removeNonDigits(String cpf) {
+        return cpf.replaceAll("\\D", "");
+    }
 }
