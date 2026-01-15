@@ -3,6 +3,8 @@ package br.com.imobmatch.api.services.broker;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 import br.com.imobmatch.api.dtos.broker.BrokerPatchDTO;
 import br.com.imobmatch.api.dtos.broker.BrokerPostDTO;

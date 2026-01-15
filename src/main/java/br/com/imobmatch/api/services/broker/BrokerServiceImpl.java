@@ -5,6 +5,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import br.com.imobmatch.api.controllers.AuthController;
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 import br.com.imobmatch.api.dtos.broker.*;
@@ -24,29 +26,31 @@ import br.com.imobmatch.api.services.auth.AuthService;
 import br.com.imobmatch.api.services.user.UserService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@Service
-@AllArgsConstructor
-public class BrokerServiceImpl implements BrokerService {
+    @Service
+    @RequiredArgsConstructor 
+    public class BrokerServiceImpl implements BrokerService {
 
-    private final AuthController authController;
-
-    private BrokerRepository brokerRepository;
-    private UserService userService;
-    private AuthService authService;
-
-    BrokerServiceImpl(AuthController authController) {
-        this.authController = authController;
-    }
+        // private final AuthController authController;
+        private final BrokerValidationService brokerValidationService; 
+        private final BrokerRepository brokerRepository;
+        private final UserService userService;
+        private final AuthService authService;
+    
+    
 
     @Override
     @Transactional
     public BrokerResponseDTO createBroker(BrokerPostDTO brokerPostDTO) {
 
+        brokerValidationService.run(brokerPostDTO);        
+
         if(brokerRepository.existsBrokerByCpf(brokerPostDTO.getCpf()) || 
         brokerRepository.existsBrokerByCreci(brokerPostDTO.getCreci()) ||
         brokerRepository.existsByUser_Email(brokerPostDTO.getEmail())) {
             throw new BrokerExistsException();}
+
         UserResponseDTO userResponseDTO = userService.create(
             brokerPostDTO.getEmail(),
             brokerPostDTO.getPassword(),

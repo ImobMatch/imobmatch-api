@@ -12,13 +12,18 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
+
+import org.springframework.http.MediaType;
 import br.com.imobmatch.api.dtos.broker.*;
 import br.com.imobmatch.api.models.enums.BrokerBusinessType;
 import br.com.imobmatch.api.models.enums.BrokerPropertyType;
 import br.com.imobmatch.api.services.broker.BrokerService;
+import br.com.imobmatch.api.services.broker.BrokerValidationService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.*;
@@ -31,13 +36,18 @@ public class BrokerController {
 
     private final BrokerService brokerService;
 
-    @PostMapping
-    @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<BrokerResponseDTO> createBroker(@Valid @RequestBody BrokerPostDTO brokerPostDTO) {
+    @PostMapping // Por padrão, o Spring entende que deve consumir application/json ao usar @RequestBody
+    public ResponseEntity<BrokerResponseDTO> createBroker(
+            @RequestBody @Valid BrokerPostDTO data
+    ) {
+        // Chamada atualizada sem os arquivos
+        BrokerResponseDTO response = this.brokerService.createBroker(data);
+        
         return ResponseEntity
             .status(HttpStatus.CREATED)
-            .body(this.brokerService.createBroker(brokerPostDTO));
+            .body(response);
     }
+
 
     @PatchMapping
     @SecurityRequirement(name = "bearerAuth")
