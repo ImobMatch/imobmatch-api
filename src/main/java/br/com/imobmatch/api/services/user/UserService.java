@@ -10,7 +10,7 @@ import br.com.imobmatch.api.exceptions.email.RequestNotFoundException;
 import br.com.imobmatch.api.exceptions.user.UserExistsException;
 import br.com.imobmatch.api.exceptions.user.UserNotFoundException;
 import br.com.imobmatch.api.models.user.User;
-import br.com.imobmatch.api.models.user.enums.UserRole;
+import br.com.imobmatch.api.models.enums.UserRole;
 
 import java.util.UUID;
 

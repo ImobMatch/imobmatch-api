@@ -20,14 +20,13 @@ import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 
 import org.springframework.http.MediaType;
 import br.com.imobmatch.api.dtos.broker.*;
-import br.com.imobmatch.api.models.broker.enums.BrokerBusinessType;
-import br.com.imobmatch.api.models.broker.enums.BrokerPropertyType;
+import br.com.imobmatch.api.models.enums.BrokerBusinessType;
+import br.com.imobmatch.api.models.enums.BrokerPropertyType;
 import br.com.imobmatch.api.services.broker.BrokerService;
 import br.com.imobmatch.api.services.broker.BrokerValidationService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.*;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -70,7 +69,7 @@ public class BrokerController {
             .body(brokerService.getMeBroker());
     }
 
-    @GetMapping("/id/{id}")
+    @GetMapping(value = "/search", params = "id")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<BrokerResponseDTO> getByIdBroker(@Valid @RequestBody UUID id) {
 
@@ -79,7 +78,7 @@ public class BrokerController {
             .body(brokerService.getByIdBroker(id));
     }
 
-    @GetMapping("/creci/{creci}")
+    @GetMapping(value = "/search", params = "creci")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<BrokerResponseDTO> getByCreciBroker(@Valid @RequestBody String creci) {
 
@@ -88,7 +87,7 @@ public class BrokerController {
             .body(brokerService.getByCreciBroker(creci));
     }
 
-    @GetMapping("/cpf/{cpf}")
+    @GetMapping(value = "/search", params = "cpf")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<BrokerResponseDTO> getByCpfBroker(@Valid @RequestBody String cpf) {
 
@@ -97,7 +96,7 @@ public class BrokerController {
             .body(brokerService.getByCpfBroker(cpf));
     }
 
-    @GetMapping("/name/{name}")
+    @GetMapping(value = "/search", params = "name")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<List<BrokerResponseDTO>> ListByNameBroker(@Valid @RequestBody String name) {
 
@@ -106,7 +105,7 @@ public class BrokerController {
             .body(brokerService.ListByNameBroker(name));
     }
 
-    @GetMapping("/region-interest/{regionInterest}")
+    @GetMapping(value = "/search", params = "regionInterest")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<List<BrokerResponseDTO>> ListByRegionInterestBroker(@Valid @RequestBody String regionInterest) {
 
@@ -115,7 +114,7 @@ public class BrokerController {
             .body(brokerService.ListByRegionInterestBroker(regionInterest));
     }
 
-    @GetMapping("/operation-city/{operationCity}")
+    @GetMapping(value = "/search", params = "operationCity")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<List<BrokerResponseDTO>> ListByOperationCityBroker(@Valid @RequestBody String operationCity) {
 
@@ -124,7 +123,7 @@ public class BrokerController {
             .body(brokerService.ListByOperationCityBroker(operationCity));
     }
 
-    @GetMapping("/property-type/{propertyType}")
+    @GetMapping(value = "/search", params = "propertyType")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<List<BrokerResponseDTO>> ListByPropertyTypeBroker(@Valid @RequestBody BrokerPropertyType propertyType) {
 
@@ -133,7 +132,7 @@ public class BrokerController {
             .body(brokerService.ListByPropertyTypeBroker(propertyType));
     }
 
-    @GetMapping("/business-type/{businessType}")
+    @GetMapping(value = "/search", params = "businessType")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<List<BrokerResponseDTO>> ListByBusinessTypeBroker(@Valid @RequestBody BrokerBusinessType businessType) {
 
@@ -142,7 +141,7 @@ public class BrokerController {
             .body(brokerService.ListByBusinessTypeBroker(businessType));
     }
 
-    @GetMapping("/all")
+    @GetMapping("/search")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<List<BrokerResponseDTO>> ListAllBroker() {
 

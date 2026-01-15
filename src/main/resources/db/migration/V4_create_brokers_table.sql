@@ -18,6 +18,8 @@ CREATE TABLE brokers (
     operation_city VARCHAR(255),
     business_type business_type_enum, -- New Table?
     birth_date DATE NOT NULL,
+    whats_app_phone_number VARCHAR(20) NOT NULL,
+    personal_phone_number VARCHAR(20),
     account_status account_status_enum NOT NULL,
     CONSTRAINT fk_user
         FOREIGN KEY(id)

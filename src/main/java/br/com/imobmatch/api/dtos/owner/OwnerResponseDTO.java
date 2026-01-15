@@ -1,14 +1,16 @@
 package br.com.imobmatch.api.dtos.owner;
 
-import br.com.imobmatch.api.models.user.enums.UserRole;
+import br.com.imobmatch.api.models.enums.UserRole;
 import java.time.LocalDate;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+
+import lombok.*;
 
 import java.util.UUID;
 
-@Getter
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class OwnerResponseDTO {
 
     private UUID id;
@@ -16,8 +18,8 @@ public class OwnerResponseDTO {
     private String cpf;
     private String email;
     private UserRole role;
-    private String phoneNumber;
-    private String phoneDdd;
+    private String whatsAppPhoneNumber;
+    private String personalPhoneNumber;
     private LocalDate birthDate;
     private boolean isEmailVerified;
 }

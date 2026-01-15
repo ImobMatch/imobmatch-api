@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Past;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +18,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "owners")
 public class Owner {
 
@@ -35,13 +37,14 @@ public class Owner {
     @Column(name = "cpf", nullable = false, length = 11,  unique = true)
     private String cpf;
 
-    @Column(name = "phone_ddd", nullable = false, length = 3)
-    private String phoneDdd;
-
     @Past
     @Column(name ="birth_date", nullable = false)
     private LocalDate birthDate;
 
-    @Column(name = "phone_number", nullable = false, length=9)
-    private String phoneNumber;
+    @Column(name="whats_app_phone_number",  nullable = false, length = 20)
+    private String whatsAppPhoneNumber;
+
+    @Column(name="personal_phone_number", length = 20)
+    private String personalPhoneNumber;
+
 }

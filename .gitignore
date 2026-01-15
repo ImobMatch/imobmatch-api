@@ -19,6 +19,8 @@ target/
 *.iws
 *.iml
 *.ipr
+credetialsImobMatch.txt
+.env
 
 ### NetBeans ###
 /nbproject/private/

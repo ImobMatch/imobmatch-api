@@ -3,9 +3,9 @@ package br.com.imobmatch.api.models.broker;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import br.com.imobmatch.api.models.broker.enums.BrokerAccountStatus;
-import br.com.imobmatch.api.models.broker.enums.BrokerBusinessType;
-import br.com.imobmatch.api.models.broker.enums.BrokerPropertyType;
+import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
+import br.com.imobmatch.api.models.enums.BrokerBusinessType;
+import br.com.imobmatch.api.models.enums.BrokerPropertyType;
 import br.com.imobmatch.api.models.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Past;
@@ -50,6 +50,12 @@ public class Broker {
     @Past
     @Column(name ="birth_date", nullable = false)
     private LocalDate birthDate;
+
+    @Column(name="whats_app_phone_number",  nullable = false, length = 20)
+    private String whatsAppPhoneNumber;
+
+    @Column(name="personal_phone_number", length = 20)
+    private String personalPhoneNumber;
 
     @OneToOne
     @MapsId

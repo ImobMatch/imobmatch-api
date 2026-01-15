@@ -4,11 +4,11 @@ import br.com.imobmatch.api.dtos.auth.AuthenticationDTO;
 import br.com.imobmatch.api.dtos.auth.LoginResponseDTO;
 import br.com.imobmatch.api.dtos.auth.TokenDataDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
-import br.com.imobmatch.api.exceptions.auth.TokenExpiredException;
 import br.com.imobmatch.api.exceptions.auth.TokenInvalidException;
 import br.com.imobmatch.api.exceptions.email.EmailNotVerifiedException;
 import br.com.imobmatch.api.exceptions.user.UserNotFoundException;
-import br.com.imobmatch.api.infra.security.service.token.TokenService;
+import br.com.imobmatch.api.infra.security.services.token.TokenService;
+import br.com.imobmatch.api.models.enums.TokenType;
 import br.com.imobmatch.api.models.user.User;
 import br.com.imobmatch.api.services.user.UserService;
 import lombok.AllArgsConstructor;
@@ -38,8 +38,10 @@ public class AuthServiceImpl implements AuthService{
         if(!user.isEmailVerified()){
             throw new EmailNotVerifiedException();        }
 
-        var token =  this.tokenService.generateToken(user);
-        return  new LoginResponseDTO(token);
+        String accessToken = this.tokenService.generateAccessToken(user);
+        String refreshToken = this.tokenService.generateRefreshToken(user);
+
+        return new LoginResponseDTO(accessToken, refreshToken);
     }
 
     @Override
@@ -50,22 +52,17 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public LoginResponseDTO refreshToken(String token) throws TokenExpiredException, TokenInvalidException{
-        TokenDataDTO tokenData = tokenService.validateToken(token);
+    public LoginResponseDTO refreshToken(String refreshToken) throws TokenInvalidException {
+        TokenDataDTO tokenData = tokenService.validateRefreshToken(refreshToken);
 
-        try {
-            User user = userService.findEntityById(tokenData.getId());
-            String newToken = tokenService.generateToken(user);
-            return new LoginResponseDTO(newToken);
-        } catch (UserNotFoundException e){
-            throw new TokenInvalidException("User not found");
+        if(tokenData.getTokenType() != TokenType.REFRESH){
+            throw new TokenInvalidException("Token Send not REFRESH");
         }
 
+        User user = userService.findEntityById(tokenData.getId());
+        String newAccessToken = tokenService.generateAccessToken(user);
+        return new LoginResponseDTO(newAccessToken, refreshToken);
     }
 
-    private TokenDataDTO getToken(String token) {
-        TokenDataDTO tokenData = this.tokenService.validateToken(token);
-        return tokenData;
-    }
 
 }

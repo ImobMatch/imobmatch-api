@@ -1,47 +1,26 @@
 package br.com.imobmatch.api.controllers.advice;
 
-import br.com.imobmatch.api.dtos.error.ErrorResponseDTO;
-import br.com.imobmatch.api.exceptions.owner.InappropriateUserRoleException;
-import br.com.imobmatch.api.exceptions.owner.OwnerNoValidDataProvideException;
-import br.com.imobmatch.api.exceptions.owner.OwnerExistsException;
-import br.com.imobmatch.api.exceptions.owner.OwnerNotFoundException;
-import io.swagger.v3.oas.annotations.Hidden;
-import jakarta.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.LocalDateTime;
+import br.com.imobmatch.api.dtos.error.ErrorResponseDTO;
+import br.com.imobmatch.api.exceptions.broker.BrokerExistsException;
+import br.com.imobmatch.api.exceptions.broker.BrokerNoValidDataProvideException;
+import br.com.imobmatch.api.exceptions.broker.BrokerNotFoundException;
+import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Hidden
 @RestControllerAdvice(basePackages = "br.com.imobmatch.api.controllers")
-public class OwnerExceptionHandler {
-    @ExceptionHandler(InappropriateUserRoleException.class)
-    public ResponseEntity<ErrorResponseDTO> handleInappropriateUserRole(
-
-            InappropriateUserRoleException ex,
-            HttpServletRequest request
-    ){
-
-        ErrorResponseDTO error = new ErrorResponseDTO(
-                LocalDateTime.now(),
-                HttpStatus.UNPROCESSABLE_ENTITY.value(),
-                HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(),
-                ex.getMessage(),
-                request.getRequestURI()
-
-
-        );
-
-        return  ResponseEntity
-                .status(HttpStatus.UNPROCESSABLE_ENTITY)
-                .body(error);
-    }
-
-    @ExceptionHandler(OwnerExistsException.class)
-    public ResponseEntity<ErrorResponseDTO> handleOwnerExists(
-            OwnerExistsException ex,
+public class BrokerExceptionHandler {
+    
+    @ExceptionHandler(BrokerExistsException.class)
+    public ResponseEntity<ErrorResponseDTO> handleBrokerExists(
+            BrokerExistsException ex,
             HttpServletRequest request
     ){
         ErrorResponseDTO error = new ErrorResponseDTO(
@@ -58,9 +37,30 @@ public class OwnerExceptionHandler {
                 .body(error);
     }
 
-    @ExceptionHandler(OwnerNoValidDataProvideException.class)
+    @ExceptionHandler(BrokerNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleBrokerNotExists(
+            BrokerNotFoundException ex,
+            HttpServletRequest request
+    )
+    {
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(error);
+
+    }
+
+    
+    @ExceptionHandler(BrokerNoValidDataProvideException.class)
     public ResponseEntity<ErrorResponseDTO> handleNoValidDataProvide(
-            OwnerNoValidDataProvideException ex,
+            BrokerNoValidDataProvideException ex,
             HttpServletRequest request
     )
     {
@@ -75,25 +75,4 @@ public class OwnerExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(error);
     }
-
-    @ExceptionHandler(OwnerNotFoundException.class)
-    public ResponseEntity<ErrorResponseDTO> handleOwnerNotExists(
-            OwnerNotFoundException ex,
-            HttpServletRequest request
-    )
-    {
-        ErrorResponseDTO error = new ErrorResponseDTO(
-                LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                ex.getMessage(),
-                request.getRequestURI()
-        );
-
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(error);
-
-    }
-
 }

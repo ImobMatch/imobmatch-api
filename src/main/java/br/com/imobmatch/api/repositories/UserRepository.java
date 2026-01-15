@@ -1,7 +1,7 @@
 package br.com.imobmatch.api.repositories;
 
 import br.com.imobmatch.api.models.user.User;
-import br.com.imobmatch.api.models.user.enums.UserRole;
+import br.com.imobmatch.api.models.enums.UserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -16,11 +16,11 @@ import br.com.imobmatch.api.exceptions.broker.BrokerExistsException;
 import br.com.imobmatch.api.exceptions.broker.BrokerNotFoundException;
 import br.com.imobmatch.api.exceptions.broker.BrokerNoValidDataProvideException;
 import br.com.imobmatch.api.models.broker.Broker;
-import br.com.imobmatch.api.models.broker.enums.BrokerAccountStatus;
-import br.com.imobmatch.api.models.broker.enums.BrokerBusinessType;
-import br.com.imobmatch.api.models.broker.enums.BrokerPropertyType;
+import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
+import br.com.imobmatch.api.models.enums.BrokerBusinessType;
+import br.com.imobmatch.api.models.enums.BrokerPropertyType;
 import br.com.imobmatch.api.models.user.User;
-import br.com.imobmatch.api.models.user.enums.UserRole;
+import br.com.imobmatch.api.models.enums.UserRole;
 import br.com.imobmatch.api.repositories.BrokerRepository;
 import br.com.imobmatch.api.services.auth.AuthService;
 import br.com.imobmatch.api.services.user.UserService;
@@ -44,9 +44,11 @@ import lombok.RequiredArgsConstructor;
     @Transactional
     public BrokerResponseDTO createBroker(BrokerPostDTO brokerPostDTO) {
 
-        brokerValidationService.run(brokerPostDTO);
+        brokerValidationService.run(brokerPostDTO);        
 
-        if(brokerRepository.existsBrokerByCpf(brokerPostDTO.getCpf()) || brokerRepository.existsBrokerByCreci(brokerPostDTO.getCreci())) {
+        if(brokerRepository.existsBrokerByCpf(brokerPostDTO.getCpf()) || 
+        brokerRepository.existsBrokerByCreci(brokerPostDTO.getCreci()) ||
+        brokerRepository.existsByUser_Email(brokerPostDTO.getEmail())) {
             throw new BrokerExistsException();}
 
         UserResponseDTO userResponseDTO = userService.create(
@@ -66,23 +68,13 @@ import lombok.RequiredArgsConstructor;
         broker.setOperationCity(brokerPostDTO.getOperationCity());
         broker.setBusinessType(brokerPostDTO.getBusinessType());
         broker.setUser(user);
+        broker.setBirthDate(brokerPostDTO.getBirthDate());
+        broker.setWhatsAppPhoneNumber(brokerPostDTO.getWhatsAppPhoneNumber());
+        broker.setPersonalPhoneNumber(brokerPostDTO.getPersonalPhoneNumber());
         broker.setAccountStatus(BrokerAccountStatus.PENDING);
 
         brokerRepository.save(broker);
-        return new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            user.getEmail(),
-            user.getRole(),
-            user.isEmailVerified(),
-            broker.getAccountStatus()
-        );
+        return buildBrokerResponseDto(broker);
     }
 
     @Override
@@ -115,24 +107,25 @@ import lombok.RequiredArgsConstructor;
             broker.setBusinessType(brokerPatchDTO.getBusinessType());
             isUpdated = true;
         }
+        if(brokerPatchDTO.getBirthDate() != null) {
+            broker.setBirthDate(brokerPatchDTO.getBirthDate());
+            isUpdated = true;
+        }
+
+        if(brokerPatchDTO.getWhatsAppPhoneNumber() != null && !brokerPatchDTO.getWhatsAppPhoneNumber().isBlank()) {
+            broker.setWhatsAppPhoneNumber(brokerPatchDTO.getWhatsAppPhoneNumber());
+            isUpdated = true;
+        }
+
+        if(brokerPatchDTO.getPersonalPhoneNumber() != null && !brokerPatchDTO.getPersonalPhoneNumber().isBlank()) {
+            broker.setPersonalPhoneNumber(brokerPatchDTO.getPersonalPhoneNumber());
+            isUpdated = true;
+        }
 
         if(!isUpdated) {throw new BrokerNoValidDataProvideException();}
 
         brokerRepository.save(broker);
-        return new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        );
+        return buildBrokerResponseDto(broker);
     }
 
     @Override
@@ -140,20 +133,7 @@ import lombok.RequiredArgsConstructor;
         Broker broker = brokerRepository.findById(authService.getMe().getId())
             .orElseThrow(BrokerNotFoundException::new);
         
-        return new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        );
+        return buildBrokerResponseDto(broker);
     }
 
     @Override
@@ -161,61 +141,22 @@ import lombok.RequiredArgsConstructor;
         Broker broker = brokerRepository.findById(id)
             .orElseThrow(BrokerNotFoundException::new);
         
-        return new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        );
+        return buildBrokerResponseDto(broker);
     }
-/*
+
     @Override
     public BrokerResponseDTO getByEmailBroker(String email) {
-        Broker broker = brokerRepository.findByEmail(email)
+        Broker broker = brokerRepository.findByUser_Email(email)
             .orElseThrow(BrokerNotFoundException::new);
         
-        return new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified()
-        );
+        return buildBrokerResponseDto(broker);
     }
-*/
     @Override
     public BrokerResponseDTO getByCreciBroker(String creci) {
         Broker broker = brokerRepository.findByCreci(creci)
             .orElseThrow(BrokerNotFoundException::new);
         
-        return new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        );
+        return buildBrokerResponseDto(broker);
     }
 
     @Override
@@ -223,40 +164,14 @@ import lombok.RequiredArgsConstructor;
         Broker broker = brokerRepository.findByCpf(cpf)
             .orElseThrow(BrokerNotFoundException::new);
         
-        return new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        );
+        return buildBrokerResponseDto(broker);
     }
 
     @Override
     public List<BrokerResponseDTO> ListByNameBroker(String name) {
         List<Broker> brokers = brokerRepository.findByNameContainingIgnoreCase(name);
         return brokers.stream()
-        .map(broker -> new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        ))
+        .map(broker -> buildBrokerResponseDto(broker))
         .collect(Collectors.toList());
     }
 
@@ -264,20 +179,7 @@ import lombok.RequiredArgsConstructor;
     public List<BrokerResponseDTO> ListByRegionInterestBroker(String regionInterest) {
         List<Broker> brokers = brokerRepository.findByRegionInterestContainingIgnoreCase(regionInterest);
         return brokers.stream()
-        .map(broker -> new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        ))
+        .map(broker -> buildBrokerResponseDto(broker))
         .collect(Collectors.toList());
     }
 
@@ -285,20 +187,7 @@ import lombok.RequiredArgsConstructor;
     public List<BrokerResponseDTO> ListByOperationCityBroker(String operationCity) {
         List<Broker> brokers = brokerRepository.findByOperationCityContainingIgnoreCase(operationCity);
         return brokers.stream()
-        .map(broker -> new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        ))
+        .map(broker -> buildBrokerResponseDto(broker))
         .collect(Collectors.toList());
     }
 
@@ -306,20 +195,7 @@ import lombok.RequiredArgsConstructor;
     public List<BrokerResponseDTO> ListByPropertyTypeBroker(BrokerPropertyType propertyType) {
         List<Broker> brokers = brokerRepository.findByPropertyType(propertyType);
         return brokers.stream()
-        .map(broker -> new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        ))
+        .map(broker -> buildBrokerResponseDto(broker))
         .collect(Collectors.toList());
     }
 
@@ -327,20 +203,7 @@ import lombok.RequiredArgsConstructor;
     public List<BrokerResponseDTO> ListByBusinessTypeBroker(BrokerBusinessType businessType) {
         List<Broker> brokers = brokerRepository.findByBusinessType(businessType);
         return brokers.stream()
-        .map(broker -> new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        ))
+        .map(broker -> buildBrokerResponseDto(broker))
         .collect(Collectors.toList());
     }
 
@@ -348,20 +211,7 @@ import lombok.RequiredArgsConstructor;
     public List<BrokerResponseDTO> ListAllBroker() {
         List<Broker> brokers = brokerRepository.findAll();
         return brokers.stream()
-        .map(broker -> new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        ))
+        .map(broker -> buildBrokerResponseDto(broker))
         .collect(Collectors.toList());
     }
 
@@ -373,6 +223,27 @@ import lombok.RequiredArgsConstructor;
         UUID userId = authService.getMe().getId();
         brokerRepository.deleteById(userId);
         userService.deleteById(userId, passwordUserDeleteDTO.getPassword());
+    }
+
+    private BrokerResponseDTO buildBrokerResponseDto(Broker broker){
+
+        return new BrokerResponseDTO(
+            broker.getId(),
+            broker.getName(),
+            broker.getCreci(),
+            broker.getCpf(),
+            broker.getRegionInterest(),
+            broker.getPropertyType(),
+            broker.getOperationCity(),
+            broker.getBusinessType(),
+            broker.getBirthDate(),
+            broker.getWhatsAppPhoneNumber(),
+            broker.getPersonalPhoneNumber(),
+            broker.getUser().getEmail(),
+            broker.getUser().getRole(),
+            broker.getUser().isEmailVerified(),
+            broker.getAccountStatus()
+        );
     }
     
 }

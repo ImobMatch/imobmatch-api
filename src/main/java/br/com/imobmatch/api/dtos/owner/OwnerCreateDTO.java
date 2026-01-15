@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CPF;
@@ -13,6 +14,7 @@ import org.hibernate.validator.constraints.br.CPF;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class OwnerCreateDTO {
 
     @NotBlank
@@ -34,9 +36,7 @@ public class OwnerCreateDTO {
     private LocalDate birthDate;
 
     @NotBlank
-    private String phoneNumber;
+    private String whatsAppPhoneNumber;
 
-    @NotBlank
-    private String phoneDdd;
-
+    private String personalPhoneNumber;
 }

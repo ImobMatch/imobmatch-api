@@ -1,12 +1,12 @@
 package br.com.imobmatch.api.dtos.broker;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
-import br.com.imobmatch.api.models.broker.Broker;
-import br.com.imobmatch.api.models.broker.enums.BrokerAccountStatus;
-import br.com.imobmatch.api.models.broker.enums.BrokerBusinessType;
-import br.com.imobmatch.api.models.broker.enums.BrokerPropertyType;
-import br.com.imobmatch.api.models.user.enums.UserRole;
+import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
+import br.com.imobmatch.api.models.enums.BrokerBusinessType;
+import br.com.imobmatch.api.models.enums.BrokerPropertyType;
+import br.com.imobmatch.api.models.enums.UserRole;
 import lombok.*;
 
 @Getter
@@ -21,6 +21,9 @@ public class BrokerResponseDTO {
     private BrokerPropertyType propertyType;
     private String operationCity;
     private BrokerBusinessType businessType;
+    private LocalDate birthDate;
+    private String whatsAppPhoneNumber;
+    private String personalPhoneNumber;
     private String email;
     private UserRole role;
     private boolean isEmailVerified;
