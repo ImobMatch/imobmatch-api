@@ -36,7 +36,7 @@ public class BrokerController {
 
     private final BrokerService brokerService;
 
-    @PostMapping // Por padrão, o Spring entende que deve consumir application/json ao usar @RequestBody
+    @PostMapping("/me") // Por padrão, o Spring entende que deve consumir application/json ao usar @RequestBody
     public ResponseEntity<BrokerResponseDTO> createBroker(
             @RequestBody @Valid BrokerPostDTO data
     ) {
@@ -49,7 +49,7 @@ public class BrokerController {
     }
 
 
-    @PatchMapping
+    @PatchMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('BROKER')")
     public ResponseEntity<BrokerResponseDTO> updateBroker(@RequestBody BrokerPatchDTO brokerPatchDTO) {
@@ -59,7 +59,7 @@ public class BrokerController {
             .body(brokerService.updateBroker(brokerPatchDTO));
     }
 
-    @GetMapping()
+    @GetMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('BROKER')")
     public ResponseEntity<BrokerResponseDTO> getMeBroker() {
@@ -150,7 +150,7 @@ public class BrokerController {
             .body(brokerService.ListAllBroker());
     }
 
-    @DeleteMapping()
+    @DeleteMapping("")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('BROKER')")
     public ResponseEntity<BrokerResponseDTO> deleteBroker(@RequestBody PasswordUserDeleteDTO passwordUserDeleteDTO){
