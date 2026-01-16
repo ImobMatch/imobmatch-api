@@ -150,7 +150,7 @@ public class BrokerController {
             .body(brokerService.ListAllBroker());
     }
 
-    @DeleteMapping("")
+    @DeleteMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('BROKER')")
     public ResponseEntity<BrokerResponseDTO> deleteBroker(@RequestBody PasswordUserDeleteDTO passwordUserDeleteDTO){

@@ -64,13 +64,12 @@ import lombok.RequiredArgsConstructor;
 
         User user = userService.findEntityById(userResponseDTO.getId());
         Broker broker = new Broker();
-        broker.setId(user.getId());
         broker.setName(brokerPostDTO.getName().strip());
         broker.setCreci(cleanCreci);
         broker.setCpf(cleanCpf);
-        broker.setRegionInterest(brokerPostDTO.getRegionInterest().strip());
+        broker.setRegionInterest(nullableStrip(brokerPostDTO.getRegionInterest()));
         broker.setPropertyType(brokerPostDTO.getPropertyType());
-        broker.setOperationCity(brokerPostDTO.getOperationCity().strip());
+        broker.setOperationCity(nullableStrip(brokerPostDTO.getOperationCity()));
         broker.setBusinessType(brokerPostDTO.getBusinessType());
         broker.setUser(user);
         broker.setBirthDate(brokerPostDTO.getBirthDate());
@@ -94,12 +93,12 @@ import lombok.RequiredArgsConstructor;
         }
 
         if(brokerPatchDTO.getRegionInterest() != null && !brokerPatchDTO.getRegionInterest().isBlank()) {
-            broker.setRegionInterest(brokerPatchDTO.getRegionInterest().strip());
+            broker.setRegionInterest(nullableStrip(brokerPatchDTO.getRegionInterest()));
             isUpdated = true;
         }
 
         if(brokerPatchDTO.getOperationCity() != null && !brokerPatchDTO.getOperationCity().isBlank()) {
-            broker.setOperationCity(brokerPatchDTO.getOperationCity().strip());
+            broker.setOperationCity(nullableStrip(brokerPatchDTO.getOperationCity()));
             isUpdated = true;
         }
 
@@ -143,6 +142,10 @@ import lombok.RequiredArgsConstructor;
 
     @Override
     public BrokerResponseDTO getByIdBroker(UUID id) {
+        if(id == null) {
+            throw new BrokerNoValidDataProvideException();
+        }
+
         Broker broker = brokerRepository.findById(id)
             .orElseThrow(BrokerNotFoundException::new);
         
@@ -151,6 +154,10 @@ import lombok.RequiredArgsConstructor;
 
     @Override
     public BrokerResponseDTO getByEmailBroker(String email) {
+        if(email == null || email.isBlank()) {
+            throw new BrokerNoValidDataProvideException();
+        }
+
         Broker broker = brokerRepository.findByUser_Email(email)
             .orElseThrow(BrokerNotFoundException::new);
         
@@ -158,6 +165,10 @@ import lombok.RequiredArgsConstructor;
     }
     @Override
     public BrokerResponseDTO getByCreciBroker(String creci) {
+        if(creci == null || creci.isBlank()) {
+            throw new BrokerNoValidDataProvideException();
+        }
+
         Broker broker = brokerRepository.findByCreci(getCleanCreci(creci))
             .orElseThrow(BrokerNotFoundException::new);
         
@@ -166,6 +177,10 @@ import lombok.RequiredArgsConstructor;
 
     @Override
     public BrokerResponseDTO getByCpfBroker(String cpf) {
+        if(cpf == null || cpf.isBlank()) {
+            throw new BrokerNoValidDataProvideException();
+        }
+
         Broker broker = brokerRepository.findByCpf(removeNonDigits(cpf))
             .orElseThrow(BrokerNotFoundException::new);
         
@@ -174,6 +189,10 @@ import lombok.RequiredArgsConstructor;
 
     @Override
     public List<BrokerResponseDTO> ListByNameBroker(String name) {
+        if(name == null || name.isBlank()) {
+            throw new BrokerNoValidDataProvideException();
+        }
+
         List<Broker> brokers = brokerRepository.findByNameContainingIgnoreCase(name.strip());
         return brokers.stream()
         .map(broker -> buildBrokerResponseDto(broker))
@@ -182,6 +201,10 @@ import lombok.RequiredArgsConstructor;
 
     @Override
     public List<BrokerResponseDTO> ListByRegionInterestBroker(String regionInterest) {
+        if(regionInterest == null || regionInterest.isBlank()) {
+            throw new BrokerNoValidDataProvideException();
+        }
+
         List<Broker> brokers = brokerRepository.findByRegionInterestContainingIgnoreCase(regionInterest.strip());
         return brokers.stream()
         .map(broker -> buildBrokerResponseDto(broker))
@@ -190,6 +213,10 @@ import lombok.RequiredArgsConstructor;
 
     @Override
     public List<BrokerResponseDTO> ListByOperationCityBroker(String operationCity) {
+        if(operationCity == null || operationCity.isBlank()) {
+            throw new BrokerNoValidDataProvideException();
+        }
+
         List<Broker> brokers = brokerRepository.findByOperationCityContainingIgnoreCase(operationCity.strip());
         return brokers.stream()
         .map(broker -> buildBrokerResponseDto(broker))
@@ -198,6 +225,10 @@ import lombok.RequiredArgsConstructor;
 
     @Override
     public List<BrokerResponseDTO> ListByPropertyTypeBroker(BrokerPropertyType propertyType) {
+        if(propertyType == null) {
+            throw new BrokerNoValidDataProvideException();
+        }
+
         List<Broker> brokers = brokerRepository.findByPropertyType(propertyType);
         return brokers.stream()
         .map(broker -> buildBrokerResponseDto(broker))
@@ -206,6 +237,10 @@ import lombok.RequiredArgsConstructor;
 
     @Override
     public List<BrokerResponseDTO> ListByBusinessTypeBroker(BrokerBusinessType businessType) {
+        if(businessType == null) {
+            throw new BrokerNoValidDataProvideException();
+        }
+
         List<Broker> brokers = brokerRepository.findByBusinessType(businessType);
         return brokers.stream()
         .map(broker -> buildBrokerResponseDto(broker))
@@ -257,5 +292,9 @@ import lombok.RequiredArgsConstructor;
 
     private String removeNonDigits(String cpf) {
         return cpf.replaceAll("\\D", "");
+    }
+
+    private String nullableStrip(String arg) {
+        return arg != null ? arg.strip() : null;
     }
 }
