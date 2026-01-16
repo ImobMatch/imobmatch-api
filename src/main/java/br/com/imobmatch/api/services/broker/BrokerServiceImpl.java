@@ -82,7 +82,7 @@ import lombok.RequiredArgsConstructor;
     }
 
     @Override
-    public BrokerResponseDTO updateBroker(BrokerPatchDTO brokerPatchDTO) {
+    public BrokerResponseDTO updateMeBroker(BrokerPatchDTO brokerPatchDTO) {
         Broker broker = brokerRepository.findById(authService.getMe().getId())
             .orElseThrow(BrokerNotFoundException::new);
 
@@ -128,6 +128,67 @@ import lombok.RequiredArgsConstructor;
 
         if(!isUpdated) {throw new BrokerNoValidDataProvideException();}
 
+        brokerRepository.save(broker);
+        return buildBrokerResponseDto(broker);
+    }
+
+    @Override
+    public BrokerResponseDTO updateBroker(UUID id, BrokerPatchDTO brokerPatchDTO) {
+        Broker broker = brokerRepository.findById(id)
+            .orElseThrow(BrokerNotFoundException::new);
+
+        boolean isUpdated = false;
+        if(brokerPatchDTO.getName() != null && !brokerPatchDTO.getName().isBlank()) {
+            broker.setName(brokerPatchDTO.getName().strip());
+            isUpdated = true;
+        }
+
+        if(brokerPatchDTO.getRegionInterest() != null && !brokerPatchDTO.getRegionInterest().isBlank()) {
+            broker.setRegionInterest(nullableStrip(brokerPatchDTO.getRegionInterest()));
+            isUpdated = true;
+        }
+
+        if(brokerPatchDTO.getOperationCity() != null && !brokerPatchDTO.getOperationCity().isBlank()) {
+            broker.setOperationCity(nullableStrip(brokerPatchDTO.getOperationCity()));
+            isUpdated = true;
+        }
+
+        if(brokerPatchDTO.getPropertyType() != null && !brokerPatchDTO.getPropertyType().toString().isBlank()) {
+            broker.setPropertyType(brokerPatchDTO.getPropertyType());
+            isUpdated = true;
+        }
+
+        if(brokerPatchDTO.getBusinessType() != null && !brokerPatchDTO.getBusinessType().toString().isBlank()) {
+            broker.setBusinessType(brokerPatchDTO.getBusinessType());
+            isUpdated = true;
+        }
+        if(brokerPatchDTO.getBirthDate() != null) {
+            broker.setBirthDate(brokerPatchDTO.getBirthDate());
+            isUpdated = true;
+        }
+
+        if(brokerPatchDTO.getWhatsAppPhoneNumber() != null && !brokerPatchDTO.getWhatsAppPhoneNumber().isBlank()) {
+            broker.setWhatsAppPhoneNumber(removeNonDigits(brokerPatchDTO.getWhatsAppPhoneNumber()));
+            isUpdated = true;
+        }
+
+        if(brokerPatchDTO.getPersonalPhoneNumber() != null && !brokerPatchDTO.getPersonalPhoneNumber().isBlank()) {
+            broker.setPersonalPhoneNumber(removeNonDigits(brokerPatchDTO.getPersonalPhoneNumber()));
+            isUpdated = true;
+        }
+
+        if(!isUpdated) {throw new BrokerNoValidDataProvideException();}
+
+        brokerRepository.save(broker);
+        return buildBrokerResponseDto(broker);
+    }
+
+    @Override
+    public BrokerResponseDTO updateBrokerAccountStatus(UUID id, BrokerAccountStatus accountStatus) {
+        Broker broker = brokerRepository.findById(id)
+            .orElseThrow(BrokerNotFoundException::new);
+
+        broker.setAccountStatus(accountStatus);
         brokerRepository.save(broker);
         return buildBrokerResponseDto(broker);
     }
@@ -256,13 +317,35 @@ import lombok.RequiredArgsConstructor;
     }
 
     @Override
+    public List<BrokerResponseDTO> ListByAccountStatusBroker(BrokerAccountStatus accountStatus) {
+        if(accountStatus == null) {
+            throw new BrokerNoValidDataProvideException();
+        }
+
+        List<Broker> brokers = brokerRepository.findByAccountStatus(accountStatus);
+        return brokers.stream()
+        .map(broker -> buildBrokerResponseDto(broker))
+        .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
-    public void deleteBroker(PasswordUserDeleteDTO passwordUserDeleteDTO)throws AuthenticationException
+    public void deleteMeBroker(PasswordUserDeleteDTO passwordUserDeleteDTO)throws AuthenticationException
             , BrokerNotFoundException {
         
         UUID userId = authService.getMe().getId();
         brokerRepository.deleteById(userId);
         userService.deleteById(userId, passwordUserDeleteDTO.getPassword());
+    }
+
+    @Override
+    @Transactional
+    public void deleteBroker(UUID id) {
+        Broker broker = brokerRepository.findById(id)
+            .orElseThrow(BrokerNotFoundException::new);
+        String password = broker.getUser().getPassword(); // Assuming you have access to the password
+        brokerRepository.deleteById(id);
+        userService.deleteById(id, password);
     }
 
     private BrokerResponseDTO buildBrokerResponseDto(Broker broker){

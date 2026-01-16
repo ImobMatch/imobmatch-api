@@ -5,7 +5,7 @@ CREATE TYPE property_type_enum AS ENUM ('APARTMENT', 'HOUSE', 'LOFT', 'PENTHOUSE
 CREATE TYPE business_type_enum AS ENUM ('SALE', 'RENTAL', 'LEASE');
 
 -- Cria o tipo enum para os status da conta.
-CREATE TYPE account_status_enum AS ENUM ('VALID', 'INVALID', 'PENDING');
+CREATE TYPE account_status_enum AS ENUM ('ACTIVE', 'BLOCKED', 'PENDING');
 
 -- Cria a tabela brokers
 CREATE TABLE brokers (

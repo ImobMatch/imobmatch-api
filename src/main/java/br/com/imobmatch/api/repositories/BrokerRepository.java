@@ -1,6 +1,7 @@
 package br.com.imobmatch.api.repositories;
 
 import br.com.imobmatch.api.models.broker.Broker;
+import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
 import br.com.imobmatch.api.models.enums.BrokerBusinessType;
 import br.com.imobmatch.api.models.enums.BrokerPropertyType;
 
@@ -26,4 +27,5 @@ public interface BrokerRepository extends JpaRepository<Broker, UUID> {
   List<Broker> findByOperationCityContainingIgnoreCase(String operationCity);
   List<Broker> findByPropertyType(BrokerPropertyType propertyType);
   List<Broker> findByBusinessType(BrokerBusinessType businessType);
+  List<Broker> findByAccountStatus(BrokerAccountStatus accountStatus);
 }

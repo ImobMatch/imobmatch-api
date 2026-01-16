@@ -20,6 +20,7 @@ import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 
 import org.springframework.http.MediaType;
 import br.com.imobmatch.api.dtos.broker.*;
+import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
 import br.com.imobmatch.api.models.enums.BrokerBusinessType;
 import br.com.imobmatch.api.models.enums.BrokerPropertyType;
 import br.com.imobmatch.api.services.broker.BrokerService;
@@ -52,11 +53,31 @@ public class BrokerController {
     @PatchMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('BROKER')")
-    public ResponseEntity<BrokerResponseDTO> updateBroker(@RequestBody BrokerPatchDTO brokerPatchDTO) {
+    public ResponseEntity<BrokerResponseDTO> updateMeBroker(@RequestBody BrokerPatchDTO brokerPatchDTO) {
 
         return ResponseEntity
             .status(HttpStatus.OK)
-            .body(brokerService.updateBroker(brokerPatchDTO));
+            .body(brokerService.updateMeBroker(brokerPatchDTO));
+    }
+
+    @PatchMapping(value = "/update", params = "id")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<BrokerResponseDTO> updateBroker(@RequestBody BrokerPatchDTO brokerPatchDTO, @RequestBody UUID id) {
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(brokerService.updateBroker(id, brokerPatchDTO));
+    }
+
+    @PatchMapping(value = "/update-status", params = "id")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<BrokerResponseDTO> updateBrokerAccountStatus(@RequestBody UUID id, @RequestBody BrokerAccountStatus accountStatus) {
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(brokerService.updateBrokerAccountStatus(id, accountStatus));
     }
 
     @GetMapping("/me")
@@ -71,6 +92,7 @@ public class BrokerController {
 
     @GetMapping(value = "/search", params = "id")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyRole('ADMIN', 'BROKER', 'OWNER')")
     public ResponseEntity<BrokerResponseDTO> getByIdBroker(@Valid @RequestBody UUID id) {
 
         return ResponseEntity
@@ -80,6 +102,7 @@ public class BrokerController {
 
     @GetMapping(value = "/search", params = "creci")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyRole('ADMIN', 'BROKER', 'OWNER')")
     public ResponseEntity<BrokerResponseDTO> getByCreciBroker(@Valid @RequestBody String creci) {
 
         return ResponseEntity
@@ -89,6 +112,7 @@ public class BrokerController {
 
     @GetMapping(value = "/search", params = "cpf")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyRole('ADMIN', 'BROKER', 'OWNER')")
     public ResponseEntity<BrokerResponseDTO> getByCpfBroker(@Valid @RequestBody String cpf) {
 
         return ResponseEntity
@@ -98,6 +122,7 @@ public class BrokerController {
 
     @GetMapping(value = "/search", params = "name")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyRole('ADMIN', 'BROKER', 'OWNER')")
     public ResponseEntity<List<BrokerResponseDTO>> ListByNameBroker(@Valid @RequestBody String name) {
 
         return ResponseEntity
@@ -107,6 +132,7 @@ public class BrokerController {
 
     @GetMapping(value = "/search", params = "regionInterest")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyRole('ADMIN', 'BROKER', 'OWNER')")
     public ResponseEntity<List<BrokerResponseDTO>> ListByRegionInterestBroker(@Valid @RequestBody String regionInterest) {
 
         return ResponseEntity
@@ -116,6 +142,7 @@ public class BrokerController {
 
     @GetMapping(value = "/search", params = "operationCity")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyRole('ADMIN', 'BROKER', 'OWNER')")
     public ResponseEntity<List<BrokerResponseDTO>> ListByOperationCityBroker(@Valid @RequestBody String operationCity) {
 
         return ResponseEntity
@@ -125,6 +152,7 @@ public class BrokerController {
 
     @GetMapping(value = "/search", params = "propertyType")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyRole('ADMIN', 'BROKER', 'OWNER')")
     public ResponseEntity<List<BrokerResponseDTO>> ListByPropertyTypeBroker(@Valid @RequestBody BrokerPropertyType propertyType) {
 
         return ResponseEntity
@@ -134,6 +162,7 @@ public class BrokerController {
 
     @GetMapping(value = "/search", params = "businessType")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyRole('ADMIN', 'BROKER', 'OWNER')")
     public ResponseEntity<List<BrokerResponseDTO>> ListByBusinessTypeBroker(@Valid @RequestBody BrokerBusinessType businessType) {
 
         return ResponseEntity
@@ -143,6 +172,7 @@ public class BrokerController {
 
     @GetMapping("/search")
     @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyRole('ADMIN', 'BROKER', 'OWNER')")
     public ResponseEntity<List<BrokerResponseDTO>> ListAllBroker() {
 
         return ResponseEntity
@@ -150,12 +180,31 @@ public class BrokerController {
             .body(brokerService.ListAllBroker());
     }
 
+    @GetMapping(value = "/search", params = "accountStatus")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<List<BrokerResponseDTO>> ListByAccountStatusBroker(@Valid @RequestBody BrokerAccountStatus accountStatus) {
+
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body(brokerService.ListByAccountStatusBroker(accountStatus));
+    }
+
     @DeleteMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('BROKER')")
-    public ResponseEntity<BrokerResponseDTO> deleteBroker(@RequestBody PasswordUserDeleteDTO passwordUserDeleteDTO){
+    public ResponseEntity<BrokerResponseDTO> deleteMeBroker(@RequestBody PasswordUserDeleteDTO passwordUserDeleteDTO){
 
-        brokerService.deleteBroker(passwordUserDeleteDTO);
+        brokerService.deleteMeBroker(passwordUserDeleteDTO);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping(value = "/delete", params = "id")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<BrokerResponseDTO> deleteBroker(@RequestBody UUID id){
+
+        brokerService.deleteBroker(id);
         return ResponseEntity.noContent().build();
     }
     
