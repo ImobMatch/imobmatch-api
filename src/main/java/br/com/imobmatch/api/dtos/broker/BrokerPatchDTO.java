@@ -7,6 +7,7 @@ import br.com.imobmatch.api.models.enums.BrokerPropertyType;
 import jakarta.validation.constraints.Past;
 import lombok.*;
 
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -5,9 +5,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import br.com.imobmatch.api.controllers.AuthController;
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 import br.com.imobmatch.api.dtos.broker.*;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
@@ -25,14 +23,12 @@ import br.com.imobmatch.api.repositories.BrokerRepository;
 import br.com.imobmatch.api.services.auth.AuthService;
 import br.com.imobmatch.api.services.user.UserService;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
     @Service
     @RequiredArgsConstructor 
     public class BrokerServiceImpl implements BrokerService {
 
-        // private final AuthController authController;
         private final BrokerValidationService brokerValidationService; 
         private final BrokerRepository brokerRepository;
         private final UserService userService;
@@ -63,19 +59,20 @@ import lombok.RequiredArgsConstructor;
         );
 
         User user = userService.findEntityById(userResponseDTO.getId());
-        Broker broker = new Broker();
-        broker.setName(brokerPostDTO.getName().strip());
-        broker.setCreci(cleanCreci);
-        broker.setCpf(cleanCpf);
-        broker.setRegionInterest(nullableStrip(brokerPostDTO.getRegionInterest()));
-        broker.setPropertyType(brokerPostDTO.getPropertyType());
-        broker.setOperationCity(nullableStrip(brokerPostDTO.getOperationCity()));
-        broker.setBusinessType(brokerPostDTO.getBusinessType());
-        broker.setUser(user);
-        broker.setBirthDate(brokerPostDTO.getBirthDate());
-        broker.setWhatsAppPhoneNumber(cleanWhatsAppPhoneNumber);
-        broker.setPersonalPhoneNumber(cleanPersonalPhoneNumber);
-        broker.setAccountStatus(BrokerAccountStatus.PENDING);
+        Broker broker = Broker.builder()
+            .name(brokerPostDTO.getName().strip())
+            .creci(cleanCreci)
+            .cpf(cleanCpf)
+            .regionInterest(nullableStrip(brokerPostDTO.getRegionInterest()))
+            .propertyType(brokerPostDTO.getPropertyType())
+            .operationCity(nullableStrip(brokerPostDTO.getOperationCity()))
+            .businessType(brokerPostDTO.getBusinessType())
+            .user(user)
+            .birthDate(brokerPostDTO.getBirthDate())
+            .whatsAppPhoneNumber(cleanWhatsAppPhoneNumber)
+            .personalPhoneNumber(cleanPersonalPhoneNumber)
+            .accountStatus(BrokerAccountStatus.PENDING)
+        .build();
 
         brokerRepository.save(broker);
         return buildBrokerResponseDto(broker);
@@ -350,23 +347,23 @@ import lombok.RequiredArgsConstructor;
 
     private BrokerResponseDTO buildBrokerResponseDto(Broker broker){
 
-        return new BrokerResponseDTO(
-            broker.getId(),
-            broker.getName(),
-            broker.getCreci(),
-            broker.getCpf(),
-            broker.getRegionInterest(),
-            broker.getPropertyType(),
-            broker.getOperationCity(),
-            broker.getBusinessType(),
-            broker.getBirthDate(),
-            broker.getWhatsAppPhoneNumber(),
-            broker.getPersonalPhoneNumber(),
-            broker.getUser().getEmail(),
-            broker.getUser().getRole(),
-            broker.getUser().isEmailVerified(),
-            broker.getAccountStatus()
-        );
+        return BrokerResponseDTO.builder()
+            .id(broker.getId())
+            .name(broker.getName())
+            .creci(broker.getCreci())
+            .cpf(broker.getCpf())
+            .regionInterest(broker.getRegionInterest())
+            .propertyType(broker.getPropertyType())
+            .operationCity(broker.getOperationCity())
+            .businessType(broker.getBusinessType())
+            .birthDate(broker.getBirthDate())
+            .whatsAppPhoneNumber(broker.getWhatsAppPhoneNumber())
+            .personalPhoneNumber(broker.getPersonalPhoneNumber())
+            .email(broker.getUser().getEmail())
+            .role(broker.getUser().getRole())
+            .isEmailVerified(broker.getUser().isEmailVerified())
+            .accountStatus(broker.getAccountStatus())
+        .build();
     }
 
     private String getCleanCreci(String creci) {

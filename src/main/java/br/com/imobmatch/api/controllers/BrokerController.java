@@ -37,7 +37,7 @@ public class BrokerController {
 
     private final BrokerService brokerService;
 
-    @PostMapping("/me") // Por padrão, o Spring entende que deve consumir application/json ao usar @RequestBody
+    @PostMapping("/me")
     public ResponseEntity<BrokerResponseDTO> createBroker(
             @RequestBody @Valid BrokerPostDTO data
     ) {

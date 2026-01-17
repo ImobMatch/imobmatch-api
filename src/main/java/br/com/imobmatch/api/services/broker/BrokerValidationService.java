@@ -7,22 +7,22 @@ import org.springframework.stereotype.Service;
 public class BrokerValidationService {
 
     /*
-    * Serviço responsável por validar os dados enviados no cadastro de corretor.
-    * Inclui validações como:
-    * Formato válido do CRECI via regex!
-    * Outras validações de negócio conforme necessário.
-    * * Obs: Validação de upload de PDF removida temporariamente.
+    * Service responsible for validating the data sent in the broker registration.
+    * Includes validations such as:
+    * Validity of CRECI format.
+    * Other validations of business rules as needed.
+    * * Obs: PDF upload validation removed temporarily.
     */
 
     public void run(BrokerPostDTO data) {
-        // Removida validação de arquivos PDF por enquanto
+        // PDF validation removed temporarily.
         if (!isCreciValid(data.getCreci())) {
             throw new IllegalArgumentException("O formato do CRECI é inválido. Ex: 12345F");
         }
     }
 
-    /* Validação simples do formato do CRECI via regex.
-        Futuramente implementaremos a validação oficial via API do CRECI se disponível.
+    /* Simples validation of CRECI format.
+        Later can be expanded with API.
     */
     private boolean isCreciValid(String creci) {
         if (creci == null) return false;

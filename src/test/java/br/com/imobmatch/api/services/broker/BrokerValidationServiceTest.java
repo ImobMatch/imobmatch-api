@@ -1,6 +1,5 @@
-package br.com.imobmatch.api;
+package br.com.imobmatch.api.services.broker;
 
-import br.com.imobmatch.api.services.broker.BrokerValidationService;
 import br.com.imobmatch.api.dtos.broker.BrokerPostDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

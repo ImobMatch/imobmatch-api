@@ -9,6 +9,7 @@ import br.com.imobmatch.api.models.enums.BrokerPropertyType;
 import br.com.imobmatch.api.models.enums.UserRole;
 import lombok.*;
 
+@Builder
 @Getter
 @AllArgsConstructor
 public class BrokerResponseDTO {
@@ -17,7 +18,7 @@ public class BrokerResponseDTO {
     private String name;
     private String creci;
     private String cpf;
-    private String region_interest;
+    private String regionInterest;
     private BrokerPropertyType propertyType;
     private String operationCity;
     private BrokerBusinessType businessType;

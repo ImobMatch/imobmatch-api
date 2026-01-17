@@ -13,6 +13,7 @@ import lombok.*;
 
 @Entity(name = "brokers")
 @Table(name = "brokers")
+@Builder
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
