@@ -1,4 +1,4 @@
-package br.com.imobmatch.api.configs;
+package br.com.imobmatch.api.configs.dotenv;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.context.ApplicationContextInitializer;

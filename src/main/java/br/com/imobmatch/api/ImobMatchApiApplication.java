@@ -1,6 +1,6 @@
 package br.com.imobmatch.api;
 
-import br.com.imobmatch.api.configs.DotenvInitializer;
+import br.com.imobmatch.api.configs.dotenv.DotenvInitializer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
