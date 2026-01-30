@@ -161,5 +161,6 @@ class UserServiceImplTest {
                         new ValidateEmailRequestDTO(verificationId, "000000")
                 )
         );
+
     }
 }

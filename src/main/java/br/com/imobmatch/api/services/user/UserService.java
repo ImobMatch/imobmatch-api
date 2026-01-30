@@ -14,6 +14,10 @@ import br.com.imobmatch.api.models.enums.UserRole;
 
 import java.util.UUID;
 
+
+
+import java.util.UUID;
+
 public interface UserService {
 
     // --- Basic CRUD ---
@@ -23,7 +27,16 @@ public interface UserService {
     User findEntityById(UUID id) throws UserNotFoundException;
     UserResponseDTO deleteById(UUID id, String password);
 
-    ValidateEmailResponseDTO validateEmail(ValidateEmailRequestDTO request) throws RequestNotFoundException, RequestCodeExpiredException;
-    RequestValidationEmailResponseDTO sendEmailVerificationCodeForEmail(RequestValidationEmailDTO request) throws UserNotFoundException;
+    // --- Email verification ---
+    ValidateEmailResponseDTO validateEmail(ValidateEmailRequestDTO request)
+            throws RequestNotFoundException, RequestCodeExpiredException;
 
+
+    RequestValidationEmailResponseDTO sendEmailVerificationCodeForEmail(
+            RequestValidationEmailDTO request) throws UserNotFoundException;
+
+    void requestPasswordReset(String email);
+
+    void resetPassword(String email, String code, String newPassword)
+            throws RequestNotFoundException, RequestCodeExpiredException;
 }
