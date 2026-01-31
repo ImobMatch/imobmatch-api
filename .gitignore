@@ -15,9 +15,12 @@ target/
 
 ### IntelliJ IDEA ###
 .idea
+*.idea
 *.iws
 *.iml
 *.ipr
+credetialsImobMatch.txt
+.env
 
 ### NetBeans ###
 /nbproject/private/

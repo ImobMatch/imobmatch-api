@@ -1,0 +1,29 @@
+# Spring application configuration
+spring:
+    application:
+        name: "ImobMatch API"  # Name of the application
+
+    profiles:
+        active: prod  # Active profile: dev, test, or prod
+
+    flyway:
+        enabled: true  # Enable Flyway database migrations
+        baseline-on-migrate: true  # Treat existing schema as baseline on first migration
+
+    mail:
+        host: smtp.gmail.com  # SMTP server host
+        port: 587  # SMTP server port
+        properties:
+            mail:
+                smtp:
+                    auth: true  # Enable SMTP authentication
+                    starttls:
+                        enable: true  # Enable STARTTLS for secure email sending
+
+# API security configuration
+api:
+    security:
+        access-token:
+            expiration-minutes: 30  # Access token expiration in minutes (short-lived)
+        refresh-token:
+            expiration-days: 7  # Refresh token expiration in days (long-lived)

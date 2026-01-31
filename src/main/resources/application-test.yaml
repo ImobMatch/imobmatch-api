@@ -1,0 +1,47 @@
+# Database configuration (H2 in-memory for testing)
+spring:
+    datasource:
+        url: jdbc:h2:mem:imobmatchdb-test  # H2 in-memory database URL
+        driver-class-name: org.h2.Driver  # H2 database driver
+        username: sa  # Default H2 username
+        password: ""  # No password for H2 in-memory DB
+
+    jpa:
+        database-platform: org.hibernate.dialect.H2Dialect  # Hibernate dialect for H2
+        hibernate:
+            ddl-auto: none  # Do not auto-create/update schema
+        show-sql: true  # Show SQL queries in logs
+
+    h2:
+        console:
+            enabled: true  # Enable H2 console
+            path: /h2-console  # Path to access H2 console
+
+    # Email configuration (disabled or fake for testing)
+    mail:
+        host: localhost  # Fake SMTP server for testing
+        port: 1025  # Port for fake SMTP server
+        username: ""  # No username
+        password: ""  # No password
+
+
+# JWT configuration for testing
+api:
+    security:
+        token:
+            secret: test-secret  # Secret key for JWT (test only)
+
+# AWS S3 buckets (fake for testing)
+aws:
+    s3:
+        bucket:
+            profile-photos: profile-photos  # Fake bucket for profile photos
+            creci-documents: creci-documents  # Fake bucket for CRECI documents
+            property-documents: property-documents  # Fake bucket for property documents
+            property-images: property-images  # Fake bucket for property images
+
+
+user:
+    email:
+        verified:
+            default: false
