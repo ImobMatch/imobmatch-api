@@ -4,7 +4,7 @@ spring:
         name: "ImobMatch API"  # Name of the application
 
     profiles:
-        active: dev  # Active profile: dev, test, or prod
+        active: prod  # Active profile: dev, test, or prod
 
     flyway:
         enabled: true  # Enable Flyway database migrations

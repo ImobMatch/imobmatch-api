@@ -39,3 +39,9 @@ aws:
             creci-documents: creci-documents  # Fake bucket for CRECI documents
             property-documents: property-documents  # Fake bucket for property documents
             property-images: property-images  # Fake bucket for property images
+
+
+user:
+    email:
+        verified:
+            default: false
