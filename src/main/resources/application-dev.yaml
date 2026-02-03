@@ -35,3 +35,8 @@ aws:
             creci-documents: creci-documents  # Bucket for CRECI documents
             property-documents: property-documents  # Bucket for property documents
             property-images: property-images  # Bucket for property images
+
+user:
+    email:
+        verified:
+            default: true

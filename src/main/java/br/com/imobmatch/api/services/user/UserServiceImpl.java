@@ -31,6 +31,7 @@ import java.util.UUID;
 
 import br.com.imobmatch.api.repositories.UserVerificationCodeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +45,10 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder cryptPasswordEncoder;
     private final UserVerificationCodeRepository userVerificationRepository;
     private final EmailService emailService;
+
+    @Value("${user.email.verified.default}")
+    private boolean defaultEmailVerified;
+
 
     public UserResponseDTO create(String email, String password, UserRole role) {
         if (this.userRepository.findByEmail(email).isPresent()) {
