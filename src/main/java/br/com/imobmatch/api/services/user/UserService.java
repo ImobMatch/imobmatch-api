@@ -17,10 +17,6 @@ import br.com.imobmatch.api.models.enums.UserRole;
 
 import java.util.UUID;
 
-
-
-import java.util.UUID;
-
 public interface UserService {
 
     UserResponseDTO create(String email, String password, UserRole role) throws UserExistsException;
@@ -32,7 +28,7 @@ public interface UserService {
     ValidateEmailResponseDTO validateEmail(ValidateEmailRequestDTO request)
             throws RequestNotFoundException, RequestCodeExpiredException;
 
-    RequestValidationEmailResponseDTO sendEmailVerificationCodeForEmail(
+    RequestValidationEmailResponseDTO sendEmailVerification(
             RequestValidationEmailDTO request) throws UserNotFoundException;
 
     void requestPasswordReset(RequestPasswordResetDTO request);

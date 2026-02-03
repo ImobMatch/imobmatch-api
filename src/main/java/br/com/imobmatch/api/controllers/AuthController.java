@@ -26,15 +26,6 @@ public class AuthController {
     private final AuthService authService;
     private final UserService userService;
 
-    @PostMapping("/send-email-code")
-    public ResponseEntity<RequestValidationEmailResponseDTO> sendEmailCode(@RequestBody RequestValidationEmailDTO request) {
-        return ResponseEntity.ok(userService.sendEmailVerificationCodeForEmail(request));
-    }
-
-    @PostMapping("/validate-email")
-    public ResponseEntity<ValidateEmailResponseDTO> validateEmail(@RequestBody ValidateEmailRequestDTO request) {
-        return ResponseEntity.ok(this.userService.validateEmail(request));
-    }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthenticationDTO data){
@@ -66,6 +57,17 @@ public class AuthController {
     public ResponseEntity<StatusPasswordResetDTO> SwapPassoword(@RequestBody ResetPasswordDTO request) {
         return ResponseEntity.ok(this.userService.resetPassword(request));
     }
+
+    @PostMapping("/send-email-code")
+    public ResponseEntity<RequestValidationEmailResponseDTO> sendEmailCode(@RequestBody RequestValidationEmailDTO request) {
+        return ResponseEntity.ok(userService.sendEmailVerification(request));
+    }
+
+    @PostMapping("/validate-email")
+    public ResponseEntity<ValidateEmailResponseDTO> validateEmail(@RequestBody ValidateEmailRequestDTO request) {
+        return ResponseEntity.ok(this.userService.validateEmail(request));
+    }
+
 
 
 
