@@ -4,6 +4,9 @@ import br.com.imobmatch.api.dtos.email.RequestValidationEmailResponseDTO;
 import br.com.imobmatch.api.dtos.email.RequestValidationEmailDTO;
 import br.com.imobmatch.api.dtos.email.ValidateEmailRequestDTO;
 import br.com.imobmatch.api.dtos.email.ValidateEmailResponseDTO;
+import br.com.imobmatch.api.dtos.password.RequestPasswordResetDTO;
+import br.com.imobmatch.api.dtos.password.ResetPasswordDTO;
+import br.com.imobmatch.api.dtos.password.StatusPasswordResetDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.exceptions.email.RequestCodeExpiredException;
 import br.com.imobmatch.api.exceptions.email.RequestNotFoundException;
@@ -20,23 +23,20 @@ import java.util.UUID;
 
 public interface UserService {
 
-    // --- Basic CRUD ---
     UserResponseDTO create(String email, String password, UserRole role) throws UserExistsException;
     UserResponseDTO getById(UUID id) throws UserNotFoundException;
     UserResponseDTO getByEmail(String email) throws UserNotFoundException;
     User findEntityById(UUID id) throws UserNotFoundException;
     UserResponseDTO deleteById(UUID id, String password);
 
-    // --- Email verification ---
     ValidateEmailResponseDTO validateEmail(ValidateEmailRequestDTO request)
             throws RequestNotFoundException, RequestCodeExpiredException;
-
 
     RequestValidationEmailResponseDTO sendEmailVerificationCodeForEmail(
             RequestValidationEmailDTO request) throws UserNotFoundException;
 
-    void requestPasswordReset(String email);
+    void requestPasswordReset(RequestPasswordResetDTO request);
 
-    void resetPassword(String email, String code, String newPassword)
+    StatusPasswordResetDTO resetPassword(ResetPasswordDTO request)
             throws RequestNotFoundException, RequestCodeExpiredException;
 }

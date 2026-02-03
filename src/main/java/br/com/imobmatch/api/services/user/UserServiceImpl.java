@@ -4,6 +4,9 @@ import br.com.imobmatch.api.dtos.email.RequestValidationEmailResponseDTO;
 import br.com.imobmatch.api.dtos.email.RequestValidationEmailDTO;
 import br.com.imobmatch.api.dtos.email.ValidateEmailRequestDTO;
 import br.com.imobmatch.api.dtos.email.ValidateEmailResponseDTO;
+import br.com.imobmatch.api.dtos.password.RequestPasswordResetDTO;
+import br.com.imobmatch.api.dtos.password.ResetPasswordDTO;
+import br.com.imobmatch.api.dtos.password.StatusPasswordResetDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.exceptions.auth.AuthenticationException;
 import br.com.imobmatch.api.exceptions.email.ErroSendEmailException;
@@ -27,22 +30,20 @@ import java.util.Optional;
 import java.util.UUID;
 
 import br.com.imobmatch.api.repositories.UserVerificationCodeRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder cryptPasswordEncoder;
     private final UserVerificationCodeRepository userVerificationRepository;
     private final EmailService emailService;
-
-    // CRUD
 
     public UserResponseDTO create(String email, String password, UserRole role) {
         if (this.userRepository.findByEmail(email).isPresent()) {
@@ -164,36 +165,10 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    protected UUID sendEmail(User user) {
-        try {
-            String code = Utils.generateVerificationCode();
-
-            UserVerificationCode verification = UserVerificationCode.builder()
-                    .user(user)
-                    .code(code)
-                    .type(VerificationType.EMAIL)
-                    .generatedAt(LocalDateTime.now())
-                    .verified(false)
-                    .build();
-
-            this.emailService.sendEmail(
-                    user.getEmail(),
-                    "Email verification for ImobMatch",
-                    "Hello\nYour verification code is: " + code
-            );
-
-            this.userVerificationRepository.save(verification);
-            return verification.getId();
-
-        } catch (Exception e) {
-            throw new ErroSendEmailException();
-        }
-    }
-
     @Override
     @Transactional
-    public void requestPasswordReset(String email) {
-
+    public void requestPasswordReset(RequestPasswordResetDTO request) {
+        String email = request.getEmail();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(UserNotFoundException::new);
 
@@ -220,7 +195,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void resetPassword(String email, String code, String newPassword) {
+    public StatusPasswordResetDTO resetPassword(ResetPasswordDTO request  ) {
+        String email = request.getEmail();
+        String code = request.getCode();
+        String newPassword = request.getNewPassword();
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(UserNotFoundException::new);
@@ -240,8 +218,6 @@ public class UserServiceImpl implements UserService {
                 .max(Comparator.comparing(UserVerificationCode::getGeneratedAt))
                 .orElseThrow(RequestNotFoundException::new);
 
-
-
         if (!verification.getCode().equals(code)) {
             throw new InvalidCodeException();
         }
@@ -255,5 +231,33 @@ public class UserServiceImpl implements UserService {
 
         verification.setVerified(true);
         userVerificationRepository.save(verification);
+
+        return StatusPasswordResetDTO.builder().email(email).swapPassword(true).build();
+    }
+
+    private UUID sendEmail(User user) {
+        try {
+            String code = Utils.generateVerificationCode();
+
+            UserVerificationCode verification = UserVerificationCode.builder()
+                    .user(user)
+                    .code(code)
+                    .type(VerificationType.EMAIL)
+                    .generatedAt(LocalDateTime.now())
+                    .verified(false)
+                    .build();
+
+            this.emailService.sendEmail(
+                    user.getEmail(),
+                    "Email verification for ImobMatch",
+                    "Hello\nYour verification code is: " + code
+            );
+
+            this.userVerificationRepository.save(verification);
+            return verification.getId();
+
+        } catch (Exception e) {
+            throw new ErroSendEmailException();
+        }
     }
 }

@@ -5,6 +5,9 @@ import br.com.imobmatch.api.dtos.email.RequestValidationEmailDTO;
 import br.com.imobmatch.api.dtos.email.RequestValidationEmailResponseDTO;
 import br.com.imobmatch.api.dtos.email.ValidateEmailRequestDTO;
 import br.com.imobmatch.api.dtos.email.ValidateEmailResponseDTO;
+import br.com.imobmatch.api.dtos.password.RequestPasswordResetDTO;
+import br.com.imobmatch.api.dtos.password.ResetPasswordDTO;
+import br.com.imobmatch.api.dtos.password.StatusPasswordResetDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.services.auth.AuthService;
 import br.com.imobmatch.api.services.user.UserService;
@@ -52,5 +55,18 @@ public class AuthController {
         LoginResponseDTO response = authService.refreshToken(token);
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/send-password-code")
+    public ResponseEntity<?> sendEmailCodeForPassword(@RequestBody RequestPasswordResetDTO request) {
+        this.userService.requestPasswordReset(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<StatusPasswordResetDTO> SwapPassoword(@RequestBody ResetPasswordDTO request) {
+        return ResponseEntity.ok(this.userService.resetPassword(request));
+    }
+
+
 
 }
