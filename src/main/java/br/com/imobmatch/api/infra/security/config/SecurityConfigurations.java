@@ -40,7 +40,9 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST,
                                 "/auth/login",
                                 "/auth/send-email-code",
-                                "/auth/validate-email"
+                                "/auth/validate-email",
+                                "auth/reset-password",
+                                "auth/send-password-code"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
                         .requestMatchers(HttpMethod.POST, "/owners").permitAll()
