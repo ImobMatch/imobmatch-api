@@ -158,13 +158,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public RequestValidationEmailResponseDTO sendEmailVerificationCodeForEmail(
+    public RequestValidationEmailResponseDTO sendEmailVerification(
             RequestValidationEmailDTO request) throws UserNotFoundException {
 
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(UserNotFoundException::new);
 
-        UUID id = this.sendEmail(user);
+        UUID id = this.sendEmail(user, VerificationType.EMAIL);
         return RequestValidationEmailResponseDTO.builder()
                 .verificationId(id)
                 .build();
@@ -177,24 +177,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(UserNotFoundException::new);
 
-        String code = Utils.generateVerificationCode();
-
-        UserVerificationCode verification = UserVerificationCode.builder()
-                .user(user)
-                .code(code)
-                .type(VerificationType.PASSWORD_RESET)
-                .generatedAt(LocalDateTime.now())
-                .verified(false)
-                .build();
-
-        userVerificationRepository.save(verification);
-
-        emailService.sendEmail(
-                user.getEmail(),
-                "Password reset request",
-                "Hello\n\nYour password reset code is: " + code +
-                        "\n\nThis code is valid for 10 minutes."
-        );
+        this.sendEmail(user, VerificationType.PASSWORD_RESET);
     }
 
 
@@ -240,7 +223,7 @@ public class UserServiceImpl implements UserService {
         return StatusPasswordResetDTO.builder().email(email).swapPassword(true).build();
     }
 
-    private UUID sendEmail(User user) {
+    private UUID sendEmail(User user, VerificationType type) {
         try {
             String code = Utils.generateVerificationCode();
 
@@ -251,16 +234,13 @@ public class UserServiceImpl implements UserService {
                     .generatedAt(LocalDateTime.now())
                     .verified(false)
                     .build();
-
-            this.emailService.sendEmail(
-                    user.getEmail(),
-                    "Email verification for ImobMatch",
-                    "Hello\nYour verification code is: " + code
-            );
-
+            switch (type){
+                case VerificationType.EMAIL -> this.emailService.sendValidationEmail(user.getEmail(),code);
+                case VerificationType.PASSWORD_RESET -> this.emailService.sendValidationEmailForResetPassword(user.getEmail(), code);
+                default -> throw new IllegalStateException("Unexpected value: " + type);
+            }
             this.userVerificationRepository.save(verification);
             return verification.getId();
-
         } catch (Exception e) {
             throw new ErroSendEmailException();
         }
