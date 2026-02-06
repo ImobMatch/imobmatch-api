@@ -326,6 +326,44 @@ import lombok.RequiredArgsConstructor;
     }
 
     @Override
+    public List<BrokerResponseDTO> listPendingBrokers() {
+    
+    return brokerRepository.findByAccountStatus(BrokerAccountStatus.PENDING).stream()
+        .map(this::buildBrokerResponseDto)
+        .collect(Collectors.toList());
+    }
+
+    /*
+     * Implementação do método approveBroker e rejectBroker
+     * para aprovação e rejeição de corretores pendentes.
+     */
+
+    @Override
+    @Transactional
+    public void approveBroker(UUID brokerId) {
+    Broker broker = brokerRepository.findById(brokerId)
+        .orElseThrow(BrokerNotFoundException::new);
+    
+    if (broker.getAccountStatus() != BrokerAccountStatus.PENDING) {
+        throw new IllegalStateException("Este corretor não está pendente de aprovação.");
+        }
+    }
+
+    @Override
+    @Transactional
+    public void rejectBroker(UUID brokerId) {
+    Broker broker = brokerRepository.findById(brokerId)
+        .orElseThrow(BrokerNotFoundException::new);
+    if (broker.getAccountStatus() != BrokerAccountStatus.PENDING) {
+        throw new IllegalStateException("Este corretor não está pendente de aprovação.");
+        }
+
+    broker.setAccountStatus(BrokerAccountStatus.REJECTED);
+    brokerRepository.save(broker);
+
+    }
+
+    @Override
     @Transactional
     public void deleteMeBroker(PasswordUserDeleteDTO passwordUserDeleteDTO)throws AuthenticationException
             , BrokerNotFoundException {

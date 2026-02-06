@@ -48,6 +48,12 @@ public interface BrokerService {
 
     List<BrokerResponseDTO> ListByAccountStatusBroker(BrokerAccountStatus accountStatus);
 
+    List<BrokerResponseDTO> listPendingBrokers();
+    
+    void approveBroker(UUID brokerId);
+
+    void rejectBroker(UUID brokerId);
+
     void deleteMeBroker(PasswordUserDeleteDTO passwordUserDeleteDTO);
 
     void deleteBroker(UUID id);

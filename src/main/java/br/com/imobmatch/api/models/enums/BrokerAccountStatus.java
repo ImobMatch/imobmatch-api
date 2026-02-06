@@ -3,7 +3,8 @@ package br.com.imobmatch.api.models.enums;
 public enum BrokerAccountStatus {
     ACTIVE("active"),
     BLOCKED("blocked"),
-    PENDING("pending");
+    PENDING("pending"),
+    REJECTED("rejected");
 
     private final String value;
 
