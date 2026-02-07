@@ -32,18 +32,18 @@ public class AdminBrokerController {
     private final BrokerService brokerService;
 
     @GetMapping("/pending")
-    public ResponseEntity<List<BrokerResponseDTO>> getPendingBrokers() {
-        return ResponseEntity.ok(brokerService.listPendingBrokers());
+    public ResponseEntity<List<BrokerResponseDTO>> getPending() {
+        return ResponseEntity.ok(brokerService.getPendingBrokers());
     }
 
     @PatchMapping("/{id}/approve")
-    public ResponseEntity<Void> approveBroker(@PathVariable UUID id) {
+    public ResponseEntity<Void> approve(@PathVariable UUID id) {
         brokerService.approveBroker(id);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}/reject")
-    public ResponseEntity<Void> rejectBroker(@PathVariable UUID id) {
+    public ResponseEntity<Void> reject(@PathVariable UUID id) {
         brokerService.rejectBroker(id);
         return ResponseEntity.noContent().build();
     }

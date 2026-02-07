@@ -18,43 +18,41 @@ public interface BrokerService {
     
     BrokerResponseDTO createBroker(BrokerPostDTO brokerPostDTO);
 
-    BrokerResponseDTO updateMeBroker(BrokerPatchDTO brokerPatchDTO);
+    BrokerResponseDTO updateBroker(BrokerPatchDTO brokerPatchDTO);
 
     BrokerResponseDTO updateBroker(UUID id, BrokerPatchDTO brokerPatchDTO);
 
-    BrokerResponseDTO updateBrokerAccountStatus(UUID id, BrokerAccountStatus accountStatus);
+    BrokerResponseDTO getBroker();
 
-    BrokerResponseDTO getMeBroker();
+    BrokerResponseDTO getBrokerById(UUID id);
 
-    BrokerResponseDTO getByIdBroker(UUID id);
+    BrokerResponseDTO getBrokerByEmail(String email);
 
-    BrokerResponseDTO getByEmailBroker(String email);
+    BrokerResponseDTO getBrokerByCreci(String creci);
 
-    BrokerResponseDTO getByCreciBroker(String creci);
+    BrokerResponseDTO getBrokerByCpf(String cpf);
 
-    BrokerResponseDTO getByCpfBroker(String cpf);
+    List<BrokerResponseDTO> getBrokersByName(String name);
 
-    List<BrokerResponseDTO> ListByNameBroker(String name);
+    List<BrokerResponseDTO> getBrokersByRegionInterest(String regionInterest);
 
-    List<BrokerResponseDTO> ListByRegionInterestBroker(String regionInterest);
+    List<BrokerResponseDTO> getBrokersByOperationCity(String operationCity);
 
-    List<BrokerResponseDTO> ListByOperationCityBroker(String operationCity);
+    List<BrokerResponseDTO> getBrokersByPropertyType(BrokerPropertyType propertyType);
 
-    List<BrokerResponseDTO> ListByPropertyTypeBroker(BrokerPropertyType propertyType);
-
-    List<BrokerResponseDTO> ListByBusinessTypeBroker(BrokerBusinessType businessType);
+    List<BrokerResponseDTO> getBrokersByBusinessType(BrokerBusinessType businessType);
     
-    List<BrokerResponseDTO> ListAllBroker();
+    List<BrokerResponseDTO> getAllBrokers();
 
-    List<BrokerResponseDTO> ListByAccountStatusBroker(BrokerAccountStatus accountStatus);
+    List<BrokerResponseDTO> getBrokersByAccountStatus(BrokerAccountStatus accountStatus);
 
-    List<BrokerResponseDTO> listPendingBrokers();
+    List<BrokerResponseDTO> getPendingBrokers();
     
     void approveBroker(UUID brokerId);
 
     void rejectBroker(UUID brokerId);
 
-    void deleteMeBroker(PasswordUserDeleteDTO passwordUserDeleteDTO);
+    void deleteBroker(PasswordUserDeleteDTO passwordUserDeleteDTO);
 
     void deleteBroker(UUID id);
 }
