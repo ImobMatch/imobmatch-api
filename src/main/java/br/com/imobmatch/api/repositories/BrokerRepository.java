@@ -27,5 +27,6 @@ public interface BrokerRepository extends JpaRepository<Broker, UUID> {
   List<Broker> findByOperationCityContainingIgnoreCase(String operationCity);
   List<Broker> findByPropertyType(BrokerPropertyType propertyType);
   List<Broker> findByBusinessType(BrokerBusinessType businessType);
-  List<Broker> findByAccountStatus(BrokerAccountStatus accountStatus);
+  List<Broker> findByAccountStatus(BrokerAccountStatus accountStatus);  
+
 }

@@ -105,27 +105,9 @@ class UserServiceImplTest {
     }
 
     @Test
-    void testSendEmailVerificationCode_Success() {
-        RequestValidationEmailResponseDTO response =
-                userService.sendEmailVerificationCodeForEmail(
-                        RequestValidationEmailDTO.builder()
-                                .email(user.getEmail())
-                                .build()
-                );
-
-        assertNotNull(response.getVerificationId());
-
-        verify(emailService).sendEmail(
-                eq(user.getEmail()),
-                anyString(),
-                contains("verification code")
-        );
-    }
-
-    @Test
     void testValidateEmail_Success() {
         UUID verificationId =
-                userService.sendEmailVerificationCodeForEmail(
+                userService.sendEmailVerification(
                         RequestValidationEmailDTO.builder()
                                 .email(user.getEmail())
                                 .build()
@@ -150,7 +132,7 @@ class UserServiceImplTest {
     @Test
     void testValidateEmail_InvalidCode() {
         UUID verificationId =
-                userService.sendEmailVerificationCodeForEmail(
+                userService.sendEmailVerification(
                         RequestValidationEmailDTO.builder()
                                 .email(user.getEmail())
                                 .build()
@@ -161,5 +143,6 @@ class UserServiceImplTest {
                         new ValidateEmailRequestDTO(verificationId, "000000")
                 )
         );
+
     }
 }

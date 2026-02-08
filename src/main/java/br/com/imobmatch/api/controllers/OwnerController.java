@@ -23,7 +23,7 @@ import java.util.UUID;
  * <p>Endpoints are divided into three categories:
  * <ul>
  * <li><b>Public:</b> Registration (POST).</li>
- * <li><b>Authenticated User (/me):</b> Manage the currently logged-in owner profile.</li>
+ * <li><b>Contextual Actions (Root):</b> Update or Delete the currently logged-in profile (PATCH/DELETE).</li>
  * <li><b>Search & Management:</b> Broker or Admin views to list and find owners.</li>
  * </ul>
  * </p>
@@ -48,10 +48,7 @@ public class OwnerController {
      * <code>whatsAppPhoneNumber</code>, <code>personalPhoneNumber</code>, <code>birthDate</code>,
      * <code>isEmailVerified</code>.
      *
-     * @apiNote <p>This endpoint assumes the user has not been created previously.
-     * The data sent is validated and exceptions are returned in case of violation or incorrect formatting.
-     * <p> <code>cpf</code> and <code>email</code> address undergo a format validation process.
-     * <code>birthDate</code> cannot be from the future.</p>
+     * @apiNote <p>This endpoint assumes the user has not been created previously.</p>
      */
     @PostMapping
     public ResponseEntity<OwnerResponseDTO> create(@Valid @RequestBody OwnerCreateDTO dto) {
@@ -61,36 +58,17 @@ public class OwnerController {
     }
 
     /**
-     * Get data from the currently authenticated owner.
-     *
-     * @return Return ResponseDTO containing: <code>name</code>, <code>cpf</code>, <code>email</code>,
-     * <code>whatsAppPhoneNumber</code>, <code>personalPhoneNumber</code>, <code>birthDate</code>, <code>isEmailVerified</code>.
-     *
-     * @apiNote The endpoint accesses the token to identify the user. URL: <code>/owners/me</code>.
-     */
-    @GetMapping("/me")
-    @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasAnyRole('OWNER', 'ADMIN')")
-    public ResponseEntity<OwnerResponseDTO> getOwner() {
-        return ResponseEntity.ok(ownerService.getOwner());
-    }
-
-    /**
      * Update authenticated owner data.
      *
      * @param dto New data for update. Only data unique to the owner entity can be updated.
-     * Possible data to be entered are:Return ResponseDTO containing: <code>name</code>,
-     * <code>whatsAppPhoneNumber</code>, <code>personalPhoneNumber</code>, <code>birthDate</code>,
-     * @return Return ResponseDTO containing: <code>name</code>, <code>cpf</code>, <code>email</code>,
-     *<code>whatsAppPhoneNumber</code>, <code>personalPhoneNumber</code>, <code>birthDate</code>,
-     * <code>isEmailVerified</code>.
+     * Possible data to be entered are: <code>name</code>,
+     * <code>whatsAppPhoneNumber</code>, <code>personalPhoneNumber</code>, <code>birthDate</code>.
+     * @return Return updated ResponseDTO.
      *
-     * @apiNote <p>URL: <code>/owners/me</code></p>
-     * You only need to send the data that will be updated.
-     * It is not necessary to specify null values.
-     * If the value does not exist, it is assumed that it will not be updated.
+     * @apiNote <p>URL: <code>PATCH /owners</code></p>
+     * Updates the currently logged-in user based on the Auth Token.
      */
-    @PatchMapping("/me")
+    @PatchMapping
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAnyRole('OWNER', 'ADMIN')")
     public ResponseEntity<OwnerResponseDTO> updateMe(@RequestBody OwnerUpdateDTO dto) {
@@ -102,12 +80,11 @@ public class OwnerController {
      * <p>You must be logged into the system and submit the user's password to confirm the operation.</p>
      *
      * @param dto Object containing the User's <code>password</code> for confirmation.
-     * @apiNote <p>URL: <code>/owners/me</code></p>
+     * @apiNote <p>URL: <code>DELETE /owners</code></p>
+     * Deletes the currently logged-in user based on the Auth Token.
      * The exclusion cannot be undone.
-     * <p>This operation will fail if the owner has any properties or any other entity linked to them.
-     * The user is logged out of the system after the operation is successful.</p>
      */
-    @DeleteMapping("/me")
+    @DeleteMapping
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAnyRole('OWNER', 'ADMIN')")
     public ResponseEntity<Void> deleteMe(@RequestBody PasswordUserDeleteDTO dto) {
@@ -128,7 +105,6 @@ public class OwnerController {
      * <li>If <code>name</code> is provided, it returns owners matching the name.</li>
      * <li>If <code>birthDate</code> is provided (and name is null), it returns owners matching the date.</li>
      * <li>If neither is provided, returns all owners.</li>
-     * <li>If no data is found, it returns an empty list.</li>
      * </ol>
      */
     @GetMapping()
@@ -138,15 +114,12 @@ public class OwnerController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) LocalDate birthDate
     ) {
-
         if (name != null && !name.isBlank()) {
             return ResponseEntity.ok(ownerService.getAllOwnersByName(name));
         }
-
         if (birthDate != null) {
             return ResponseEntity.ok(ownerService.getAllOwnersByBirthDate(birthDate));
         }
-
         return ResponseEntity.ok(ownerService.getAllOwners());
     }
 
@@ -154,14 +127,12 @@ public class OwnerController {
      * Get specific owner data by their unique ID (UUID).
      *
      * @param id The UUID of the owner.
-     * @return Return ResponseDTO containing: <code>name</code>, <code>cpf</code>, <code>email</code>,
-     * <code>whatsAppPhoneNumber</code>, <code>personalPhoneNumber</code>, <code>birthDate</code>,
-     * <code>isEmailVerified</code>.
+     * @return Return ResponseDTO containing owner details.
      * @apiNote Throws 404 if the ID does not exist.
      */
     @GetMapping("/{id}")
     @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasAnyRole('BROKER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('OWNER', 'ADMIN')")
     public ResponseEntity<OwnerResponseDTO> getById(@PathVariable UUID id) {
         return ResponseEntity.ok(ownerService.getOwnerById(id));
     }
@@ -170,9 +141,7 @@ public class OwnerController {
      * Search for a single owner by their unique email address.
      *
      * @param email The email to search for.
-     * @return Return ResponseDTO containing: <code>name</code>, <code>cpf</code>, <code>email</code>,
-     *<code>whatsAppPhoneNumber</code>, <code>personalPhoneNumber</code>, <code>birthDate</code>,
-     *<code>isEmailVerified</code>.
+     * @return Return ResponseDTO.
      * @apiNote Activated when the <code>email</code> query parameter is present.
      */
     @GetMapping(value = "/search", params = "email")
@@ -182,13 +151,11 @@ public class OwnerController {
         return ResponseEntity.ok(ownerService.getOwnerByEmail(email));
     }
 
-    /**
+    /*
      * Search for a single owner by their unique CPF.
      *
-     * @param cpf The CPF to search for (formatted or plain numbers).
-     * @return Return ResponseDTO containing: <code>name</code>, <code>cpf</code>, <code>email</code>,
-     *<code>whatsAppPhoneNumber</code>, <code>personalPhoneNumber</code>, <code>birthDate</code>,
-     * <code>isEmailVerified</code>.
+     * @param cpf The CPF to search for.
+     * @return Return ResponseDTO.
      * @apiNote Activated when the <code>cpf</code> query parameter is present.
      */
     @GetMapping(value = "/search", params = "cpf")
