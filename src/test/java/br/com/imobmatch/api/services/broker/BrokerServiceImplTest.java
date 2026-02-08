@@ -110,7 +110,7 @@ class BrokerServiceImplTest {
         BrokerPatchDTO patchDto = new BrokerPatchDTO();
         patchDto.setName("Updated Test Broker");
 
-        BrokerResponseDTO updatedBroker = brokerService.updateMeBroker(patchDto);
+        BrokerResponseDTO updatedBroker = brokerService.updateBroker(patchDto);
         assertNotNull(updatedBroker);
         assertEquals("Updated Test Broker", updatedBroker.getName());
     }
@@ -133,26 +133,12 @@ class BrokerServiceImplTest {
     }
 
     @Test
-    @DisplayName("Admin updates broker account status successfully")
-    void testAdminUpdateBrokerAccountStatus() {
-        BrokerResponseDTO createdBroker = brokerService.createBroker(brokerPostDTO);
-        assertNotNull(createdBroker);
-
-        mockAuthenticatedUser(createdBroker.getId());
-
-        // Update the broker account status
-        BrokerResponseDTO updatedBroker = brokerService.updateBrokerAccountStatus(createdBroker.getId(), BrokerAccountStatus.ACTIVE);
-        assertNotNull(updatedBroker);
-        assertEquals(BrokerAccountStatus.ACTIVE, updatedBroker.getAccountStatus());
-    }
-
-    @Test
     @DisplayName("Get broker by ID successfully")
     void testGetBrokerById() {
         BrokerResponseDTO createdBroker = brokerService.createBroker(brokerPostDTO);
         assertNotNull(createdBroker);
 
-        BrokerResponseDTO fetchedBroker = brokerService.getByIdBroker(createdBroker.getId());
+        BrokerResponseDTO fetchedBroker = brokerService.getBrokerById(createdBroker.getId());
         assertNotNull(fetchedBroker);
         assertEquals(createdBroker.getId(), fetchedBroker.getId());
     }
@@ -165,7 +151,7 @@ class BrokerServiceImplTest {
 
         mockAuthenticatedUser(createdBroker.getId());
 
-        BrokerResponseDTO fetchedBroker = brokerService.getMeBroker();
+        BrokerResponseDTO fetchedBroker = brokerService.getBroker();
         assertNotNull(fetchedBroker);
         assertEquals(createdBroker.getId(), fetchedBroker.getId());
     }
@@ -176,7 +162,7 @@ class BrokerServiceImplTest {
         BrokerResponseDTO createdBroker = brokerService.createBroker(brokerPostDTO);
         assertNotNull(createdBroker);
 
-        BrokerResponseDTO fetchedBroker = brokerService.getByEmailBroker(createdBroker.getEmail());
+        BrokerResponseDTO fetchedBroker = brokerService.getBrokerByEmail(createdBroker.getEmail());
         assertNotNull(fetchedBroker);
         assertEquals(createdBroker.getId(), fetchedBroker.getId());
     }
@@ -187,7 +173,7 @@ class BrokerServiceImplTest {
         BrokerResponseDTO createdBroker = brokerService.createBroker(brokerPostDTO);
         assertNotNull(createdBroker);
 
-        BrokerResponseDTO fetchedBroker = brokerService.getByCreciBroker(createdBroker.getCreci());
+        BrokerResponseDTO fetchedBroker = brokerService.getBrokerByCreci(createdBroker.getCreci());
         assertNotNull(fetchedBroker);
         assertEquals(createdBroker.getId(), fetchedBroker.getId());
     }
@@ -198,7 +184,7 @@ class BrokerServiceImplTest {
         BrokerResponseDTO createdBroker = brokerService.createBroker(brokerPostDTO);
         assertNotNull(createdBroker);
 
-        BrokerResponseDTO fetchedBroker = brokerService.getByCpfBroker(createdBroker.getCpf());
+        BrokerResponseDTO fetchedBroker = brokerService.getBrokerByCpf(createdBroker.getCpf());
         assertNotNull(fetchedBroker);
         assertEquals(createdBroker.getId(), fetchedBroker.getId());
     }
@@ -209,7 +195,7 @@ class BrokerServiceImplTest {
         BrokerResponseDTO createdBroker = brokerService.createBroker(brokerPostDTO);
         assertNotNull(createdBroker);
 
-        var brokers = brokerService.ListByNameBroker("Test Broker");
+        var brokers = brokerService.getBrokersByName("Test Broker");
         assertFalse(brokers.isEmpty());
         assertEquals(1, brokers.size());
     }
@@ -224,9 +210,9 @@ class BrokerServiceImplTest {
         patchDto.setRegionInterest("Downtown");
 
         mockAuthenticatedUser(createdBroker.getId());
-        brokerService.updateMeBroker(patchDto);
+        brokerService.updateBroker(patchDto);
 
-        var brokers = brokerService.ListByRegionInterestBroker("Downtown");
+        var brokers = brokerService.getBrokersByRegionInterest("Downtown");
         assertFalse(brokers.isEmpty());
         assertEquals(1, brokers.size());
     }
@@ -241,9 +227,9 @@ class BrokerServiceImplTest {
         patchDto.setOperationCity("Metropolis");
 
         mockAuthenticatedUser(createdBroker.getId());
-        brokerService.updateMeBroker(patchDto);
+        brokerService.updateBroker(patchDto);
 
-        var brokers = brokerService.ListByOperationCityBroker("Metropolis");
+        var brokers = brokerService.getBrokersByOperationCity("Metropolis");
         assertFalse(brokers.isEmpty());
         assertEquals(1, brokers.size());
     }
@@ -258,9 +244,9 @@ class BrokerServiceImplTest {
         patchDto.setPropertyType(BrokerPropertyType.APARTMENT);
 
         mockAuthenticatedUser(createdBroker.getId());
-        brokerService.updateMeBroker(patchDto);
+        brokerService.updateBroker(patchDto);
 
-        var brokers = brokerService.ListByPropertyTypeBroker(BrokerPropertyType.APARTMENT);
+        var brokers = brokerService.getBrokersByPropertyType(BrokerPropertyType.APARTMENT);
         assertFalse(brokers.isEmpty());
         assertEquals(1, brokers.size());
     }
@@ -275,9 +261,9 @@ class BrokerServiceImplTest {
         patchDto.setBusinessType(BrokerBusinessType.SALE);
 
         mockAuthenticatedUser(createdBroker.getId());
-        brokerService.updateMeBroker(patchDto);
+        brokerService.updateBroker(patchDto);
 
-        var brokers = brokerService.ListByBusinessTypeBroker(BrokerBusinessType.SALE);
+        var brokers = brokerService.getBrokersByBusinessType(BrokerBusinessType.SALE);
         assertFalse(brokers.isEmpty());
         assertEquals(1, brokers.size());
     }
@@ -288,7 +274,7 @@ class BrokerServiceImplTest {
         BrokerResponseDTO createdBroker = brokerService.createBroker(brokerPostDTO);
         assertNotNull(createdBroker);
 
-        var brokers = brokerService.ListAllBroker();
+        var brokers = brokerService.getAllBrokers();
         assertFalse(brokers.isEmpty());
         assertEquals(1, brokers.size());
     }
@@ -299,7 +285,7 @@ class BrokerServiceImplTest {
         BrokerResponseDTO createdBroker = brokerService.createBroker(brokerPostDTO);
         assertNotNull(createdBroker);
 
-        var brokers = brokerService.ListByAccountStatusBroker(BrokerAccountStatus.PENDING);
+        var brokers = brokerService.getBrokersByAccountStatus(BrokerAccountStatus.PENDING);
         assertFalse(brokers.isEmpty());
         assertEquals(1, brokers.size());
     }
@@ -313,7 +299,7 @@ class BrokerServiceImplTest {
         mockAuthenticatedUser(createdBroker.getId());
 
         PasswordUserDeleteDTO deleteDto = new PasswordUserDeleteDTO("password123");
-        brokerService.deleteMeBroker(deleteDto);
+        brokerService.deleteBroker(deleteDto);
 
         assertNull(brokerRepository.findById(createdBroker.getId()).orElse(null));
     }
