@@ -6,14 +6,12 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @Data
-public class CondominiunResponseDTO {
+public class CondominiumResponseDTO {
 
     private UUID id;
     private String name;
     private BigDecimal price;
     private String cnpj;
-
-    private AddressResponseDTO address;
 
     private Boolean hasGym;
     private Boolean hasPool;

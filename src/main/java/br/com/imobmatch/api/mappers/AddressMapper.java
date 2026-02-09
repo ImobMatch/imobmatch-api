@@ -2,7 +2,7 @@ package br.com.imobmatch.api.mappers;
 
 import br.com.imobmatch.api.dtos.property.AddressCreateDTO;
 import br.com.imobmatch.api.dtos.property.AddressResponseDTO;
-import jakarta.mail.Address;
+import br.com.imobmatch.api.models.property.Address;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

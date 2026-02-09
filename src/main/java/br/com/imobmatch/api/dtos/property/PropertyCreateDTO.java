@@ -22,6 +22,9 @@ public class PropertyCreateDTO {
     @Valid
     private AddressCreateDTO address;
 
+    @Valid
+    private CondominiumCreateDTO condominium;
+
     @NotNull(message = "Characteristic is required")
     @Valid
     private PropertyCharacteristicCreateDTO characteristics;

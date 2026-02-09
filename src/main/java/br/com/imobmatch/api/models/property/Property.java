@@ -32,11 +32,15 @@ public class Property {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
-    private Address address_id;
+    private Address address;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "Characteristic_id")
+    @JoinColumn(name = "characteristic_id")
     private PropertyCharacteristic characteristic;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "condominiun_id")
+    private Condominium condominium;
 
     @Column(name = "is_available", nullable = false)
     private Boolean isAvailable;

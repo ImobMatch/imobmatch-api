@@ -6,7 +6,8 @@ import br.com.imobmatch.api.models.property.Property;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper( componentModel = "spring", uses = {AddressMapper.class, PropertyCharacteristicMapper.class})
+@Mapper( componentModel = "spring", uses = {AddressMapper.class, PropertyCharacteristicMapper.class,
+        CondominiumMapper.class})
 public interface PropertyMapper {
 
     Property toEntity(PropertyCreateDTO propertyCreateDTO);
