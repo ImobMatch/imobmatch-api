@@ -17,7 +17,7 @@ public class Condominium {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "price")
@@ -25,10 +25,6 @@ public class Condominium {
 
     @Column(name = "cnpj")
     private String cnpj;
-
-    @OneToOne
-    @JoinColumn(name = "address", nullable = false)
-    private Address addressId;
 
     @Column(name = "has_gym")
     private Boolean hasGym;
