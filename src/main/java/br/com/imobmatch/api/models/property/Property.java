@@ -1,11 +1,13 @@
 package br.com.imobmatch.api.models.property;
 
 import br.com.imobmatch.api.models.broker.Broker;
-import br.com.imobmatch.api.models.enums.BrazilianState;
+import br.com.imobmatch.api.models.enums.PropertyManager;
 import br.com.imobmatch.api.models.enums.PropertyType;
 import br.com.imobmatch.api.models.owner.Owner;
+import br.com.imobmatch.api.models.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,23 +19,22 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Property {
 
+    //Resolver o problema da zona
+    //Resolver a questão dos estados do pais
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id",  nullable = false)
-    private Owner ownerId;
+    @JoinColumn(name = "publisher_id")
+    private User publisher;
 
-    @ManyToOne
-    @JoinColumn(name = "broker_id", nullable = true)
-    private Broker broker_id;
-
-    @OneToOne
-    @JoinColumn(name = "address_id",  nullable = true)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
     private Address address_id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "Characteristic_id")
     private PropertyCharacteristic propertyCharacteristic;
 
@@ -43,4 +44,12 @@ public class Property {
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     private PropertyType type;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "managed_by", nullable = false)
+    private PropertyManager managedBy;
+
+    @Column(name = "owner_cpf")
+    private String ownerCpf;
+
 }

@@ -2,6 +2,7 @@ package br.com.imobmatch.api.models.property;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,13 +22,13 @@ public class PropertyCharacteristic {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "area")
+    @Column(name = "area", nullable = false)
     private BigDecimal area;
 
     @Column(name = "land_area")
     private BigDecimal landArea;
 
-    @Column(name = "usable_area", nullable = false)
+    @Column(name = "usable_area")
     private BigDecimal usableArea;
 
     @Column(name = "total_area")

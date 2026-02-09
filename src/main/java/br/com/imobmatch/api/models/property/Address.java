@@ -1,7 +1,6 @@
 package br.com.imobmatch.api.models.property;
 
 import br.com.imobmatch.api.models.enums.BrazilianState;
-import br.com.imobmatch.api.models.enums.ZoneType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,5 +29,4 @@ public class Address {
     private BrazilianState state;
     private String zipCode;
     private String referencePoint;
-    private ZoneType zoneType;
 }
