@@ -6,10 +6,14 @@ import br.com.imobmatch.api.models.property.Condominium;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface CondominiumMapper {
     CondominiumMapper INSTANCE = Mappers.getMapper(CondominiumMapper.class);
 
     Condominium toEntity(CondominiumCreateDTO condominiumCreateDTO);
     CondominiunResponseDTO toDTO(Condominium condominium);
+
+    default Boolean mapBoolean(Boolean value) {
+        return value != null ? value : false;
+    }
 }

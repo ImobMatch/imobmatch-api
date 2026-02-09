@@ -36,7 +36,7 @@ public class Property {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "Characteristic_id")
-    private PropertyCharacteristic propertyCharacteristic;
+    private PropertyCharacteristic characteristic;
 
     @Column(name = "is_available", nullable = false)
     private Boolean isAvailable;

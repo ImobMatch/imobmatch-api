@@ -17,7 +17,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PropertyCreateDTO {
-    private UUID publisher;
 
     @NotNull(message = "Address is required")
     @Valid
