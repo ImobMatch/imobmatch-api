@@ -144,10 +144,10 @@ public class OwnerController {
      * @return Return ResponseDTO.
      * @apiNote Activated when the <code>email</code> query parameter is present.
      */
-    @GetMapping(value = "/search", params = "email")
+    @GetMapping(value = "/search/{email}")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAnyRole('BROKER', 'ADMIN')")
-    public ResponseEntity<OwnerResponseDTO> getByEmail(@RequestParam String email) {
+    public ResponseEntity<OwnerResponseDTO> getByEmail(@PathVariable String email) {
         return ResponseEntity.ok(ownerService.getOwnerByEmail(email));
     }
 
