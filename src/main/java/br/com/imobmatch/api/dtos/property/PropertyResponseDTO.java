@@ -1,7 +1,7 @@
 package br.com.imobmatch.api.dtos.property;
 
 import br.com.imobmatch.api.dtos.property.address.AddressResponseDTO;
-import br.com.imobmatch.api.dtos.property.characteristic.PropertyCharacteristicResponseDTO;
+import br.com.imobmatch.api.dtos.property.characteristic.CharacteristicResponseDTO;
 import br.com.imobmatch.api.models.enums.PropertyManager;
 import br.com.imobmatch.api.models.enums.PropertyType;
 
@@ -14,7 +14,7 @@ public class PropertyResponseDTO {
 
     private AddressResponseDTO address;
 
-    private PropertyCharacteristicResponseDTO characteristics;
+    private CharacteristicResponseDTO characteristics;
 
     private Boolean isAvailable;
 

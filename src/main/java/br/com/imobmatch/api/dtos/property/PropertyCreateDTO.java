@@ -1,7 +1,7 @@
 package br.com.imobmatch.api.dtos.property;
 
 import br.com.imobmatch.api.dtos.property.address.AddressCreateDTO;
-import br.com.imobmatch.api.dtos.property.characteristic.PropertyCharacteristicCreateDTO;
+import br.com.imobmatch.api.dtos.property.characteristic.CharacteristicCreateDTO;
 import br.com.imobmatch.api.dtos.property.condominium.CondominiumCreateDTO;
 import br.com.imobmatch.api.models.enums.PropertyManager;
 import br.com.imobmatch.api.models.enums.PropertyType;
@@ -27,7 +27,7 @@ public class PropertyCreateDTO {
 
     @NotNull(message = "Characteristic is required")
     @Valid
-    private PropertyCharacteristicCreateDTO characteristics;
+    private CharacteristicCreateDTO characteristics;
 
     @NotNull(message = "Property type is required")
     private PropertyType type;

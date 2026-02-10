@@ -1,7 +1,7 @@
 package br.com.imobmatch.api.mappers;
 
-import br.com.imobmatch.api.dtos.property.characteristic.PropertyCharacteristicCreateDTO;
-import br.com.imobmatch.api.dtos.property.characteristic.PropertyCharacteristicResponseDTO;
+import br.com.imobmatch.api.dtos.property.characteristic.CharacteristicCreateDTO;
+import br.com.imobmatch.api.dtos.property.characteristic.CharacteristicResponseDTO;
 import br.com.imobmatch.api.models.property.PropertyCharacteristic;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -12,8 +12,8 @@ public interface PropertyCharacteristicMapper {
 
     PropertyCharacteristicMapper INSTANCE = Mappers.getMapper(PropertyCharacteristicMapper.class);
 
-    PropertyCharacteristic toEntity(PropertyCharacteristicCreateDTO propertyCharacteristicCreateDTO);
-    PropertyCharacteristicResponseDTO toDTO(PropertyCharacteristic propertyCharacteristic);
+    PropertyCharacteristic toEntity(CharacteristicCreateDTO characteristicCreateDTO);
+    CharacteristicResponseDTO toDTO(PropertyCharacteristic propertyCharacteristic);
 
     default Short mapShort(Short value) {
         return value != null ? value : (short) 0;
