@@ -1,6 +1,7 @@
 package br.com.imobmatch.api.specs.property;
 
 import br.com.imobmatch.api.dtos.property.PropertyFilterDTO;
+import br.com.imobmatch.api.models.property.Address; // <--- Importante
 import br.com.imobmatch.api.models.property.Condominium;
 import br.com.imobmatch.api.models.property.Property;
 import br.com.imobmatch.api.models.property.PropertyCharacteristic;
@@ -66,7 +67,6 @@ public class PropertySpecs {
 
                 addLike(predicates, builder, condoJoin.get("name"), filter.getCondominiumName());
                 addEqual(predicates, builder, condoJoin.get("cnpj"), filter.getCondominiumCnpj());
-
                 addLe(predicates, builder, condoJoin.get("price"), filter.getMaxCondoPrice());
 
                 addIfTrue(predicates, builder, condoJoin.get("hasGym"), filter.getCondoHasGym());
@@ -90,11 +90,25 @@ public class PropertySpecs {
                 addIfTrue(predicates, builder, condoJoin.get("hasElectricCarStation"), filter.getCondoHasElectricCarStation());
             }
 
+            if (hasAddressFilters(filter)) {
+                Join<Property, Address> addressJoin = root.join("address", JoinType.INNER);
+
+                addLike(predicates, builder, addressJoin.get("street"), filter.getStreet());
+                addLike(predicates, builder, addressJoin.get("neighborhood"), filter.getNeighborhood());
+                addLike(predicates, builder, addressJoin.get("city"), filter.getCity());
+                addLike(predicates, builder, addressJoin.get("complement"), filter.getComplement());
+                addLike(predicates, builder, addressJoin.get("referencePoint"), filter.getReferencePoint());
+
+                addLike(predicates, builder, addressJoin.get("zipCode"), filter.getZipCode());
+
+                addEqual(predicates, builder, addressJoin.get("number"), filter.getNumber());
+                addEqual(predicates, builder, addressJoin.get("state"), filter.getState());
+            }
+
             return builder.and(predicates.toArray(new Predicate[0]));
         };
     }
 
-    //helpers
     private static void addEqual(List<Predicate> preds, CriteriaBuilder cb, Path<?> path, Object value) {
         if (value != null) preds.add(cb.equal(path, value));
     }
@@ -115,7 +129,6 @@ public class PropertySpecs {
         if (Boolean.TRUE.equals(value)) preds.add(cb.isTrue(path));
     }
 
-    //Optimizations
     private static boolean hasCharacteristicFilters(PropertyFilterDTO f) {
         return f.getMinArea() != null || f.getMaxArea() != null ||
                 f.getMinLandArea() != null || f.getMaxLandArea() != null ||
@@ -145,5 +158,12 @@ public class PropertySpecs {
                 Boolean.TRUE.equals(f.getCondoHasRestaurant()) || Boolean.TRUE.equals(f.getCondoHas24hSecurity()) ||
                 Boolean.TRUE.equals(f.getCondoHasCameras()) || Boolean.TRUE.equals(f.getCondoHasElevators()) ||
                 Boolean.TRUE.equals(f.getCondoHasElectricCarStation());
+    }
+
+    private static boolean hasAddressFilters(PropertyFilterDTO f) {
+        return StringUtils.hasText(f.getStreet()) || f.getNumber() != null ||
+                StringUtils.hasText(f.getComplement()) || StringUtils.hasText(f.getNeighborhood()) ||
+                StringUtils.hasText(f.getCity()) || f.getState() != null ||
+                StringUtils.hasText(f.getZipCode()) || StringUtils.hasText(f.getReferencePoint());
     }
 }
