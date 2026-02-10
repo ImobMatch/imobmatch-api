@@ -1,7 +1,7 @@
 package br.com.imobmatch.api.mappers;
 
-import br.com.imobmatch.api.dtos.property.CondominiumCreateDTO;
-import br.com.imobmatch.api.dtos.property.CondominiumResponseDTO;
+import br.com.imobmatch.api.dtos.property.condominium.CondominiumCreateDTO;
+import br.com.imobmatch.api.dtos.property.condominium.CondominiumResponseDTO;
 import br.com.imobmatch.api.models.property.Condominium;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValuePropertyMappingStrategy;

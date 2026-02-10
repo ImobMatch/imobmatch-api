@@ -1,7 +1,7 @@
 package br.com.imobmatch.api.mappers;
 
-import br.com.imobmatch.api.dtos.property.AddressCreateDTO;
-import br.com.imobmatch.api.dtos.property.AddressResponseDTO;
+import br.com.imobmatch.api.dtos.property.address.AddressCreateDTO;
+import br.com.imobmatch.api.dtos.property.address.AddressResponseDTO;
 import br.com.imobmatch.api.models.property.Address;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValuePropertyMappingStrategy;

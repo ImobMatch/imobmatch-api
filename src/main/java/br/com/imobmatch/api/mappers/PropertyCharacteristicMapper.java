@@ -1,7 +1,7 @@
 package br.com.imobmatch.api.mappers;
 
-import br.com.imobmatch.api.dtos.property.PropertyCharacteristicCreateDTO;
-import br.com.imobmatch.api.dtos.property.PropertyCharacteristicResponseDTO;
+import br.com.imobmatch.api.dtos.property.characteristic.PropertyCharacteristicCreateDTO;
+import br.com.imobmatch.api.dtos.property.characteristic.PropertyCharacteristicResponseDTO;
 import br.com.imobmatch.api.models.property.PropertyCharacteristic;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValuePropertyMappingStrategy;

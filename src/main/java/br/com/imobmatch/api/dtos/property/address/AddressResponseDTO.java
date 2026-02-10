@@ -1,4 +1,4 @@
-package br.com.imobmatch.api.dtos.property;
+package br.com.imobmatch.api.dtos.property.address;
 
 import br.com.imobmatch.api.models.enums.BrazilianState;
 import lombok.Data;

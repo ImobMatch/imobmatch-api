@@ -1,16 +1,16 @@
 package br.com.imobmatch.api.dtos.property;
 
+import br.com.imobmatch.api.dtos.property.address.AddressCreateDTO;
+import br.com.imobmatch.api.dtos.property.characteristic.PropertyCharacteristicCreateDTO;
+import br.com.imobmatch.api.dtos.property.condominium.CondominiumCreateDTO;
 import br.com.imobmatch.api.models.enums.PropertyManager;
 import br.com.imobmatch.api.models.enums.PropertyType;
-import jakarta.persistence.Column;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.UUID;
 
 @Data
 @Builder

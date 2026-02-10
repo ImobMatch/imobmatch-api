@@ -1,8 +1,6 @@
-package br.com.imobmatch.api.dtos.property;
+package br.com.imobmatch.api.dtos.property.condominium;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +13,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CondominiumCreateDTO {
+public class CondominiumUpdateDTO {
 
     @NotBlank(message = "name is required")
     private String name;

@@ -1,10 +1,9 @@
 package br.com.imobmatch.api.dtos.property;
 
+import br.com.imobmatch.api.dtos.property.address.AddressResponseDTO;
+import br.com.imobmatch.api.dtos.property.characteristic.PropertyCharacteristicResponseDTO;
 import br.com.imobmatch.api.models.enums.PropertyManager;
 import br.com.imobmatch.api.models.enums.PropertyType;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 
 import java.util.UUID;
 

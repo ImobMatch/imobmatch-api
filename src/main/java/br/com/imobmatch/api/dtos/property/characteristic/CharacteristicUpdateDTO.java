@@ -1,4 +1,4 @@
-package br.com.imobmatch.api.dtos.property;
+package br.com.imobmatch.api.dtos.property.characteristic;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -11,21 +11,18 @@ import java.math.BigDecimal;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class PropertyCharacteristicCreateDTO {
+@AllArgsConstructor
+public class CharacteristicUpdateDTO {
+
     private String description;
 
     @Positive
-    @NotNull
     private BigDecimal area;
-
     @Positive
     private BigDecimal landArea;
-
     @Positive
     private BigDecimal usableArea;
-
     @Positive
     private BigDecimal totalArea;
 
