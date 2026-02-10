@@ -3,13 +3,18 @@ package br.com.imobmatch.api.services.property;
 import br.com.imobmatch.api.dtos.property.PropertyCreateDTO;
 import br.com.imobmatch.api.dtos.property.PropertyFilterDTO;
 import br.com.imobmatch.api.dtos.property.PropertyResponseDTO;
-import br.com.imobmatch.api.models.property.Property;
+import br.com.imobmatch.api.dtos.property.PropertyUpdateDTO;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+
 
 public interface PropertyService {
 
     PropertyResponseDTO createProperty(PropertyCreateDTO propertyCreateDTO);
-    PropertyResponseDTO findProperty(PropertyFilterDTO propertyFilterDTO);
-    PropertyResponseDTO updateProperty(PropertyFilterDTO propertyFilterDTO);
-    PropertyResponseDTO deleteProperty(PropertyFilterDTO propertyFilterDTO);
+    List<PropertyResponseDTO> findAll(PropertyFilterDTO propertyFilterDTO);
+    PropertyResponseDTO findById(UUID id);
+    PropertyResponseDTO updateProperty(UUID id, PropertyUpdateDTO propertyUpdateDTO);
+    void deleteProperty(UUID id);
 }
