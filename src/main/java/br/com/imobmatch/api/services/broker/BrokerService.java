@@ -55,4 +55,6 @@ public interface BrokerService {
     void deleteBroker(PasswordUserDeleteDTO passwordUserDeleteDTO);
 
     void deleteBroker(UUID id);
+
+    List<BrokerResponseDTO> search(String regionInterest, String operationCity, BrokerPropertyType propertyType, BrokerBusinessType businessType);
 }

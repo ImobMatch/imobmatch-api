@@ -45,6 +45,7 @@ public class SecurityConfigurations {
                                 "auth/send-password-code"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/brokers").permitAll()
                         .requestMatchers(HttpMethod.POST, "/owners").permitAll()
                         .requestMatchers("/swagger-ui/**",
                                 "/v3/api-docs/**",
