@@ -27,7 +27,7 @@ public class PropertyCreateDTO {
 
     @NotNull(message = "Characteristic is required")
     @Valid
-    private CharacteristicCreateDTO characteristics;
+    private CharacteristicCreateDTO characteristic;
 
     @NotNull(message = "Property type is required")
     private PropertyType type;

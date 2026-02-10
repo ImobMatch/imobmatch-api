@@ -6,7 +6,15 @@ import br.com.imobmatch.api.dtos.property.condominium.CondominiumUpdateDTO;
 import br.com.imobmatch.api.models.enums.PropertyManager;
 import br.com.imobmatch.api.models.enums.PropertyType;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PropertyUpdateDTO {
 
     private PropertyType type;
@@ -18,7 +26,7 @@ public class PropertyUpdateDTO {
     private AddressUpdateDTO address;
 
     @Valid
-    private CharacteristicUpdateDTO characteristics;
+    private CharacteristicUpdateDTO characteristic;
 
     @Valid
     private CondominiumUpdateDTO condominium;

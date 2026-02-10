@@ -1,5 +1,6 @@
 package br.com.imobmatch.api.dtos.property;
 
+import br.com.imobmatch.api.models.enums.BrazilianState;
 import br.com.imobmatch.api.models.enums.PropertyManager;
 import br.com.imobmatch.api.models.enums.PropertyType;
 import lombok.AllArgsConstructor;
@@ -83,4 +84,14 @@ public class PropertyFilterDTO {
     private Boolean condoHasCameras;
     private Boolean condoHasElevators;
     private Boolean condoHasElectricCarStation;
+
+    //Address
+    private String street;
+    private Integer number;
+    private String complement;
+    private String neighborhood;
+    private String city;
+    private BrazilianState state;
+    private String zipCode;
+    private String referencePoint;
 }
