@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.UUID;
 
-;
-
 /**
  * defines an owner model based on composition with the parent class user.
  */
