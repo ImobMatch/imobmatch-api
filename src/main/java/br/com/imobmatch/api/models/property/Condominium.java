@@ -12,6 +12,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "Condominiun")
 public class Condominium {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -23,14 +24,11 @@ public class Condominium {
     @Column(name = "price")
     private BigDecimal price;
 
-    @Column(name = "cnpj")
+    @Column(name = "cnpj", unique = true)
     private String cnpj;
 
     @Column(name = "has_gym")
     private Boolean hasGym;
-
-    @Column(name = "has_pool")
-    private Boolean hasPool;
 
     @Column(name = "has_sauna")
     private Boolean hasSauna;

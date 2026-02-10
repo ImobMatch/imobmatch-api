@@ -13,6 +13,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "property_characteristic")
 public class PropertyCharacteristic {
 
     @Id

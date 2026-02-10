@@ -17,10 +17,8 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "property")
 public class Property {
-
-    //Resolver o problema da zona
-    //Resolver a questão dos estados do pais
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -31,11 +29,11 @@ public class Property {
     private User publisher;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id")
+    @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "characteristic_id")
+    @JoinColumn(name = "characteristic_id", nullable = false)
     private PropertyCharacteristic characteristic;
 
     @OneToOne(cascade = CascadeType.ALL)
