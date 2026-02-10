@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum PropertyManager {
 
     OWNER("owner"),
-    ADDRESS("address");
+    BROKER("broker");
     private String value;
     PropertyManager(String value) {}
 }
