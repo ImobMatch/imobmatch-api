@@ -4,9 +4,10 @@ import br.com.imobmatch.api.dtos.property.CondominiumCreateDTO;
 import br.com.imobmatch.api.dtos.property.CondominiumResponseDTO;
 import br.com.imobmatch.api.models.property.Condominium;
 import org.mapstruct.Mapper;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface CondominiumMapper {
     CondominiumMapper INSTANCE = Mappers.getMapper(CondominiumMapper.class);
 

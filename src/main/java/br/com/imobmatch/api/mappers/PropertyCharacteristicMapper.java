@@ -4,9 +4,10 @@ import br.com.imobmatch.api.dtos.property.PropertyCharacteristicCreateDTO;
 import br.com.imobmatch.api.dtos.property.PropertyCharacteristicResponseDTO;
 import br.com.imobmatch.api.models.property.PropertyCharacteristic;
 import org.mapstruct.Mapper;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface PropertyCharacteristicMapper {
 
     PropertyCharacteristicMapper INSTANCE = Mappers.getMapper(PropertyCharacteristicMapper.class);
