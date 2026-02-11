@@ -5,6 +5,9 @@ import br.com.imobmatch.api.dtos.email.RequestValidationEmailDTO;
 import br.com.imobmatch.api.dtos.email.RequestValidationEmailResponseDTO;
 import br.com.imobmatch.api.dtos.email.ValidateEmailRequestDTO;
 import br.com.imobmatch.api.dtos.email.ValidateEmailResponseDTO;
+import br.com.imobmatch.api.dtos.password.RequestPasswordResetDTO;
+import br.com.imobmatch.api.dtos.password.ResetPasswordDTO;
+import br.com.imobmatch.api.dtos.password.StatusPasswordResetDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.services.auth.AuthService;
 import br.com.imobmatch.api.services.user.UserService;
@@ -23,15 +26,6 @@ public class AuthController {
     private final AuthService authService;
     private final UserService userService;
 
-    @PostMapping("/send-email-code")
-    public ResponseEntity<RequestValidationEmailResponseDTO> sendEmailCode(@RequestBody RequestValidationEmailDTO request) {
-        return ResponseEntity.ok(userService.sendEmailVerificationCodeForEmail(request));
-    }
-
-    @PostMapping("/validate-email")
-    public ResponseEntity<ValidateEmailResponseDTO> validateEmail(@RequestBody ValidateEmailRequestDTO request) {
-        return ResponseEntity.ok(this.userService.validateEmail(request));
-    }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthenticationDTO data){
@@ -52,5 +46,29 @@ public class AuthController {
         LoginResponseDTO response = authService.refreshToken(token);
         return ResponseEntity.ok(response);
     }
+
+    @PostMapping("/send-password-code")
+    public ResponseEntity<?> sendEmailCodeForPassword(@RequestBody RequestPasswordResetDTO request) {
+        this.userService.requestPasswordReset(request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<StatusPasswordResetDTO> SwapPassoword(@RequestBody ResetPasswordDTO request) {
+        return ResponseEntity.ok(this.userService.resetPassword(request));
+    }
+
+    @PostMapping("/send-email-code")
+    public ResponseEntity<RequestValidationEmailResponseDTO> sendEmailCode(@RequestBody RequestValidationEmailDTO request) {
+        return ResponseEntity.ok(userService.sendEmailVerification(request));
+    }
+
+    @PostMapping("/validate-email")
+    public ResponseEntity<ValidateEmailResponseDTO> validateEmail(@RequestBody ValidateEmailRequestDTO request) {
+        return ResponseEntity.ok(this.userService.validateEmail(request));
+    }
+
+
+
 
 }
