@@ -7,6 +7,7 @@ import br.com.imobmatch.api.dtos.email.ValidateEmailResponseDTO;
 import br.com.imobmatch.api.dtos.password.RequestPasswordResetDTO;
 import br.com.imobmatch.api.dtos.password.ResetPasswordDTO;
 import br.com.imobmatch.api.dtos.password.StatusPasswordResetDTO;
+import br.com.imobmatch.api.dtos.user.UploadProfileImageResponse;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.exceptions.email.RequestCodeExpiredException;
 import br.com.imobmatch.api.exceptions.email.RequestNotFoundException;
@@ -14,6 +15,7 @@ import br.com.imobmatch.api.exceptions.user.UserExistsException;
 import br.com.imobmatch.api.exceptions.user.UserNotFoundException;
 import br.com.imobmatch.api.models.user.User;
 import br.com.imobmatch.api.models.enums.UserRole;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.UUID;
 
@@ -35,4 +37,8 @@ public interface UserService {
 
     StatusPasswordResetDTO resetPassword(ResetPasswordDTO request)
             throws RequestNotFoundException, RequestCodeExpiredException;
+
+    UploadProfileImageResponse updateProfileImage(MultipartFile file);
+
+    UserResponseDTO getMe();
 }

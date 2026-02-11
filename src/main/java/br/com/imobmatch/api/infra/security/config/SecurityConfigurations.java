@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,16 +35,17 @@ public class SecurityConfigurations {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return  httpSecurity
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests( authorize -> authorize
                         .requestMatchers(HttpMethod.POST,
-                                "/auth/login",
-                                "/auth/send-email-code",
-                                "/auth/validate-email",
-                                "auth/reset-password",
-                                "auth/send-password-code"
+                                "/auth/login"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.POST,
+                                "/users/send-email-code",
+                                "/users/validate-email",
+                                "users/reset-password",
+                                "users/send-password-code").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
                         .requestMatchers(HttpMethod.POST, "/brokers").permitAll()
                         .requestMatchers(HttpMethod.POST, "/owners").permitAll()
