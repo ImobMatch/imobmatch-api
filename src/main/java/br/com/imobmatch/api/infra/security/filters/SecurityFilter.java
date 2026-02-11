@@ -2,7 +2,6 @@ package br.com.imobmatch.api.infra.security.filters;
 
 import br.com.imobmatch.api.dtos.auth.TokenDataDTO;
 import br.com.imobmatch.api.infra.security.services.token.TokenService;
-import br.com.imobmatch.api.models.enums.TokenType;
 import br.com.imobmatch.api.repositories.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,11 +25,10 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
     private UserRepository userRepository;
 
-
     @Override
     protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+            HttpServletResponse response,
+            FilterChain filterChain) throws ServletException, IOException {
 
         String token = this.recoverToken(request);
 
@@ -50,8 +48,8 @@ public class SecurityFilter extends OncePerRequestFilter {
 
             UserDetails user = this.userRepository.findByUsername(subject.getEmail());
 
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
+                    user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
         } catch (Exception e) {
@@ -62,10 +60,11 @@ public class SecurityFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-
     private String recoverToken(HttpServletRequest request) {
         var authHeader = request.getHeader("Authorization");
-        if(authHeader == null || !authHeader.startsWith("Bearer ")) {return  null;}
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return null;
+        }
         return authHeader.replace("Bearer ", "");
     }
 }

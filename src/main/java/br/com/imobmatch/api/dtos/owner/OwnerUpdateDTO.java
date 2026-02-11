@@ -1,6 +1,5 @@
 package br.com.imobmatch.api.dtos.owner;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
@@ -19,6 +18,5 @@ public class OwnerUpdateDTO {
     private String personalPhoneNumber;
     @Past
     private LocalDate birthDate;
-
 
 }

@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
-    
+
     @Override
     public void sendEmail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();

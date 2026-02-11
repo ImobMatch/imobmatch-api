@@ -1,8 +1,6 @@
 package br.com.imobmatch.api.dtos.property.address;
 
 import br.com.imobmatch.api.models.enums.BrazilianState;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,4 +23,3 @@ public class AddressUpdateDTO {
     private String zipCode;
     private String referencePoint;
 }
-
