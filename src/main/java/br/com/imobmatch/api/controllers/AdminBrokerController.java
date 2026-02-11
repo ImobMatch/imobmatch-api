@@ -2,6 +2,7 @@ package br.com.imobmatch.api.controllers;
 
 import br.com.imobmatch.api.dtos.broker.BrokerResponseDTO;
 import br.com.imobmatch.api.services.broker.BrokerService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/admin/brokers")
 @RequiredArgsConstructor
+@Tag(name = "Admin", description = "Endpoints for admin management")
 public class AdminBrokerController {
 
     private final BrokerService brokerService;

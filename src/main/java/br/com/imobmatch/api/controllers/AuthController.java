@@ -12,6 +12,7 @@ import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.services.auth.AuthService;
 import br.com.imobmatch.api.services.user.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +22,10 @@ import br.com.imobmatch.api.dtos.auth.AuthenticationDTO;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Auth", description = "Endpoints for auth management")
 @AllArgsConstructor
 public class AuthController {
     private final AuthService authService;
-    private final UserService userService;
-
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthenticationDTO data){
@@ -46,28 +46,6 @@ public class AuthController {
         LoginResponseDTO response = authService.refreshToken(token);
         return ResponseEntity.ok(response);
     }
-
-    @PostMapping("/send-password-code")
-    public ResponseEntity<?> sendEmailCodeForPassword(@RequestBody RequestPasswordResetDTO request) {
-        this.userService.requestPasswordReset(request);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/reset-password")
-    public ResponseEntity<StatusPasswordResetDTO> SwapPassoword(@RequestBody ResetPasswordDTO request) {
-        return ResponseEntity.ok(this.userService.resetPassword(request));
-    }
-
-    @PostMapping("/send-email-code")
-    public ResponseEntity<RequestValidationEmailResponseDTO> sendEmailCode(@RequestBody RequestValidationEmailDTO request) {
-        return ResponseEntity.ok(userService.sendEmailVerification(request));
-    }
-
-    @PostMapping("/validate-email")
-    public ResponseEntity<ValidateEmailResponseDTO> validateEmail(@RequestBody ValidateEmailRequestDTO request) {
-        return ResponseEntity.ok(this.userService.validateEmail(request));
-    }
-
 
 
 

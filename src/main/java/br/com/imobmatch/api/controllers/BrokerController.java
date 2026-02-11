@@ -3,6 +3,7 @@ package br.com.imobmatch.api.controllers;
 import java.util.List;
 import java.util.UUID;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +30,7 @@ import lombok.*;
 @RestController
 @RequestMapping("/brokers")
 @AllArgsConstructor
+@Tag(name = "Brokers", description = "Endpoints for Brokers management")
 public class BrokerController {
 
     private final BrokerService brokerService;

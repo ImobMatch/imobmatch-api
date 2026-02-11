@@ -6,6 +6,7 @@ import br.com.imobmatch.api.dtos.property.PropertyResponseDTO;
 import br.com.imobmatch.api.dtos.property.PropertyUpdateDTO;
 import br.com.imobmatch.api.services.property.PropertyService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/properties")
 @RequiredArgsConstructor
+@Tag(name = "Properties", description = "Endpoints for properties management")
 public class PropertyController {
 
     private final PropertyService service;

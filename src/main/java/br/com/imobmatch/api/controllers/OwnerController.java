@@ -167,19 +167,4 @@ public class OwnerController {
         return ResponseEntity.ok(ownerService.getOwnerByCpf(cpf));
     }
 
-    @PostMapping(value = "/upload-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasAnyRole('BROKER', 'ADMIN')")
-    public ResponseEntity<OwnerResponseDTO> uploadProfile(
-            @RequestParam("file") MultipartFile file
-    ) {
-        // Aqui você processa a foto
-        System.out.println("Nome do arquivo: " + file.getOriginalFilename());
-        System.out.println("Tipo: " + file.getContentType());
-        System.out.println("Tamanho: " + file.getSize());
-
-        // Exemplo: salvar no disco ou no S3 / Cloudinary / etc
-        return ResponseEntity.ok().build();
-    }
-
 }
