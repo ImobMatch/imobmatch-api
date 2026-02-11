@@ -11,9 +11,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -164,4 +166,20 @@ public class OwnerController {
     public ResponseEntity<OwnerResponseDTO> getByCpf(@RequestParam String cpf) {
         return ResponseEntity.ok(ownerService.getOwnerByCpf(cpf));
     }
+
+    @PostMapping(value = "/upload-profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyRole('BROKER', 'ADMIN')")
+    public ResponseEntity<OwnerResponseDTO> uploadProfile(
+            @RequestParam("file") MultipartFile file
+    ) {
+        // Aqui você processa a foto
+        System.out.println("Nome do arquivo: " + file.getOriginalFilename());
+        System.out.println("Tipo: " + file.getContentType());
+        System.out.println("Tamanho: " + file.getSize());
+
+        // Exemplo: salvar no disco ou no S3 / Cloudinary / etc
+        return ResponseEntity.ok().build();
+    }
+
 }
