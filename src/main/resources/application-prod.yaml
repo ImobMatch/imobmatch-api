@@ -17,13 +17,6 @@ spring:
         username: ${MAIL_USERNAME}  # Email account username
         password: ${MAIL_PASSWORD}  # Email account password
 
-# JWT configuration
-api:
-    security:
-        token:
-            secret: ${JWT_SECRET}  # Secret key for signing JWT tokens
-
-
 # AWS S3 configuration
 aws:
     region: ${AWS_REGION}  # AWS region

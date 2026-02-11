@@ -27,3 +27,5 @@ api:
             expiration-minutes: 30  # Access token expiration in minutes (short-lived)
         refresh-token:
             expiration-days: 7  # Refresh token expiration in days (long-lived)
+        token:
+            secret: ${JWT_SECRET}  # Secret key for signing JWT tokens
