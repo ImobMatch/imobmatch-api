@@ -25,29 +25,29 @@ import br.com.imobmatch.api.services.user.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
-    @Service
-    @RequiredArgsConstructor 
-    public class BrokerServiceImpl implements BrokerService {
+@Service
+@RequiredArgsConstructor
+public class BrokerServiceImpl implements BrokerService {
 
-        private final BrokerValidationService brokerValidationService; 
-        private final BrokerRepository brokerRepository;
-        private final UserService userService;
-        private final AuthService authService;
-    
-    
+    private final BrokerValidationService brokerValidationService;
+    private final BrokerRepository brokerRepository;
+    private final UserService userService;
+    private final AuthService authService;
+
+
 
     @Override
     @Transactional
     public BrokerResponseDTO createBroker(BrokerPostDTO brokerPostDTO) {
 
         brokerValidationService.run(brokerPostDTO);
-        String cleanCpf = removeNonDigits(brokerPostDTO.getCpf()); 
+        String cleanCpf = removeNonDigits(brokerPostDTO.getCpf());
         String cleanCreci = getCleanCreci(brokerPostDTO.getCreci());
         String cleanWhatsAppPhoneNumber = removeNonDigits(brokerPostDTO.getWhatsAppPhoneNumber());
-        String cleanPersonalPhoneNumber = brokerPostDTO.getPersonalPhoneNumber() != null ? 
+        String cleanPersonalPhoneNumber = brokerPostDTO.getPersonalPhoneNumber() != null ?
             removeNonDigits(brokerPostDTO.getPersonalPhoneNumber()) : null;
 
-        if(brokerRepository.existsBrokerByCpf(cleanCpf) || 
+        if(brokerRepository.existsBrokerByCpf(cleanCpf) ||
         brokerRepository.existsBrokerByCreci(cleanCreci) ||
         brokerRepository.existsByUser_Email(brokerPostDTO.getEmail())) {
             throw new BrokerExistsException();}
@@ -185,7 +185,7 @@ import lombok.RequiredArgsConstructor;
     public BrokerResponseDTO getBroker() {
         Broker broker = brokerRepository.findById(authService.getMe().getId())
             .orElseThrow(BrokerNotFoundException::new);
-        
+
         return buildBrokerResponseDto(broker);
     }
 
@@ -197,7 +197,7 @@ import lombok.RequiredArgsConstructor;
 
         Broker broker = brokerRepository.findById(id)
             .orElseThrow(BrokerNotFoundException::new);
-        
+
         return buildBrokerResponseDto(broker);
     }
 
@@ -209,7 +209,7 @@ import lombok.RequiredArgsConstructor;
 
         Broker broker = brokerRepository.findByUser_Email(email)
             .orElseThrow(BrokerNotFoundException::new);
-        
+
         return buildBrokerResponseDto(broker);
     }
     @Override
@@ -220,7 +220,7 @@ import lombok.RequiredArgsConstructor;
 
         Broker broker = brokerRepository.findByCreci(getCleanCreci(creci))
             .orElseThrow(BrokerNotFoundException::new);
-        
+
         return buildBrokerResponseDto(broker);
     }
 
@@ -232,7 +232,7 @@ import lombok.RequiredArgsConstructor;
 
         Broker broker = brokerRepository.findByCpf(removeNonDigits(cpf))
             .orElseThrow(BrokerNotFoundException::new);
-        
+
         return buildBrokerResponseDto(broker);
     }
 
@@ -318,7 +318,7 @@ import lombok.RequiredArgsConstructor;
 
     @Override
     public List<BrokerResponseDTO> getPendingBrokers() {
-    
+
     return brokerRepository.findByAccountStatus(BrokerAccountStatus.PENDING).stream()
         .map(this::buildBrokerResponseDto)
         .collect(Collectors.toList());
@@ -334,7 +334,7 @@ import lombok.RequiredArgsConstructor;
     public void approveBroker(UUID brokerId) {
     Broker broker = brokerRepository.findById(brokerId)
         .orElseThrow(BrokerNotFoundException::new);
-    
+
     if (broker.getAccountStatus() != BrokerAccountStatus.PENDING) {
         throw new IllegalStateException("Este corretor não está pendente de aprovação.");
         }
@@ -358,7 +358,7 @@ import lombok.RequiredArgsConstructor;
     @Transactional
     public void deleteBroker(PasswordUserDeleteDTO passwordUserDeleteDTO)throws AuthenticationException
             , BrokerNotFoundException {
-        
+
         UUID userId = authService.getMe().getId();
         brokerRepository.deleteById(userId);
         userService.deleteById(userId, passwordUserDeleteDTO.getPassword());
@@ -374,6 +374,29 @@ import lombok.RequiredArgsConstructor;
         brokerRepository.deleteById(id);
         userService.deleteById(id, password);
     }
+
+    @Override
+    public List<BrokerResponseDTO> search(
+            String regionInterest,
+            String operationCity,
+            BrokerPropertyType propertyType,
+            BrokerBusinessType businessType
+    ) {
+        List<Broker> brokers = brokerRepository.findAll();
+
+        return brokers.stream()
+                .filter(b -> regionInterest == null || regionInterest.isBlank()
+                        || (b.getRegionInterest() != null &&
+                        b.getRegionInterest().toLowerCase().contains(regionInterest.strip().toLowerCase())))
+                .filter(b -> operationCity == null || operationCity.isBlank()
+                        || (b.getOperationCity() != null &&
+                        b.getOperationCity().toLowerCase().contains(operationCity.strip().toLowerCase())))
+                .filter(b -> propertyType == null || b.getPropertyType() == propertyType)
+                .filter(b -> businessType == null || b.getBusinessType() == businessType)
+                .map(this::buildBrokerResponseDto)
+                .collect(Collectors.toList());
+    }
+
 
     private BrokerResponseDTO buildBrokerResponseDto(Broker broker){
 
