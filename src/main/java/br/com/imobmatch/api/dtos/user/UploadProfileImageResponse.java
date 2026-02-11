@@ -1,4 +1,5 @@
 package br.com.imobmatch.api.dtos.user;
 
-public record a() {
-}
+import java.util.UUID;
+
+public record UploadProfileImageResponse(UUID id, String url) {}

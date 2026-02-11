@@ -19,4 +19,5 @@ public class UserResponseDTO {
     private UUID id;
     private String email;
     private UserRole role;
+    private String profile_url;
 }
