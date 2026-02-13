@@ -2,8 +2,10 @@ package br.com.imobmatch.api.infra.s3.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 @ConfigurationProperties(prefix = "aws")
+@Component
 @Data
 public class AwsProperties {
 
