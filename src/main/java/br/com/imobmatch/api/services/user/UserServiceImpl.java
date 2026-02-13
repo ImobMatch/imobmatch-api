@@ -80,6 +80,8 @@ public class UserServiceImpl implements UserService {
         return this.s3Service.downloadProfilePhoto(key);
     }
 
+
+
     private User getMeUserAuthentication(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
@@ -248,21 +250,35 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UploadProfileImageResponse updateProfileImage(MultipartFile file) {
+    public UploadProfileImageResponse uploadProfileImage(MultipartFile file) {
         User user = getMeUserAuthentication();
 
         try {
             byte[] bytes = file.getBytes();
+            String oldKey = user.getProfileKey();
             String profileKey = this.s3Service.uploadProfilePhoto(user.getId(), bytes);
 
             user.setProfileKey(profileKey);
             userRepository.save(user);
 
+            if (oldKey != null) {
+                this.s3Service.deleteProfilePhoto(oldKey);
+            }
             return new UploadProfileImageResponse(user.getId(),profileKey);
 
         } catch (IOException e) {
             throw new RuntimeException("ERROR PROFILE READ", e);
         }
+    }
+
+    @Override
+    public void removeProfileImage() {
+        User user = getMeUserAuthentication();
+
+        String key = user.getProfileKey();
+        this.s3Service.deleteProfilePhoto(key);
+        user.setProfileKey(null);
+        this.userRepository.save(user);
     }
 
 

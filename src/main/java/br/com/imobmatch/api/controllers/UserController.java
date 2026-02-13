@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,16 +36,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping(value = "/profile-image/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasAnyRole('BROKER', 'OWNER')")
-    @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<UploadProfileImageResponse> uploadProfileImage(
-            @RequestParam("file") MultipartFile file
-    ) {
-        return ResponseEntity.ok(userService.updateProfileImage(file));
-    }
-
-
     @GetMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAnyRole('BROKER', 'OWNER')")
@@ -58,7 +50,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/reset-password")
+    @PatchMapping("/reset-password")
     public ResponseEntity<StatusPasswordResetDTO> swapPassword(@RequestBody ResetPasswordDTO request) {
         return ResponseEntity.ok(this.userService.resetPassword(request));
     }
@@ -74,14 +66,49 @@ public class UserController {
     }
 
     @GetMapping("/profile-image/me")
+    @PreAuthorize("hasAnyRole('BROKER', 'OWNER')")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<byte[]> downloadProfileImageME() {
         return ResponseEntity.ok(this.userService.downloadProfileME());
     }
 
     @GetMapping("/profile-image/{key}")
+    @PreAuthorize("hasAnyRole('BROKER', 'OWNER')")
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<byte[]> downloadProfileImage(@PathVariable String key) {
         return ResponseEntity.ok(this.userService.downloadProfile(key));
     }
+
+    @PostMapping(value = "/profile-image/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('BROKER', 'OWNER')")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<UploadProfileImageResponse> uploadProfileImage(
+            @RequestParam("file") MultipartFile file
+    ) {
+        return ResponseEntity.ok(userService.uploadProfileImage(file));
+    }
+
+    @DeleteMapping(value = "/profile-image/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('BROKER', 'OWNER')")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<UploadProfileImageResponse> deleteProfileImage(
+
+    ) {
+        userService.removeProfileImage();
+        return ResponseEntity.ok().build();
+    }
+
+
+    @PatchMapping
+    @PreAuthorize("hasAnyRole('BROKER', 'OWNER')")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<UploadProfileImageResponse> updateProfileImage(
+            @RequestParam("file") MultipartFile file
+    ) {
+        return ResponseEntity.ok(userService.uploadProfileImage(file));
+    }
+
+
 
 
 

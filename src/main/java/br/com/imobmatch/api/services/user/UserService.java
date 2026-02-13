@@ -38,10 +38,11 @@ public interface UserService {
     StatusPasswordResetDTO resetPassword(ResetPasswordDTO request)
             throws RequestNotFoundException, RequestCodeExpiredException;
 
-    UploadProfileImageResponse updateProfileImage(MultipartFile file);
 
     UserResponseDTO getMe();
 
+    UploadProfileImageResponse uploadProfileImage(MultipartFile file);
     byte[] downloadProfileME();
     byte[] downloadProfile(String key);
+    void removeProfileImage();
 }
