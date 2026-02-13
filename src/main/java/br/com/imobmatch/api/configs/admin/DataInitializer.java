@@ -4,6 +4,7 @@ import br.com.imobmatch.api.models.user.User;
 import br.com.imobmatch.api.models.enums.UserRole;
 import br.com.imobmatch.api.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +15,8 @@ public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    @Value("${spring.mail.username}")
+    private final String email;
 
     /*
     * Classe criada especialmente para inicializar dados no banco de dados ao iniciar a aplicação.
