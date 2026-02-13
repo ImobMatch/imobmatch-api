@@ -1,5 +1,10 @@
 package br.com.imobmatch.api.models.enums;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum PropertyType {
 
     APARTMENT("apartment"),
@@ -10,11 +15,4 @@ public enum PropertyType {
     STUDIO("studio");
 
     private final String value;
-    PropertyType(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
 }
