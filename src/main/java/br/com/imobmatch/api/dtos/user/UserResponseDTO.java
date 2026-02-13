@@ -2,6 +2,7 @@ package br.com.imobmatch.api.dtos.user;
 
 import br.com.imobmatch.api.models.enums.UserRole;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,10 +15,11 @@ import java.util.UUID;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserResponseDTO {
 
     private UUID id;
     private String email;
     private UserRole role;
-    private String profile_url;
+    private String profileKey;
 }

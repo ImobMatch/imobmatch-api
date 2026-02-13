@@ -64,8 +64,20 @@ public class UserServiceImpl implements UserService {
                 user.getId(),
                 user.getEmail(),
                 user.getRole(),
-                user.getProfileImageUrl()
+                user.getProfileKey()
         );
+    }
+
+    @Override
+    public byte[] downloadProfileME() {
+        User user = getMeUserAuthentication();
+        return this.s3Service.downloadProfilePhoto(user.getProfileKey());
+    }
+
+    @Override
+    public byte[] downloadProfile(String key) {
+        getMeUserAuthentication();
+        return this.s3Service.downloadProfilePhoto(key);
     }
 
     private User getMeUserAuthentication(){
@@ -100,26 +112,14 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserResponseDTO getById(UUID id) {
-        Optional<User> optionalUser = this.userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            UserResponseDTO userResponseDTO = new UserResponseDTO();
-            userResponseDTO.setId(optionalUser.get().getId());
-            userResponseDTO.setEmail(optionalUser.get().getEmail());
-            userResponseDTO.setRole(optionalUser.get().getRole());
-            return userResponseDTO;
-        }
-        throw new UserNotFoundException();
+        User user = this.userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        return buildUserResponseDTO(user);
     }
 
     public UserResponseDTO getByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(UserNotFoundException::new);
-        return new UserResponseDTO(
-                user.getId(),
-                user.getEmail(),
-                user.getRole(),
-                user.getProfileImageUrl()
-        );
+        return buildUserResponseDTO(user);
     }
 
     @Override
@@ -142,12 +142,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.delete(user);
 
-        UserResponseDTO userResponseDTO = new UserResponseDTO();
-        userResponseDTO.setId(user.getId());
-        userResponseDTO.setEmail(user.getEmail());
-        userResponseDTO.setRole(user.getRole());
-
-        return userResponseDTO;
+        return  buildUserResponseDTO(user);
     }
 
     @Override
@@ -258,12 +253,12 @@ public class UserServiceImpl implements UserService {
 
         try {
             byte[] bytes = file.getBytes();
-            String url = this.s3Service.uploadProfilePhoto(user.getId(), bytes);
+            String profileKey = this.s3Service.uploadProfilePhoto(user.getId(), bytes);
 
-            user.setProfileImageUrl(url);
+            user.setProfileKey(profileKey);
             userRepository.save(user);
 
-            return new UploadProfileImageResponse(user.getId(),url);
+            return new UploadProfileImageResponse(user.getId(),profileKey);
 
         } catch (IOException e) {
             throw new RuntimeException("ERROR PROFILE READ", e);
@@ -292,5 +287,14 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             throw new ErroSendEmailException();
         }
+    }
+
+    private UserResponseDTO buildUserResponseDTO(User user) {
+        return UserResponseDTO.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .profileKey(user.getProfileKey())
+                .role(user.getRole())
+                .build();
     }
 }

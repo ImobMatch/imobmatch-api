@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +34,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping(value = "/me/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/profile-image/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyRole('BROKER', 'OWNER')")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<UploadProfileImageResponse> uploadProfileImage(
@@ -71,6 +72,17 @@ public class UserController {
     public ResponseEntity<ValidateEmailResponseDTO> validateEmail(@RequestBody ValidateEmailRequestDTO request) {
         return ResponseEntity.ok(this.userService.validateEmail(request));
     }
+
+    @GetMapping("/profile-image/me")
+    public ResponseEntity<byte[]> downloadProfileImageME() {
+        return ResponseEntity.ok(this.userService.downloadProfileME());
+    }
+
+    @GetMapping("/profile-image/{key}")
+    public ResponseEntity<byte[]> downloadProfileImage(@PathVariable String key) {
+        return ResponseEntity.ok(this.userService.downloadProfile(key));
+    }
+
 
 
 }

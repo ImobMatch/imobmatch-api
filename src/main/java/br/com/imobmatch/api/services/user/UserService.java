@@ -41,4 +41,7 @@ public interface UserService {
     UploadProfileImageResponse updateProfileImage(MultipartFile file);
 
     UserResponseDTO getMe();
+
+    byte[] downloadProfileME();
+    byte[] downloadProfile(String key);
 }
