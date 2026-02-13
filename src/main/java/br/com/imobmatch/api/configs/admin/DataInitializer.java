@@ -1,41 +1,36 @@
-package br.com.imobmatch.api.configs;
+package br.com.imobmatch.api.configs.admin;
 
 import br.com.imobmatch.api.models.user.User;
 import br.com.imobmatch.api.models.enums.UserRole;
 import br.com.imobmatch.api.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Configuration
+
 @RequiredArgsConstructor
+@Configuration
 public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    @Value("${spring.mail.username}")
-    private final String email;
-
-    /*
-    * Classe criada especialmente para inicializar dados no banco de dados ao iniciar a aplicação.
-    * Neste caso, cria um usuário administrador padrão se ele não existir.
-     */
+    private final AdminProperties adminProperties;
 
     @Override
     public void run(String... args) {
-        String adminEmail = "admin@imobmatch.com";
 
-        if (!userRepository.existsByEmail(adminEmail)) {
+        if (!userRepository.existsByEmail(adminProperties.getEmail())) {
+
             User admin = new User();
-            admin.setEmail(adminEmail);
-            admin.setPassword(passwordEncoder.encode("admin123")); // Senha padrão aqui. Não sei se é uma boa prática.
+            admin.setEmail(adminProperties.getEmail());
+            admin.setPassword(
+                    passwordEncoder.encode(adminProperties.getPassword())
+            );
             admin.setRole(UserRole.ADMIN);
             admin.setEmailVerified(true);
-            
+
             userRepository.save(admin);
-            System.out.println("USUÁRIO ADMIN CRIADO: " + adminEmail + " / admin123");
         }
     }
 }
