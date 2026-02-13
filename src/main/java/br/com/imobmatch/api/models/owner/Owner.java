@@ -3,12 +3,12 @@ package br.com.imobmatch.api.models.owner;
 import br.com.imobmatch.api.models.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Past;
-import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 /**
