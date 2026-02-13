@@ -32,12 +32,6 @@ public class AuthController {
         return ResponseEntity.ok(this.authService.login(data));
     }
 
-    @GetMapping("/me")
-    @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<UserResponseDTO> me() {
-        return  ResponseEntity.ok(this.authService.getMe());
-    }
-
     @PostMapping("/refresh")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<LoginResponseDTO> refreshToken(

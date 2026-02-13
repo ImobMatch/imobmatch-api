@@ -1,4 +1,4 @@
-package br.com.imobmatch.api.configs.admin;
+package br.com.imobmatch.api.infra.admin;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

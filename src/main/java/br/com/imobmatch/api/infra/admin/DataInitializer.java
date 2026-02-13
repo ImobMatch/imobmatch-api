@@ -1,4 +1,4 @@
-package br.com.imobmatch.api.configs.admin;
+package br.com.imobmatch.api.infra.admin;
 
 import br.com.imobmatch.api.models.user.User;
 import br.com.imobmatch.api.models.enums.UserRole;
