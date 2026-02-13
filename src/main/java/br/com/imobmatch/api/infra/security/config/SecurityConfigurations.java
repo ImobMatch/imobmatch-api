@@ -44,8 +44,8 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST,
                                 "/users/send-email-code",
                                 "/users/validate-email",
-                                "users/reset-password",
-                                "users/send-password-code").permitAll()
+                                "/users/reset-password",
+                                "/users/send-password-code").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users").permitAll()
                         .requestMatchers(HttpMethod.POST, "/brokers").permitAll()
                         .requestMatchers(HttpMethod.POST, "/owners").permitAll()
