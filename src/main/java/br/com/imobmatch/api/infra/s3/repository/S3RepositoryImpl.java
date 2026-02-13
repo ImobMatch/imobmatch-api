@@ -1,5 +1,6 @@
 package br.com.imobmatch.api.infra.s3.repository;
 
+import br.com.imobmatch.api.infra.s3.config.AwsProperties;
 import br.com.imobmatch.api.infra.s3.config.S3BucketsProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -17,19 +18,21 @@ public class S3RepositoryImpl implements S3Repository {
 
     private final S3Client s3Client;
     private final S3BucketsProperties buckets;
+    private final AwsProperties awsProperties;
+
 
     @Override
     public String uploadProfilePhoto(UUID userId, byte[] content) {
-        String key = generateKey(userId, buckets.getProfilePhotos());
-        upload(key, content, "image/jpeg", buckets.getProfilePhotos());
-        return buildPublicUrl(buckets.getProfilePhotos(), key);
+        String key = generateKey(userId);
+        upload(key, content, buckets.getProfilePhotos());
+        return key;
     }
 
     @Override
     public String uploadPropertyImage(UUID propertyId, byte[] content) {
-        String key = generateKey(propertyId, buckets.getPropertyImages());
-        upload(key, content, "image/jpeg", buckets.getPropertyImages());
-        return buildPublicUrl(buckets.getPropertyImages(), key);
+        String key = generateKey(propertyId);
+        upload(key, content, buckets.getPropertyImages());
+        return key;
     }
 
     @Override
@@ -54,16 +57,16 @@ public class S3RepositoryImpl implements S3Repository {
 
     // ----------------- private helpers -----------------
 
-    private String generateKey(UUID id, String folder) {
-        return folder + "/" + id + "-" + UUID.randomUUID();
+    private String generateKey(UUID id) {
+        return id + "-" + UUID.randomUUID();
     }
 
-    private void upload(String key, byte[] content, String contentType, String bucket) {
+
+    private void upload(String key, byte[] content, String bucket) {
         PutObjectRequest request = PutObjectRequest.builder()
                 .bucket(bucket)
                 .key(key)
-                .contentType(contentType)
-                .acl(ObjectCannedACL.PUBLIC_READ) // ← deixa o objeto público
+                .contentType("image/jpeg")
                 .build();
 
         s3Client.putObject(request, RequestBody.fromBytes(content));
@@ -92,7 +95,29 @@ public class S3RepositoryImpl implements S3Repository {
         }
     }
 
-    private String buildPublicUrl(String bucketName, String key) {
-        return String.format("https://%s.s3.amazonaws.com/%s", bucketName, key);
+
+    public String buildProfilePhotoUrl(String key) {
+        return buildPublicUrl(
+                buckets.getProfilePhotos(),
+                key
+        );
     }
+
+    private String buildPublicUrl(String bucketName, String key) {
+
+        if (awsProperties.getS3().getEndpoint() != null) {
+            return String.format("%s/%s/%s",
+                    awsProperties.getS3().getEndpoint(),
+                    bucketName,
+                    key
+            );
+        }
+
+        return String.format("https://%s.s3.%s.amazonaws.com/%s",
+                bucketName,
+                awsProperties.getRegion(),
+                key
+        );
+    }
+
 }

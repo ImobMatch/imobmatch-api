@@ -16,8 +16,7 @@ public class S3ServiceImpl implements S3Service {
     public String uploadProfilePhoto(UUID userId, byte[] content) {
         return this.s3Repository.uploadProfilePhoto(userId, content);
     }
-
-
+    
     @Override
     public String uploadPropertyImage(UUID propertyId, byte[] content) {
         return this.s3Repository.uploadPropertyImage(propertyId, content);
