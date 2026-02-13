@@ -7,7 +7,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class ImosbMatchApiApplicationTests {
+class ImobMatchApiApplicationTests {
 
 	@Test
 	void contextLoads() {
