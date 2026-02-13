@@ -7,15 +7,9 @@ spring:
         password: ${DATASOURCE_PASSWORD}  # Database password
 
     jpa:
-        database-platform: org.hibernate.dialect.PostgreSQLDialect  # Hibernate dialect for PostgreSQL
         hibernate:
             ddl-auto: validate  # Validate schema on startup (does not modify DB)
         show-sql: false  # Disable SQL logging
-
-    # Email configuration
-    mail:
-        username: ${MAIL_USERNAME}  # Email account username
-        password: ${MAIL_PASSWORD}  # Email account password
 
 # AWS S3 configuration
 aws:
@@ -23,10 +17,9 @@ aws:
     access-key: ${AWS_ACCESS_KEY_ID}  # AWS access key ID
     secret-key: ${AWS_SECRET_ACCESS_KEY}  # AWS secret access key
     s3:
+        public-base-url: https://%s.s3.amazonaws.com
         bucket:
             profile-photos: profile-photos  # Bucket for user profile photos
-            creci-documents: creci-documents  # Bucket for CRECI documents
-            property-documents: property-documents  # Bucket for property documents
             property-images: property-images  # Bucket for property images
 
 
