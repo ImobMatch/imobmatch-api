@@ -29,6 +29,7 @@ public class Address {
     private String neighborhood;
     @Column(name = "city", nullable = false)
     private String city;
+    @Enumerated(EnumType.STRING)
     @Column(name = "state",nullable = false)
     private BrazilianState state;
     @Column(name = "zip_code", nullable = false)
