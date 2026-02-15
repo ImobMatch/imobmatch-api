@@ -20,7 +20,7 @@ public class PropertyCharacteristic {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 1200)
     private String description;
 
     @Column(name = "area", nullable = false)

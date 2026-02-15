@@ -143,10 +143,7 @@ class PropertyServiceImplTest {
                 .minArea(new BigDecimal("50.0"))
                 .maxArea(new BigDecimal("200.0"))
                 .minBedrooms((short) 2)
-                .condoHasPool(true)
-                .condoHasGym(true)
                 .maxCondoPrice(new BigDecimal("1500.00"))
-                .city("Campina Grande")
                 .build();
 
         Property propertyMatch = new Property();
@@ -175,7 +172,6 @@ class PropertyServiceImplTest {
     @DisplayName("Should return empty list when no property matches the filters")
     void findAll_WithFilters_NoMatch() {
         PropertyFilterDTO restrictiveFilter = PropertyFilterDTO.builder()
-                .city("Cidade Inexistente")
                 .minArea(new BigDecimal("9000.0"))
                 .build();
 

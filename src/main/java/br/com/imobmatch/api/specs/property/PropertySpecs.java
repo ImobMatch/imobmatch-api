@@ -1,7 +1,6 @@
 package br.com.imobmatch.api.specs.property;
 
 import br.com.imobmatch.api.dtos.property.PropertyFilterDTO;
-import br.com.imobmatch.api.models.property.Address; // <--- Importante
 import br.com.imobmatch.api.models.property.Condominium;
 import br.com.imobmatch.api.models.property.Property;
 import br.com.imobmatch.api.models.property.PropertyCharacteristic;
@@ -58,43 +57,7 @@ public class PropertySpecs {
                 Join<Property, Condominium> condoJoin = root.join("condominium", JoinType.INNER);
 
                 addLike(predicates, builder, condoJoin.get("name"), filter.getCondominiumName());
-                addEqual(predicates, builder, condoJoin.get("cnpj"), filter.getCondominiumCnpj());
                 addLe(predicates, builder, condoJoin.get("price"), filter.getMaxCondoPrice());
-
-                addIfTrue(predicates, builder, condoJoin.get("hasGym"), filter.getCondoHasGym());
-                addIfTrue(predicates, builder, condoJoin.get("hasPool"), filter.getCondoHasPool());
-                addIfTrue(predicates, builder, condoJoin.get("hasSauna"), filter.getCondoHasSauna());
-                addIfTrue(predicates, builder, condoJoin.get("hasSpa"), filter.getCondoHasSpa());
-                addIfTrue(predicates, builder, condoJoin.get("hasPartyRoom"), filter.getCondoHasPartyRoom());
-                addIfTrue(predicates, builder, condoJoin.get("hasSportsCourts"), filter.getCondoHasSportsCourts());
-                addIfTrue(predicates, builder, condoJoin.get("hasPlayground"), filter.getCondoHasPlayground());
-                addIfTrue(predicates, builder, condoJoin.get("hasCoworkingSpace"), filter.getCondoHasCoworkingSpace());
-                addIfTrue(predicates, builder, condoJoin.get("hasCinema"), filter.getCondoHasCinema());
-                addIfTrue(predicates, builder, condoJoin.get("hasGameRoom"), filter.getCondoHasGameRoom());
-                addIfTrue(predicates, builder, condoJoin.get("hasSharedTerrace"), filter.getCondoHasSharedTerrace());
-                addIfTrue(predicates, builder, condoJoin.get("hasMiniMarket"), filter.getCondoHasMiniMarket());
-                addIfTrue(predicates, builder, condoJoin.get("hasPetArea"), filter.getCondoHasPetArea());
-                addIfTrue(predicates, builder, condoJoin.get("hasBikeStorage"), filter.getCondoHasBikeStorage());
-                addIfTrue(predicates, builder, condoJoin.get("hasRestaurant"), filter.getCondoHasRestaurant());
-                addIfTrue(predicates, builder, condoJoin.get("has24hSecurity"), filter.getCondoHas24hSecurity());
-                addIfTrue(predicates, builder, condoJoin.get("hasCameras"), filter.getCondoHasCameras());
-                addIfTrue(predicates, builder, condoJoin.get("hasElevators"), filter.getCondoHasElevators());
-                addIfTrue(predicates, builder, condoJoin.get("hasElectricCarStation"), filter.getCondoHasElectricCarStation());
-            }
-
-            if (hasAddressFilters(filter)) {
-                Join<Property, Address> addressJoin = root.join("address", JoinType.INNER);
-
-                addLike(predicates, builder, addressJoin.get("street"), filter.getStreet());
-                addLike(predicates, builder, addressJoin.get("neighborhood"), filter.getNeighborhood());
-                addLike(predicates, builder, addressJoin.get("city"), filter.getCity());
-                addLike(predicates, builder, addressJoin.get("complement"), filter.getComplement());
-                addLike(predicates, builder, addressJoin.get("referencePoint"), filter.getReferencePoint());
-
-                addLike(predicates, builder, addressJoin.get("zipCode"), filter.getZipCode());
-
-                addEqual(predicates, builder, addressJoin.get("number"), filter.getNumber());
-                addEqual(predicates, builder, addressJoin.get("state"), filter.getState());
             }
 
             return builder.and(predicates.toArray(new Predicate[0]));
@@ -135,24 +98,6 @@ public class PropertySpecs {
     }
 
     private static boolean hasCondominiumFilters(PropertyFilterDTO f) {
-        return StringUtils.hasText(f.getCondominiumName()) || f.getMaxCondoPrice() != null ||
-                StringUtils.hasText(f.getCondominiumCnpj()) ||
-                Boolean.TRUE.equals(f.getCondoHasGym()) || Boolean.TRUE.equals(f.getCondoHasPool()) ||
-                Boolean.TRUE.equals(f.getCondoHasSauna()) || Boolean.TRUE.equals(f.getCondoHasSpa()) ||
-                Boolean.TRUE.equals(f.getCondoHasPartyRoom()) || Boolean.TRUE.equals(f.getCondoHasSportsCourts()) ||
-                Boolean.TRUE.equals(f.getCondoHasPlayground()) || Boolean.TRUE.equals(f.getCondoHasCoworkingSpace()) ||
-                Boolean.TRUE.equals(f.getCondoHasCinema()) || Boolean.TRUE.equals(f.getCondoHasGameRoom()) ||
-                Boolean.TRUE.equals(f.getCondoHasSharedTerrace()) || Boolean.TRUE.equals(f.getCondoHasMiniMarket()) ||
-                Boolean.TRUE.equals(f.getCondoHasPetArea()) || Boolean.TRUE.equals(f.getCondoHasBikeStorage()) ||
-                Boolean.TRUE.equals(f.getCondoHasRestaurant()) || Boolean.TRUE.equals(f.getCondoHas24hSecurity()) ||
-                Boolean.TRUE.equals(f.getCondoHasCameras()) || Boolean.TRUE.equals(f.getCondoHasElevators()) ||
-                Boolean.TRUE.equals(f.getCondoHasElectricCarStation());
-    }
-
-    private static boolean hasAddressFilters(PropertyFilterDTO f) {
-        return StringUtils.hasText(f.getStreet()) || f.getNumber() != null ||
-                StringUtils.hasText(f.getComplement()) || StringUtils.hasText(f.getNeighborhood()) ||
-                StringUtils.hasText(f.getCity()) || f.getState() != null ||
-                StringUtils.hasText(f.getZipCode()) || StringUtils.hasText(f.getReferencePoint());
+        return StringUtils.hasText(f.getCondominiumName()) || f.getMaxCondoPrice() != null;
     }
 }
