@@ -19,6 +19,7 @@ import java.util.UUID;
 public class PropertyFilterDTO {
 
     //PROPERTY
+    private String title;
     private PropertyType type;
     private PropertyManager managedBy;
     private Boolean isAvailable;

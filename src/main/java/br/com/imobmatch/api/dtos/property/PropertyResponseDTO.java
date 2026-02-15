@@ -19,6 +19,8 @@ import java.util.UUID;
 public class PropertyResponseDTO {
     private UUID id;
 
+    private String title;
+
     private UUID publisher;
 
     private AddressResponseDTO address;

@@ -24,6 +24,9 @@ public class Property {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(name = "title", length = 255, nullable = false)
+    private String title;
+
     @ManyToOne
     @JoinColumn(name = "publisher_id")
     private User publisher;

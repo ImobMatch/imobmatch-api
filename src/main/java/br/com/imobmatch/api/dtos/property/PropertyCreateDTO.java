@@ -22,6 +22,9 @@ public class PropertyCreateDTO {
     @Valid
     private AddressCreateDTO address;
 
+    @NotNull
+    private String title;
+
     @Valid
     private CondominiumCreateDTO condominium;
 

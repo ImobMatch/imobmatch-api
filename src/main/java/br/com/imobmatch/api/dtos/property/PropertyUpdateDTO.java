@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PropertyUpdateDTO {
 
+    private String title;
     private PropertyType type;
     private Boolean isAvailable;
     private PropertyManager managedBy;

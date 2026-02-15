@@ -18,6 +18,7 @@ public class PropertySpecs {
         return (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            addLike(predicates, builder, root.get("title"), filter.getTitle());
             addEqual(predicates, builder, root.get("type"), filter.getType());
             addEqual(predicates, builder, root.get("managedBy"), filter.getManagedBy());
             addEqual(predicates, builder, root.get("isAvailable"), filter.getIsAvailable());
