@@ -26,15 +26,6 @@ public class PropertyCharacteristic {
     @Column(name = "area", nullable = false)
     private BigDecimal area;
 
-    @Column(name = "land_area")
-    private BigDecimal landArea;
-
-    @Column(name = "usable_area")
-    private BigDecimal usableArea;
-
-    @Column(name = "total_area")
-    private BigDecimal totalArea;
-
     @Column(name = "num_bedrooms")
     private Short numBedrooms;
 

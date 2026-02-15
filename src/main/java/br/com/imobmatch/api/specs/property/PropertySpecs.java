@@ -34,15 +34,6 @@ public class PropertySpecs {
                 addGe(predicates, builder, charJoin.get("area"), filter.getMinArea());
                 addLe(predicates, builder, charJoin.get("area"), filter.getMaxArea());
 
-                addGe(predicates, builder, charJoin.get("landArea"), filter.getMinLandArea());
-                addLe(predicates, builder, charJoin.get("landArea"), filter.getMaxLandArea());
-
-                addGe(predicates, builder, charJoin.get("usableArea"), filter.getMinUsableArea());
-                addLe(predicates, builder, charJoin.get("usableArea"), filter.getMaxUsableArea());
-
-                addGe(predicates, builder, charJoin.get("totalArea"), filter.getMinTotalArea());
-                addLe(predicates, builder, charJoin.get("totalArea"), filter.getMaxTotalArea());
-
                 addGe(predicates, builder, charJoin.get("numBedrooms"), filter.getMinBedrooms());
                 addGe(predicates, builder, charJoin.get("numSuites"), filter.getMinSuites());
                 addGe(predicates, builder, charJoin.get("numBathrooms"), filter.getMinBathrooms());
@@ -132,9 +123,6 @@ public class PropertySpecs {
 
     private static boolean hasCharacteristicFilters(PropertyFilterDTO f) {
         return f.getMinArea() != null || f.getMaxArea() != null ||
-                f.getMinLandArea() != null || f.getMaxLandArea() != null ||
-                f.getMinUsableArea() != null || f.getMaxUsableArea() != null ||
-                f.getMinTotalArea() != null || f.getMaxTotalArea() != null ||
                 f.getMinBedrooms() != null || f.getMinSuites() != null ||
                 f.getMinBathrooms() != null || f.getMinGarageSpaces() != null ||
                 f.getMinLivingRooms() != null || f.getMinKitchens() != null ||

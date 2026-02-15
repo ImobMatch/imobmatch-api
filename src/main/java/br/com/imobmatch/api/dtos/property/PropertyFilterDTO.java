@@ -30,15 +30,6 @@ public class PropertyFilterDTO {
     private BigDecimal minArea;
     private BigDecimal maxArea;
 
-    private BigDecimal minLandArea;
-    private BigDecimal maxLandArea;
-
-    private BigDecimal minUsableArea;
-    private BigDecimal maxUsableArea;
-
-    private BigDecimal minTotalArea;
-    private BigDecimal maxTotalArea;
-
     private Short minBedrooms;
     private Short minSuites;
     private Short minBathrooms;

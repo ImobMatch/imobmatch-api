@@ -18,13 +18,6 @@ public class CharacteristicUpdateDTO {
 
     @Positive
     private BigDecimal area;
-    @Positive
-    private BigDecimal landArea;
-    @Positive
-    private BigDecimal usableArea;
-    @Positive
-    private BigDecimal totalArea;
-
     private Short numBedrooms;
     private Short numSuites;
     private Short numBathrooms;
