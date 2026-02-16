@@ -25,9 +25,27 @@ public interface BrokerRepository extends JpaRepository<Broker, UUID> {
 
   List<Broker> findByNameContainingIgnoreCase(String name);
   
-  List<Broker> findByRegionInterestContainingIgnoreCase(String regionInterest);
+  @Query("""
+      SELECT DISTINCT b
+      FROM brokers b
+      WHERE :regionInterest MEMBER OF b.regionsInterest
+  """)
+  List<Broker> findByRegionInterest(String regionInterest);
+
+  @Query("""
+      SELECT DISTINCT b
+      FROM brokers b
+      WHERE :propertyType MEMBER OF b.propertyTypes
+  """)
   List<Broker> findByPropertyType(PropertyType propertyType);
+
+  @Query("""
+      SELECT DISTINCT b
+      FROM brokers b
+      WHERE :businessType MEMBER OF b.businessTypes
+  """)
   List<Broker> findByBusinessType(PropertyBusinessType businessType);
+
   List<Broker> findByAccountStatus(BrokerAccountStatus accountStatus);  
 
 }

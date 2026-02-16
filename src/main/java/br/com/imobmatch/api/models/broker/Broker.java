@@ -35,18 +35,30 @@ public class Broker {
     @Column(name = "cpf", nullable = false, length = 11, unique = true)
     private String cpf;
 
-
-    @Column(name = "regions_interest", nullable = true)
+    @ElementCollection
+    @CollectionTable(
+        name = "brokers_regions_interest",
+        joinColumns = @JoinColumn(name = "broker_id")
+    )
+    @Column(name = "region", nullable = true)
     private Set<String> regionsInterest;
 
     @ElementCollection
     @Enumerated(EnumType.STRING)
-    @Column(name = "property_types", nullable = true)
+    @CollectionTable(
+        name = "brokers_property_types",
+        joinColumns = @JoinColumn(name = "broker_id")
+    )
+    @Column(name = "property_type", nullable = true)
     private Set<PropertyType> propertyTypes;
 
     @ElementCollection
     @Enumerated(EnumType.STRING)
-    @Column(name = "business_types", nullable = true)
+    @CollectionTable(
+        name = "brokers_business_types",
+        joinColumns = @JoinColumn(name = "broker_id")
+    )
+    @Column(name = "business_type", nullable = true)
     private Set<PropertyBusinessType> businessTypes;
 
     @Past

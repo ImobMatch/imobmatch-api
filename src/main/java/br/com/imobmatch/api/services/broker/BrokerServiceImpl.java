@@ -239,7 +239,7 @@ public class BrokerServiceImpl implements BrokerService {
             throw new BrokerNoValidDataProvideException();
         }
 
-        List<Broker> brokers = brokerRepository.findByRegionInterestContainingIgnoreCase(regionInterest.strip());
+        List<Broker> brokers = brokerRepository.findByRegionInterest(regionInterest.strip());
         return brokers.stream()
         .map(broker -> buildBrokerResponseDto(broker))
         .collect(Collectors.toList());

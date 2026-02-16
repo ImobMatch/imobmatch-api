@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.Set;
 import java.util.UUID;
 
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
@@ -25,8 +26,8 @@ import br.com.imobmatch.api.dtos.broker.BrokerResponseDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.infra.security.services.token.TokenService;
 import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
-import br.com.imobmatch.api.models.enums.BrokerBusinessType;
-import br.com.imobmatch.api.models.enums.BrokerPropertyType;
+import br.com.imobmatch.api.models.enums.PropertyBusinessType;
+import br.com.imobmatch.api.models.enums.PropertyType;
 import br.com.imobmatch.api.repositories.BrokerRepository;
 import br.com.imobmatch.api.repositories.UserRepository;
 import br.com.imobmatch.api.services.auth.AuthService;
@@ -207,29 +208,12 @@ class BrokerServiceImplTest {
         assertNotNull(createdBroker);
 
         BrokerPatchDTO patchDto = new BrokerPatchDTO();
-        patchDto.setRegionInterest("Downtown");
+        patchDto.setRegionsInterest(Set.of("PB"));
 
         mockAuthenticatedUser(createdBroker.getId());
         brokerService.updateBroker(patchDto);
 
-        var brokers = brokerService.getBrokersByRegionInterest("Downtown");
-        assertFalse(brokers.isEmpty());
-        assertEquals(1, brokers.size());
-    }
-
-    @Test
-    @DisplayName("List brokers by operation city successfully")
-    void testListBrokersByOperationCity() {
-        BrokerResponseDTO createdBroker = brokerService.createBroker(brokerPostDTO);
-        assertNotNull(createdBroker);
-
-        BrokerPatchDTO patchDto = new BrokerPatchDTO();
-        patchDto.setOperationCity("Metropolis");
-
-        mockAuthenticatedUser(createdBroker.getId());
-        brokerService.updateBroker(patchDto);
-
-        var brokers = brokerService.getBrokersByOperationCity("Metropolis");
+        var brokers = brokerService.getBrokersByRegionInterest("PB");
         assertFalse(brokers.isEmpty());
         assertEquals(1, brokers.size());
     }
@@ -241,12 +225,12 @@ class BrokerServiceImplTest {
         assertNotNull(createdBroker);
 
         BrokerPatchDTO patchDto = new BrokerPatchDTO();
-        patchDto.setPropertyType(BrokerPropertyType.APARTMENT);
+        patchDto.setPropertyTypes(Set.of(PropertyType.APARTMENT));
 
         mockAuthenticatedUser(createdBroker.getId());
         brokerService.updateBroker(patchDto);
 
-        var brokers = brokerService.getBrokersByPropertyType(BrokerPropertyType.APARTMENT);
+        var brokers = brokerService.getBrokersByPropertyType(PropertyType.APARTMENT);
         assertFalse(brokers.isEmpty());
         assertEquals(1, brokers.size());
     }
@@ -258,12 +242,12 @@ class BrokerServiceImplTest {
         assertNotNull(createdBroker);
 
         BrokerPatchDTO patchDto = new BrokerPatchDTO();
-        patchDto.setBusinessType(BrokerBusinessType.SALE);
+        patchDto.setBusinessTypes(Set.of(PropertyBusinessType.SALE));
 
         mockAuthenticatedUser(createdBroker.getId());
         brokerService.updateBroker(patchDto);
 
-        var brokers = brokerService.getBrokersByBusinessType(BrokerBusinessType.SALE);
+        var brokers = brokerService.getBrokersByBusinessType(PropertyBusinessType.SALE);
         assertFalse(brokers.isEmpty());
         assertEquals(1, brokers.size());
     }
