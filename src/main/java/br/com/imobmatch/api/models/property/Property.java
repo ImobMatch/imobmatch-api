@@ -1,20 +1,18 @@
 package br.com.imobmatch.api.models.property;
 
-import br.com.imobmatch.api.models.broker.Broker;
 import br.com.imobmatch.api.models.enums.PropertyBusinessType;
 import br.com.imobmatch.api.models.enums.PropertyManager;
 import br.com.imobmatch.api.models.enums.PropertyPurpose;
 import br.com.imobmatch.api.models.enums.PropertyType;
-import br.com.imobmatch.api.models.owner.Owner;
 import br.com.imobmatch.api.models.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -83,5 +81,9 @@ public class Property {
 
     @Column(name = "owner_cpf")
     private String ownerCpf;
+
+    @OneToMany(mappedBy = "property")
+    private List<PropertyImage> imagens;
+
 
 }
