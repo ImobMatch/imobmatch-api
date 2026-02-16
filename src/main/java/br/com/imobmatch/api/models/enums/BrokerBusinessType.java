@@ -2,8 +2,8 @@ package br.com.imobmatch.api.models.enums;
 
 public enum BrokerBusinessType {
     SALE("sale"),
-    RENTAL("rental"),
-    LEASE("lease");
+    RENT("rent"),
+    SALE_AND_RENT("saleAndRent");
 
     private final String value;
 

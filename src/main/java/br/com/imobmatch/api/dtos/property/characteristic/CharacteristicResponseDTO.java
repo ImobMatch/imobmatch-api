@@ -10,9 +10,6 @@ public class CharacteristicResponseDTO {
     private UUID id;
     private String description;
     private BigDecimal area;
-    private BigDecimal landArea;
-    private BigDecimal usableArea;
-    private BigDecimal totalArea;
     private Short numBedrooms;
     private Short numSuites;
     private Short numBathrooms;

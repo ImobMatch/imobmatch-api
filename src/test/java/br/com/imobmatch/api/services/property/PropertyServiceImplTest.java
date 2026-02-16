@@ -4,7 +4,10 @@ import br.com.imobmatch.api.dtos.property.PropertyCreateDTO;
 import br.com.imobmatch.api.dtos.property.PropertyFilterDTO;
 import br.com.imobmatch.api.dtos.property.PropertyResponseDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
+import br.com.imobmatch.api.exceptions.property.PropertyIllegalBusinessPriceValueException;
 import br.com.imobmatch.api.mappers.PropertyMapper;
+import br.com.imobmatch.api.models.enums.PropertyBusinessType;
+import br.com.imobmatch.api.models.enums.PropertyPurpose;
 import br.com.imobmatch.api.models.enums.PropertyType;
 import br.com.imobmatch.api.models.property.Property;
 import br.com.imobmatch.api.models.user.User;
@@ -56,6 +59,10 @@ class PropertyServiceImplTest {
 
         PropertyCreateDTO createDTO = PropertyCreateDTO.builder()
                 .ownerCpf("12345678900")
+                .businessType(PropertyBusinessType.SALE)
+                .salePrice(BigDecimal.valueOf(500))
+                .type(PropertyType.APARTMENT)
+                .purpose(PropertyPurpose.RESIDENTIAL)
                 .isAvailable(true)
                 .build();
 
@@ -115,7 +122,14 @@ class PropertyServiceImplTest {
     @Test
     @DisplayName("Should propagate exception when repository fails to save")
     void createProperty_RepositoryFailure() {
-        PropertyCreateDTO createDTO = new PropertyCreateDTO();
+        PropertyCreateDTO createDTO = PropertyCreateDTO.builder()
+                .ownerCpf("12345678900")
+                .businessType(PropertyBusinessType.SALE)
+                .salePrice(BigDecimal.valueOf(500))
+                .type(PropertyType.APARTMENT)
+                .purpose(PropertyPurpose.RESIDENTIAL)
+                .isAvailable(true)
+                .build();
         UUID userId = UUID.randomUUID();
 
         Property propertyEntity = new Property();
@@ -143,10 +157,7 @@ class PropertyServiceImplTest {
                 .minArea(new BigDecimal("50.0"))
                 .maxArea(new BigDecimal("200.0"))
                 .minBedrooms((short) 2)
-                .condoHasPool(true)
-                .condoHasGym(true)
                 .maxCondoPrice(new BigDecimal("1500.00"))
-                .city("Campina Grande")
                 .build();
 
         Property propertyMatch = new Property();
@@ -175,7 +186,6 @@ class PropertyServiceImplTest {
     @DisplayName("Should return empty list when no property matches the filters")
     void findAll_WithFilters_NoMatch() {
         PropertyFilterDTO restrictiveFilter = PropertyFilterDTO.builder()
-                .city("Cidade Inexistente")
                 .minArea(new BigDecimal("9000.0"))
                 .build();
 

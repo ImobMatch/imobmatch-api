@@ -1,8 +1,8 @@
 package br.com.imobmatch.api.dtos.property;
 
-import br.com.imobmatch.api.models.enums.BrazilianState;
-import br.com.imobmatch.api.models.enums.PropertyManager;
-import br.com.imobmatch.api.models.enums.PropertyType;
+import br.com.imobmatch.api.models.enums.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +19,16 @@ import java.util.UUID;
 public class PropertyFilterDTO {
 
     //PROPERTY
+    private String title;
     private PropertyType type;
+    private BigDecimal minSalePrice;
+    private BigDecimal maxSalePrice;
+    private BigDecimal minRentPrice;
+    private BigDecimal maxRentPrice;
+    private BigDecimal minIptuValue;
+    private BigDecimal maxIptuValue;
+    private PropertyPurpose purpose;
+    private PropertyBusinessType businessType;
     private PropertyManager managedBy;
     private Boolean isAvailable;
     private String ownerCpf;
@@ -28,15 +37,6 @@ public class PropertyFilterDTO {
     //CHARACTERISTICS
     private BigDecimal minArea;
     private BigDecimal maxArea;
-
-    private BigDecimal minLandArea;
-    private BigDecimal maxLandArea;
-
-    private BigDecimal minUsableArea;
-    private BigDecimal maxUsableArea;
-
-    private BigDecimal minTotalArea;
-    private BigDecimal maxTotalArea;
 
     private Short minBedrooms;
     private Short minSuites;
@@ -59,39 +59,5 @@ public class PropertyFilterDTO {
 
     //CONDOMINIUM
     private String condominiumName;
-
     private BigDecimal maxCondoPrice;
-
-    @CNPJ(message = "CNPJ invalid")
-    private String condominiumCnpj;
-
-    private Boolean condoHasGym;
-    private Boolean condoHasPool;
-    private Boolean condoHasSauna;
-    private Boolean condoHasSpa;
-    private Boolean condoHasPartyRoom;
-    private Boolean condoHasSportsCourts;
-    private Boolean condoHasPlayground;
-    private Boolean condoHasCoworkingSpace;
-    private Boolean condoHasCinema;
-    private Boolean condoHasGameRoom;
-    private Boolean condoHasSharedTerrace;
-    private Boolean condoHasMiniMarket;
-    private Boolean condoHasPetArea;
-    private Boolean condoHasBikeStorage;
-    private Boolean condoHasRestaurant;
-    private Boolean condoHas24hSecurity;
-    private Boolean condoHasCameras;
-    private Boolean condoHasElevators;
-    private Boolean condoHasElectricCarStation;
-
-    //Address
-    private String street;
-    private Integer number;
-    private String complement;
-    private String neighborhood;
-    private String city;
-    private BrazilianState state;
-    private String zipCode;
-    private String referencePoint;
 }

@@ -20,20 +20,11 @@ public class PropertyCharacteristic {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 1200)
     private String description;
 
     @Column(name = "area", nullable = false)
     private BigDecimal area;
-
-    @Column(name = "land_area")
-    private BigDecimal landArea;
-
-    @Column(name = "usable_area")
-    private BigDecimal usableArea;
-
-    @Column(name = "total_area")
-    private BigDecimal totalArea;
 
     @Column(name = "num_bedrooms")
     private Short numBedrooms;
