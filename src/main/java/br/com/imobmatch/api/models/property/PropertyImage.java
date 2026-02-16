@@ -17,7 +17,7 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "properties_imagens")
+@Table(name = "property_images")
 @Getter
 @Setter
 @Builder
