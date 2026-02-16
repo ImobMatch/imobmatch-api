@@ -1,18 +1,23 @@
 package br.com.imobmatch.api.controllers;
 
+import br.com.imobmatch.api.dtos.property.PropertiesImageDTO;
 import br.com.imobmatch.api.dtos.property.PropertyCreateDTO;
 import br.com.imobmatch.api.dtos.property.PropertyFilterDTO;
 import br.com.imobmatch.api.dtos.property.PropertyResponseDTO;
 import br.com.imobmatch.api.dtos.property.PropertyUpdateDTO;
+import br.com.imobmatch.api.dtos.property.UploadImagenResponseDTO;
+import br.com.imobmatch.api.dtos.user.UploadProfileImageResponse;
 import br.com.imobmatch.api.services.property.PropertyService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -62,5 +67,33 @@ public class PropertyController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.deleteProperty(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/image")
+    @PreAuthorize("hasAnyRole('BROKER', 'OWNER')")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<byte[]> downloadProfileImage(
+            @RequestBody PropertiesImageDTO dto) {
+        return ResponseEntity.ok(this.service.downloadImage(dto));
+    }
+
+    @PostMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('BROKER', 'OWNER')")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<UploadImagenResponseDTO> uploadImage(
+            @PathVariable UUID id,
+            @RequestParam("file") MultipartFile file
+    ) {
+        return ResponseEntity.ok(service.uploadImagen(id,file));
+    }
+
+    @DeleteMapping(value = "/image/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('BROKER', 'OWNER')")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<UploadProfileImageResponse> deleteProfileImage(
+            @RequestBody PropertiesImageDTO dto
+    ) {
+        this.service.removeImagen(dto);
+        return ResponseEntity.ok().build();
     }
 }
