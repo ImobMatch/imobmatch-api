@@ -11,8 +11,10 @@ import br.com.imobmatch.api.mappers.PropertyMapper;
 import br.com.imobmatch.api.models.enums.PropertyBusinessType;
 import br.com.imobmatch.api.models.property.Property;
 import br.com.imobmatch.api.models.user.User;
+import br.com.imobmatch.api.repositories.BrokerRepository;
 import br.com.imobmatch.api.repositories.PropertyRepository;
 import br.com.imobmatch.api.services.auth.AuthService;
+import br.com.imobmatch.api.services.feed.broker.BrokerFeedServiceImpl;
 import br.com.imobmatch.api.services.user.UserService;
 import br.com.imobmatch.api.specs.property.PropertySpecs;
 import lombok.AllArgsConstructor;
@@ -29,9 +31,11 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class PropertyServiceImpl implements PropertyService {
 
+    private  final BrokerFeedServiceImpl viewService;
     private final PropertyRepository repository;
     private final PropertyMapper mapper;
     private final UserService userService;
+    private final BrokerRepository  brokerRepository;
     private final AuthService authService;
 
     @Transactional
@@ -56,11 +60,15 @@ public class PropertyServiceImpl implements PropertyService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional()
     public PropertyResponseDTO findById(UUID id) {
-        return repository.findById(id)
-                .map(mapper::toDTO)
-                .orElseThrow((PropertyNotFoundException :: new));
+        Property property = repository.findById(id)
+                .orElseThrow(PropertyNotFoundException::new);
+        UserResponseDTO currentUser = authService.getMe();
+        brokerRepository.findById(currentUser.getId())
+                .ifPresent(broker -> viewService.trackView(property, broker));
+
+        return mapper.toDTO(property);
     }
 
     @Transactional
