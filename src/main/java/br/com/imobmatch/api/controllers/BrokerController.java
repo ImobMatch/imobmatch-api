@@ -23,8 +23,8 @@ import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 import org.springframework.http.MediaType;
 import br.com.imobmatch.api.dtos.broker.*;
 import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
-import br.com.imobmatch.api.models.enums.BrokerBusinessType;
-import br.com.imobmatch.api.models.enums.BrokerPropertyType;
+import br.com.imobmatch.api.models.enums.PropertyBusinessType;
+import br.com.imobmatch.api.models.enums.PropertyType;
 import br.com.imobmatch.api.services.broker.BrokerService;
 import br.com.imobmatch.api.services.broker.BrokerValidationService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -98,12 +98,11 @@ public class BrokerController {
     @PreAuthorize("hasAnyRole('ADMIN','BROKER','OWNER')")
     public ResponseEntity<List<BrokerResponseDTO>> search(
             @RequestParam(required = false) String regionInterest,
-            @RequestParam(required = false) String operationCity,
-            @RequestParam(required = false) BrokerPropertyType propertyType,
-            @RequestParam(required = false) BrokerBusinessType businessType
+            @RequestParam(required = false) PropertyType propertyType,
+            @RequestParam(required = false) PropertyBusinessType businessType
     ) {
         return ResponseEntity.ok(
-                brokerService.search(regionInterest, operationCity, propertyType, businessType)
+                brokerService.search(regionInterest, propertyType, businessType)
         );
     }
 

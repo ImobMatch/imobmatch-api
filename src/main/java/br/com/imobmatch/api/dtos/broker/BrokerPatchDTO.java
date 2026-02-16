@@ -1,9 +1,10 @@
 package br.com.imobmatch.api.dtos.broker;
 
 import java.time.LocalDate;
+import java.util.Set;
 
-import br.com.imobmatch.api.models.enums.BrokerBusinessType;
-import br.com.imobmatch.api.models.enums.BrokerPropertyType;
+import br.com.imobmatch.api.models.enums.PropertyBusinessType;
+import br.com.imobmatch.api.models.enums.PropertyType;
 import jakarta.validation.constraints.Past;
 import lombok.*;
 
@@ -15,13 +16,11 @@ public class BrokerPatchDTO {
     
     private String name;
     
-    private String regionInterest;
+    private Set<String> regionsInterest;
     
-    private String operationCity;
+    private Set<PropertyType> propertyTypes;
     
-    private BrokerPropertyType propertyType;
-    
-    private BrokerBusinessType businessType;
+    private Set<PropertyBusinessType> businessTypes;
 
     @Past
     private LocalDate birthDate;

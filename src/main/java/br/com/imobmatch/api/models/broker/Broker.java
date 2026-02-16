@@ -1,11 +1,12 @@
 package br.com.imobmatch.api.models.broker;
 
 import java.time.LocalDate;
+import java.util.Set;
 import java.util.UUID;
 
 import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
-import br.com.imobmatch.api.models.enums.BrokerBusinessType;
-import br.com.imobmatch.api.models.enums.BrokerPropertyType;
+import br.com.imobmatch.api.models.enums.PropertyBusinessType;
+import br.com.imobmatch.api.models.enums.PropertyType;
 import br.com.imobmatch.api.models.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Past;
@@ -34,19 +35,19 @@ public class Broker {
     @Column(name = "cpf", nullable = false, length = 11, unique = true)
     private String cpf;
 
-    @Column(name = "region_interest", nullable = true)
-    private String regionInterest;
 
+    @Column(name = "regions_interest", nullable = true)
+    private Set<String> regionsInterest;
+
+    @ElementCollection
     @Enumerated(EnumType.STRING)
-    @Column(name = "property_type", nullable = true)
-    private BrokerPropertyType propertyType;
+    @Column(name = "property_types", nullable = true)
+    private Set<PropertyType> propertyTypes;
 
-    @Column(name = "operation_city", nullable = true)
-    private String operationCity;
-
+    @ElementCollection
     @Enumerated(EnumType.STRING)
-    @Column(name = "business_type", nullable = true)
-    private BrokerBusinessType businessType;
+    @Column(name = "business_types", nullable = true)
+    private Set<PropertyBusinessType> businessTypes;
 
     @Past
     @Column(name ="birth_date", nullable = false)

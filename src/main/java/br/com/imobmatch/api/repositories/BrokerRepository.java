@@ -2,10 +2,11 @@ package br.com.imobmatch.api.repositories;
 
 import br.com.imobmatch.api.models.broker.Broker;
 import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
-import br.com.imobmatch.api.models.enums.BrokerBusinessType;
-import br.com.imobmatch.api.models.enums.BrokerPropertyType;
+import br.com.imobmatch.api.models.enums.PropertyBusinessType;
+import br.com.imobmatch.api.models.enums.PropertyType;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,10 +24,10 @@ public interface BrokerRepository extends JpaRepository<Broker, UUID> {
   boolean existsByUser_Email(String email );
 
   List<Broker> findByNameContainingIgnoreCase(String name);
+  
   List<Broker> findByRegionInterestContainingIgnoreCase(String regionInterest);
-  List<Broker> findByOperationCityContainingIgnoreCase(String operationCity);
-  List<Broker> findByPropertyType(BrokerPropertyType propertyType);
-  List<Broker> findByBusinessType(BrokerBusinessType businessType);
+  List<Broker> findByPropertyType(PropertyType propertyType);
+  List<Broker> findByBusinessType(PropertyBusinessType businessType);
   List<Broker> findByAccountStatus(BrokerAccountStatus accountStatus);  
 
 }
