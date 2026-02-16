@@ -17,6 +17,8 @@ import br.com.imobmatch.api.repositories.OwnerRepository;
 import br.com.imobmatch.api.services.auth.AuthService;
 import br.com.imobmatch.api.services.user.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -149,24 +151,21 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public OwnerGetAllByResponseDTO getAllOwnersByName(String name) {
-
-        return buildOwnerGetAllByResponseDTO(
-                ownerRepository.findAllByNameContainingIgnoreCase(name));
-
+    public Page<OwnerResponseDTO> getAllOwnersByName(String name, Pageable pageable) {
+        Page<Owner> ownerPage = ownerRepository.findAllByNameContainingIgnoreCase(name, pageable);
+        return ownerPage.map(this::buildOwnerResponseDto);
     }
 
     @Override
-    public OwnerGetAllByResponseDTO getAllOwnersByBirthDate(LocalDate birthDate) {
-
-        return buildOwnerGetAllByResponseDTO(
-                ownerRepository.findAllByBirthDate(birthDate));
+    public Page<OwnerResponseDTO> getAllOwnersByBirthDate(LocalDate birthDate, Pageable pageable) {
+        Page<Owner> ownerPage = ownerRepository.findAllByBirthDate(birthDate, pageable);
+        return ownerPage.map(this::buildOwnerResponseDto);
     }
 
     @Override
-    public OwnerGetAllByResponseDTO getAllOwners() {
-
-        return buildOwnerGetAllByResponseDTO(ownerRepository.findAll());
+    public Page<OwnerResponseDTO> getAllOwners(Pageable pageable) {
+        Page<Owner> ownerPage = ownerRepository.findAll(pageable);
+        return ownerPage.map(this::buildOwnerResponseDto);
     }
 
 
@@ -198,20 +197,6 @@ public class OwnerServiceImpl implements OwnerService {
                 .personalPhoneNumber(owner.getPersonalPhoneNumber())
                 .birthDate(owner.getBirthDate())
                 .isEmailVerified(owner.getUser().isEmailVerified())
-                .build();
-    }
-
-    private OwnerGetAllByResponseDTO buildOwnerGetAllByResponseDTO(List<Owner> ownerlist){
-
-        List<OwnerResponseDTO> ownerResponseDtoList = new ArrayList<>();
-
-        for(Owner owner : ownerlist){
-
-            ownerResponseDtoList.add(buildOwnerResponseDto(owner));
-        }
-
-        return OwnerGetAllByResponseDTO.builder()
-                .owners(ownerResponseDtoList)
                 .build();
     }
 }

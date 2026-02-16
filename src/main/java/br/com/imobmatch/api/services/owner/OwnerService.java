@@ -6,6 +6,8 @@ import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerUpdateDTO;
 import br.com.imobmatch.api.exceptions.owner.OwnerExistsException;
 import br.com.imobmatch.api.dtos.owner.OwnerGetAllByResponseDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -38,9 +40,9 @@ public interface OwnerService {
     OwnerResponseDTO getOwnerByCpf(String cpf);
     OwnerResponseDTO getOwnerById(UUID id);
     OwnerResponseDTO getOwnerByEmail(String email);
-    OwnerGetAllByResponseDTO getAllOwnersByName(String name);
-    OwnerGetAllByResponseDTO getAllOwnersByBirthDate(LocalDate birthDate);
-    OwnerGetAllByResponseDTO getAllOwners();
+    Page<OwnerResponseDTO> getAllOwnersByName(String name, Pageable pageable);
+    Page<OwnerResponseDTO> getAllOwnersByBirthDate(LocalDate birthDate, Pageable pageable);
+    Page<OwnerResponseDTO> getAllOwners(Pageable pageable);
     /**
      *Deletes the system owner and the user associated with them.
      *Requires the user's password to confirm the deletion.

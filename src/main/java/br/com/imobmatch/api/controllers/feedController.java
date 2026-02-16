@@ -1,6 +1,6 @@
 package br.com.imobmatch.api.controllers;
 
-import br.com.imobmatch.api.dtos.owner.OwnerGetAllByResponseDTO;
+import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.dtos.property.PropertyResponseDTO;
 import br.com.imobmatch.api.services.feed.broker.BrokerFeedServiceImpl;
 import br.com.imobmatch.api.services.owner.OwnerService;
@@ -12,9 +12,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 @RestController
@@ -37,11 +39,14 @@ public class feedController {
         return ResponseEntity.ok(feed);
     }
 
-    //this is simply get all copied from ownerController
     @GetMapping()
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAnyRole('BROKER', 'ADMIN')")
-    public ResponseEntity<OwnerGetAllByResponseDTO> getOwnerFeed(){
-        return ResponseEntity.ok(ownerService.getAllOwners());
+    public ResponseEntity<Page<OwnerResponseDTO>> getAll(
+            @PageableDefault(page = 0, size = 10, sort = "name")
+            Pageable pageable)
+
+    {
+        return ResponseEntity.ok(ownerService.getAllOwners(pageable));
     }
 }
