@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -201,14 +202,14 @@ class BrokerServiceImplTest {
         assertEquals(1, brokers.size());
     }
 
-    @Test
+@Test
     @DisplayName("List brokers by region interest successfully")
     void testListBrokersByRegionInterest() {
         BrokerResponseDTO createdBroker = brokerService.createBroker(brokerPostDTO);
         assertNotNull(createdBroker);
 
         BrokerPatchDTO patchDto = new BrokerPatchDTO();
-        patchDto.setRegionsInterest(Set.of("PB"));
+        patchDto.setRegionsInterest(new HashSet<>(Set.of("PB"))); 
 
         mockAuthenticatedUser(createdBroker.getId());
         brokerService.updateBroker(patchDto);
@@ -225,7 +226,7 @@ class BrokerServiceImplTest {
         assertNotNull(createdBroker);
 
         BrokerPatchDTO patchDto = new BrokerPatchDTO();
-        patchDto.setPropertyTypes(Set.of(PropertyType.APARTMENT));
+        patchDto.setPropertyTypes(new HashSet<>(Set.of(PropertyType.APARTMENT)));
 
         mockAuthenticatedUser(createdBroker.getId());
         brokerService.updateBroker(patchDto);
@@ -242,7 +243,8 @@ class BrokerServiceImplTest {
         assertNotNull(createdBroker);
 
         BrokerPatchDTO patchDto = new BrokerPatchDTO();
-        patchDto.setBusinessTypes(Set.of(PropertyBusinessType.SALE));
+
+        patchDto.setBusinessTypes(new HashSet<>(Set.of(PropertyBusinessType.SALE)));
 
         mockAuthenticatedUser(createdBroker.getId());
         brokerService.updateBroker(patchDto);
