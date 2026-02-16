@@ -1,6 +1,7 @@
 package br.com.imobmatch.api.dtos.property;
 
 import br.com.imobmatch.api.models.enums.BrazilianState;
+import br.com.imobmatch.api.models.enums.BrokerBusinessType;
 import br.com.imobmatch.api.models.enums.PropertyManager;
 import br.com.imobmatch.api.models.enums.PropertyType;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,13 @@ public class PropertyFilterDTO {
 
     private BigDecimal minTotalArea;
     private BigDecimal maxTotalArea;
+
+    private BigDecimal minPrice;
+    private BigDecimal maxPrice;
+
+    private BrokerBusinessType businessType;
+
+    private String keyword;
 
     private Short minBedrooms;
     private Short minSuites;

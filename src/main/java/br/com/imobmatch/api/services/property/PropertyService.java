@@ -5,6 +5,8 @@ import br.com.imobmatch.api.dtos.property.PropertyFilterDTO;
 import br.com.imobmatch.api.dtos.property.PropertyResponseDTO;
 import br.com.imobmatch.api.dtos.property.PropertyUpdateDTO;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,4 +19,5 @@ public interface PropertyService {
     PropertyResponseDTO findById(UUID id);
     PropertyResponseDTO updateProperty(UUID id, PropertyUpdateDTO propertyUpdateDTO);
     void deleteProperty(UUID id);
+    Page<PropertyResponseDTO> findAll(PropertyFilterDTO filter, Pageable pageable);
 }

@@ -3,6 +3,7 @@ package br.com.imobmatch.api.dtos.property;
 import br.com.imobmatch.api.dtos.property.address.AddressResponseDTO;
 import br.com.imobmatch.api.dtos.property.characteristic.CharacteristicResponseDTO;
 import br.com.imobmatch.api.dtos.property.condominium.CondominiumResponseDTO;
+import br.com.imobmatch.api.models.enums.BrokerBusinessType;
 import br.com.imobmatch.api.models.enums.PropertyManager;
 import br.com.imobmatch.api.models.enums.PropertyType;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Data
@@ -34,4 +36,8 @@ public class PropertyResponseDTO {
     private PropertyManager managedBy;
 
     private String ownerCpf;
+
+    private BrokerBusinessType businessType;
+    private BigDecimal saleValue;
+    private BigDecimal rentalValue;
 }

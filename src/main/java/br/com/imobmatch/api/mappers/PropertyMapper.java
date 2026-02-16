@@ -3,13 +3,21 @@ package br.com.imobmatch.api.mappers;
 import br.com.imobmatch.api.dtos.property.PropertyCreateDTO;
 import br.com.imobmatch.api.dtos.property.PropertyResponseDTO;
 import br.com.imobmatch.api.dtos.property.PropertyUpdateDTO;
+import br.com.imobmatch.api.models.enums.BrokerBusinessType;
 import br.com.imobmatch.api.models.property.Property;
 import org.mapstruct.*;
+import org.mapstruct.factory.Mappers;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.Named;
 
 @Mapper( componentModel = "spring",
+
         uses = {AddressMapper.class, PropertyCharacteristicMapper.class,
+
         CondominiumMapper.class},
+
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+
 public interface PropertyMapper {
 
     @Mapping(target = "id", ignore = true)
@@ -21,10 +29,12 @@ public interface PropertyMapper {
     @Mapping(target = "isAvailable", qualifiedByName = "mapToBoolean")
     PropertyResponseDTO toDTO(Property property);
 
+
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "publisher", ignore = true)
     @Mapping(target = "isAvailable", qualifiedByName = "mapToBoolean")
     void updatePropertyFromDTO(PropertyUpdateDTO propertyUpdateDTO, @MappingTarget Property entity);
+
 
     @Named("mapToBoolean")
     default Boolean mapBoolean(Boolean value) {

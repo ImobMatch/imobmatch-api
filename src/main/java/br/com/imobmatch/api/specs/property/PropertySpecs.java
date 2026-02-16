@@ -1,6 +1,7 @@
 package br.com.imobmatch.api.specs.property;
 
 import br.com.imobmatch.api.dtos.property.PropertyFilterDTO;
+import br.com.imobmatch.api.models.enums.BrokerBusinessType;
 import br.com.imobmatch.api.models.property.Address; // <--- Importante
 import br.com.imobmatch.api.models.property.Condominium;
 import br.com.imobmatch.api.models.property.Property;
@@ -8,6 +9,7 @@ import br.com.imobmatch.api.models.property.PropertyCharacteristic;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
+import java.math.BigDecimal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,18 @@ public class PropertySpecs {
 
             if (filter.getPublisherId() != null) {
                 predicates.add(builder.equal(root.get("publisher").get("id"), filter.getPublisherId()));
+            }
+
+            addEqual(predicates, builder, root.get("businessType"), filter.getBusinessType());
+
+            if (filter.getMinPrice() != null || filter.getMaxPrice() != null) {
+                // Decide qual coluna filtrar: saleValue ou rentalValue
+                String priceColumn = determinePriceColumn(filter.getBusinessType());
+                
+                if (priceColumn != null) {
+                    addGe(predicates, builder, root.get(priceColumn), filter.getMinPrice());
+                    addLe(predicates, builder, root.get(priceColumn), filter.getMaxPrice());
+                }
             }
 
             if (hasCharacteristicFilters(filter)) {
@@ -106,6 +120,15 @@ public class PropertySpecs {
             }
 
             return builder.and(predicates.toArray(new Predicate[0]));
+        };
+    }
+
+    private static String determinePriceColumn(BrokerBusinessType type) {
+        if (type == null) return null;
+        return switch (type) {
+            case RENTAL, LEASE -> "rentalValue";
+            case SALE -> "saleValue";
+            default -> "saleValue";
         };
     }
 

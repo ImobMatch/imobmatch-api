@@ -8,10 +8,15 @@ import br.com.imobmatch.api.services.property.PropertyService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.UUID;
@@ -60,5 +65,18 @@ public class PropertyController {
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.deleteProperty(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/feed")
+    public ResponseEntity<Page<PropertyResponseDTO>> getFeed(
+        @ModelAttribute PropertyFilterDTO filter,
+        @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+
+    if (filter.getIsAvailable() == null) {
+        filter.setIsAvailable(true);
+    }
+
+    return ResponseEntity.ok(service.findAll(filter, pageable));
     }
 }

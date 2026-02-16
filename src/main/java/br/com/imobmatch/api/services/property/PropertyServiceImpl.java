@@ -14,6 +14,11 @@ import br.com.imobmatch.api.services.auth.AuthService;
 import br.com.imobmatch.api.services.user.UserService;
 import br.com.imobmatch.api.specs.property.PropertySpecs;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,4 +80,14 @@ public class PropertyServiceImpl implements PropertyService {
         }
         repository.deleteById(id);
     }
+
+    @Transactional(readOnly = true)
+    public Page<PropertyResponseDTO> findAll(PropertyFilterDTO filter, Pageable pageable) {
+        Specification<Property> spec = PropertySpecs.usingFilter(filter);
+        
+        Page<Property> pageProperties = repository.findAll(spec, pageable);
+        
+        return pageProperties.map(mapper::toDTO);
+    }
+
 }

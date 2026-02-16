@@ -1,6 +1,7 @@
 package br.com.imobmatch.api.models.property;
 
 import br.com.imobmatch.api.models.broker.Broker;
+import br.com.imobmatch.api.models.enums.BrokerBusinessType;
 import br.com.imobmatch.api.models.enums.PropertyManager;
 import br.com.imobmatch.api.models.enums.PropertyType;
 import br.com.imobmatch.api.models.owner.Owner;
@@ -11,6 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -53,5 +55,15 @@ public class Property {
 
     @Column(name = "owner_cpf")
     private String ownerCpf;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "business_type") 
+    private BrokerBusinessType businessType;
+
+    @Column(name = "sale_value")
+    private BigDecimal saleValue;
+
+    @Column(name = "rental_value")
+    private BigDecimal rentalValue;
 
 }
