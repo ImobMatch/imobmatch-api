@@ -17,11 +17,20 @@ public class PropertySpecs {
         return (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            addGe(predicates, builder, root.get("salePrice"), filter.getMinSalePrice());
+            addLe(predicates, builder, root.get("salePrice"), filter.getMaxSalePrice());
+            addGe(predicates, builder, root.get("rentPrice"), filter.getMinRentPrice());
+            addLe(predicates, builder, root.get("rentPrice"), filter.getMaxRentPrice());;
+            addGe(predicates, builder, root.get("iptuValue"), filter.getMinIptuValue());
+            addLe(predicates, builder, root.get("iptuValue"), filter.getMaxIptuValue());
+
             addLike(predicates, builder, root.get("title"), filter.getTitle());
             addEqual(predicates, builder, root.get("type"), filter.getType());
             addEqual(predicates, builder, root.get("managedBy"), filter.getManagedBy());
             addEqual(predicates, builder, root.get("isAvailable"), filter.getIsAvailable());
             addEqual(predicates, builder, root.get("ownerCpf"), filter.getOwnerCpf());
+            addEqual(predicates, builder, root.get("purpose"), filter.getPurpose());
+            addEqual(predicates, builder, root.get("businessType"), filter.getBusinessType());
 
             if (filter.getPublisherId() != null) {
                 predicates.add(builder.equal(root.get("publisher").get("id"), filter.getPublisherId()));

@@ -1,8 +1,8 @@
 package br.com.imobmatch.api.dtos.property;
 
-import br.com.imobmatch.api.models.enums.BrazilianState;
-import br.com.imobmatch.api.models.enums.PropertyManager;
-import br.com.imobmatch.api.models.enums.PropertyType;
+import br.com.imobmatch.api.models.enums.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +21,14 @@ public class PropertyFilterDTO {
     //PROPERTY
     private String title;
     private PropertyType type;
+    private BigDecimal minSalePrice;
+    private BigDecimal maxSalePrice;
+    private BigDecimal minRentPrice;
+    private BigDecimal maxRentPrice;
+    private BigDecimal minIptuValue;
+    private BigDecimal maxIptuValue;
+    private PropertyPurpose purpose;
+    private PropertyBusinessType businessType;
     private PropertyManager managedBy;
     private Boolean isAvailable;
     private String ownerCpf;

@@ -1,6 +1,7 @@
 package br.com.imobmatch.api.controllers.advice;
 
 import br.com.imobmatch.api.dtos.error.ErrorResponseDTO;
+import br.com.imobmatch.api.exceptions.property.PropertyIllegalBusinessPriceValueException;
 import br.com.imobmatch.api.exceptions.property.PropertyNotFoundException;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,6 +31,24 @@ public class PropertyExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(error);
+    }
+
+    @ExceptionHandler(PropertyIllegalBusinessPriceValueException.class)
+    public ResponseEntity<ErrorResponseDTO> handlePropertyIllegalBusinessPriceValue(
+            PropertyIllegalBusinessPriceValueException ex,
+            HttpServletRequest request
+    ) {
+        ErrorResponseDTO error = new ErrorResponseDTO(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(error);
     }
 }
