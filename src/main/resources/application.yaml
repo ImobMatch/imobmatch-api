@@ -7,8 +7,8 @@ spring:
         active: dev  # Active profile: dev, test, or prod
 
     flyway:
-        enabled: false  # Enable Flyway database migrations
-        baseline-on-migrate: false  # Treat existing schema as baseline on first migration
+        enabled: true  # Enable Flyway database migrations
+        baseline-on-migrate: true  # Treat existing schema as baseline on first migration
 
     mail:
         host: smtp.gmail.com  # SMTP server host
