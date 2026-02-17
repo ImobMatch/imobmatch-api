@@ -4,13 +4,15 @@ spring:
         name: "ImobMatch API"  # Name of the application
 
     profiles:
-        active: prod  # Active profile: dev, test, or prod
+        active: dev  # Active profile: dev, test, or prod
 
     flyway:
         enabled: true  # Enable Flyway database migrations
         baseline-on-migrate: true  # Treat existing schema as baseline on first migration
 
     mail:
+        username: ${MAIL_USERNAME}  # Email account username
+        password: ${MAIL_PASSWORD}  # Email account password
         host: smtp.gmail.com  # SMTP server host
         port: 587  # SMTP server port
         properties:
@@ -22,8 +24,14 @@ spring:
 
 # API security configuration
 api:
+    admin:
+        email: ${ADMIN_EMAIL}
+        password: ${ADMIN_PASSWORD}
     security:
         access-token:
             expiration-minutes: 30  # Access token expiration in minutes (short-lived)
         refresh-token:
             expiration-days: 7  # Refresh token expiration in days (long-lived)
+        token:
+            secret: ${JWT_SECRET}  # Secret key for signing JWT tokens
+

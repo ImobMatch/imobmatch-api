@@ -18,6 +18,7 @@ public class BrokerResponseDTO {
     private String name;
     private String creci;
     private String cpf;
+    private String profileKey;
     private String regionInterest;
     private BrokerPropertyType propertyType;
     private String operationCity;

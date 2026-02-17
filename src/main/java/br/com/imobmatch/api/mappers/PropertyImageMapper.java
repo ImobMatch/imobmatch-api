@@ -1,0 +1,19 @@
+package br.com.imobmatch.api.mappers;
+
+import br.com.imobmatch.api.dtos.property.PropertyImageDTO;
+import br.com.imobmatch.api.models.property.PropertyImage;
+import org.mapstruct.Mapper;
+
+import java.util.List;
+
+@Mapper(componentModel = "spring")
+public interface PropertyImageMapper {
+
+    PropertyImageDTO toDTO(PropertyImage entity);
+
+    PropertyImage toEntity(PropertyImageDTO dto);
+
+    List<PropertyImageDTO> toDTOList(List<PropertyImage> entities);
+
+    List<PropertyImage> toEntityList(List<PropertyImageDTO> dtos);
+}
