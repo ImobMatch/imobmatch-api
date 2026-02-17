@@ -18,6 +18,8 @@ import br.com.imobmatch.api.services.feed.broker.BrokerFeedServiceImpl;
 import br.com.imobmatch.api.services.user.UserService;
 import br.com.imobmatch.api.specs.property.PropertySpecs;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,12 +54,10 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Transactional(readOnly = true)
-    public List<PropertyResponseDTO> findAll(PropertyFilterDTO filter) {
-        List<Property> properties = repository.findAll(PropertySpecs.usingFilter(filter));
+    public Page<PropertyResponseDTO> findAll(PropertyFilterDTO filter, Pageable pageable){
+        Page<Property> propertiesPage = repository.findAll(PropertySpecs.usingFilter(filter), pageable);
 
-        return properties.stream()
-                .map(mapper::toDTO)
-                .collect(Collectors.toList());
+        return propertiesPage.map(mapper::toDTO);
     }
 
     @Transactional()

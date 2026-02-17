@@ -19,8 +19,6 @@ import java.util.UUID;
 public interface PropertyRepository extends JpaRepository<Property, UUID>,
                                             JpaSpecificationExecutor<Property> {
 
-    List<Property> findAllByPublisher_Id(UUID id);
-
     @Query("""
     SELECT p FROM Property p
     JOIN p.characteristic c
