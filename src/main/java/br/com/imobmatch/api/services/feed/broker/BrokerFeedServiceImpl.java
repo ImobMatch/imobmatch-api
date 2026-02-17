@@ -5,6 +5,7 @@ import br.com.imobmatch.api.dtos.property.PropertyResponseDTO;
 import br.com.imobmatch.api.exceptions.broker.BrokerNotFoundException;
 import br.com.imobmatch.api.mappers.PropertyMapper;
 import br.com.imobmatch.api.models.broker.Broker;
+import br.com.imobmatch.api.models.enums.BrazilianState;
 import br.com.imobmatch.api.models.enums.PropertyBusinessType;
 import br.com.imobmatch.api.models.enums.PropertyPurpose;
 import br.com.imobmatch.api.models.enums.PropertyType;
@@ -21,10 +22,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -92,6 +90,12 @@ public class BrokerFeedServiceImpl implements BrokerFeedService {
         Double garage = profile != null ? profile.getAvgGarage() : 1.0;
         Double bathrooms = profile != null ? profile.getAvgBathrooms() : 2.0;
 
+        Set<BrazilianState> regionsOfInterest = user.getRegionsInterest();
+
+        if (regionsOfInterest == null || regionsOfInterest.isEmpty()) {
+            regionsOfInterest = Set.of(BrazilianState.values());
+        }
+
         Page<Property> recommendations = propertyRepository
                 .findRecommendations(
                 purpose,
@@ -105,6 +109,7 @@ public class BrokerFeedServiceImpl implements BrokerFeedService {
                 twoWeeksAgo,
                 threeDaysAgo,
                 userId,
+                regionsOfInterest,
                 pageable
         );
         return recommendations.map(mapper::toDTO);

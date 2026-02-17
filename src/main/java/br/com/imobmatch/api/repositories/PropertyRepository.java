@@ -1,5 +1,6 @@
 package br.com.imobmatch.api.repositories;
 
+import br.com.imobmatch.api.models.enums.BrazilianState;
 import br.com.imobmatch.api.models.enums.PropertyBusinessType;
 import br.com.imobmatch.api.models.enums.PropertyPurpose;
 import br.com.imobmatch.api.models.enums.PropertyType;
@@ -14,6 +15,7 @@ import org.springframework.data.repository.query.Param;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public interface PropertyRepository extends JpaRepository<Property, UUID>,
@@ -24,6 +26,7 @@ public interface PropertyRepository extends JpaRepository<Property, UUID>,
     JOIN p.characteristic c
     WHERE p.isAvailable = true
     AND (p.publisher.id != :currentUserId OR p.publisher IS NULL)
+    AND p.address.state IN :regions
 
     ORDER BY (
         (CASE  WHEN :businessType IS NOT NULL AND p.businessType = :businessType OR p.businessType = 'SALE_AND_RENT' THEN 40 ELSE 0 END) +
@@ -77,6 +80,7 @@ public interface PropertyRepository extends JpaRepository<Property, UUID>,
             @Param("recentDateThreshold") LocalDate recentDateThreshold,
             @Param("superRecentDateThreshold") LocalDate superRecentDateThreshold,
             @Param("currentUserId") UUID currentUserId,
+            @Param("regions") Set<BrazilianState> regions,
             Pageable pageable
     );
 
