@@ -414,6 +414,7 @@ public class BrokerServiceImpl implements BrokerService {
             .personalPhoneNumber(broker.getPersonalPhoneNumber())
             .email(broker.getUser().getEmail())
             .role(broker.getUser().getRole())
+            .profileKey(broker.getUser().getProfileKey())
             .isEmailVerified(broker.getUser().isEmailVerified())
             .accountStatus(broker.getAccountStatus())
         .build();

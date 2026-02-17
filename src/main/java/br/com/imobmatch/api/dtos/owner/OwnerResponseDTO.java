@@ -11,12 +11,15 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class OwnerResponseDTO {
 
     private UUID id;
     private String name;
     private String cpf;
     private String email;
+    private String profileKey;
     private UserRole role;
     private String whatsAppPhoneNumber;
     private String personalPhoneNumber;

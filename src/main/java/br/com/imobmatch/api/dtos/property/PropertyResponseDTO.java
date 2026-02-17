@@ -7,6 +7,7 @@ import br.com.imobmatch.api.models.enums.PropertyBusinessType;
 import br.com.imobmatch.api.models.enums.PropertyManager;
 import br.com.imobmatch.api.models.enums.PropertyPurpose;
 import br.com.imobmatch.api.models.enums.PropertyType;
+import br.com.imobmatch.api.models.property.PropertyImage;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -56,4 +58,7 @@ public class PropertyResponseDTO {
     private PropertyManager managedBy;
 
     private String ownerCpf;
+
+    private List<PropertyImage> images;
+
 }

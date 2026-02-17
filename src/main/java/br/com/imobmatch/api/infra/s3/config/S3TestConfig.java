@@ -11,7 +11,6 @@ public class S3TestConfig {
 
     @Bean
     public S3Client s3Client() {
-        // S3Client “fake” para testes
         return new S3Client() {
             @Override
             public String serviceName() {
@@ -20,10 +19,6 @@ public class S3TestConfig {
 
             @Override
             public void close() {}
-
-            // Sobrescreva métodos que você chamar nos testes, se precisar
-            // Por exemplo, getObjectAsBytes, putObject, deleteObject
-            // Ou use Mockito para mockar
         };
     }
 }

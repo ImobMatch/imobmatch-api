@@ -29,11 +29,12 @@ public class S3DevConfig {
 
     @Bean
     public S3Client s3Client() {
+
         AwsBasicCredentials credentials =
                 AwsBasicCredentials.create(accessKey, secretKey);
 
         return S3Client.builder()
-                .endpointOverride(URI.create(endpoint))
+                .endpointOverride(URI.create(endpoint)) // localhost:9000
                 .region(Region.of(region))
                 .credentialsProvider(
                         StaticCredentialsProvider.create(credentials)
