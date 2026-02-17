@@ -29,6 +29,6 @@ public class BrokerValidationService {
         
         String cleanCreci = creci.replaceAll("[^a-zA-Z0-9]", "").toUpperCase();
         
-        return cleanCreci.matches("^\\d{4,6}[a-zA-Z]?$");
+        return cleanCreci.matches("^\\d{4,6}[A-Z]$");
     }
 }
