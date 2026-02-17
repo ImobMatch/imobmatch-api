@@ -3,6 +3,7 @@ package br.com.imobmatch.api.services.favorite;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -22,6 +23,7 @@ import br.com.imobmatch.api.repositories.FavoriteRepository;
 import br.com.imobmatch.api.repositories.PropertyRepository;
 import br.com.imobmatch.api.services.auth.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -71,6 +73,12 @@ public class FavoriteServiceImpl implements FavoriteService {
         return favorites.stream()
         .map(favorite -> propertyMapper.toDTO(favorite.getProperty()))
         .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<UUID> getUserFavoritePropertyIds(UUID brokerId) {
+        return favoriteRepository.findAllPropertyIdsByBrokerId(brokerId);
     }
 
     private FavoriteResponseDTO buildFavoriteResponseDTO(Favorite favorite){
