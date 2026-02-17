@@ -20,6 +20,9 @@ public class AddressCreateDTO {
     @NotNull(message = "Number is required")
     private Integer number;
 
+    private String latitude;
+    private String longitude;
+
     private String complement;
 
     @NotBlank(message = "neighborhood is required")
