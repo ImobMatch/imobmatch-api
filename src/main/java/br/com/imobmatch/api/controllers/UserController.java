@@ -38,7 +38,7 @@ public class UserController {
 
     @GetMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasAnyRole('BROKER', 'OWNER')")
+    @PreAuthorize("hasAnyRole('BROKER', 'OWNER', 'ADMIN')")
     public ResponseEntity<UserResponseDTO> getMeUserAuthentication() {
         return ResponseEntity.ok(this.userService.getMe());
     }
