@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Set;
 import java.util.UUID;
 
+import br.com.imobmatch.api.models.enums.BrazilianState;
 import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
 import br.com.imobmatch.api.models.enums.PropertyBusinessType;
 import br.com.imobmatch.api.models.enums.PropertyType;
@@ -41,7 +42,7 @@ public class Broker {
         joinColumns = @JoinColumn(name = "broker_id")
     )
     @Column(name = "region", nullable = true)
-    private Set<String> regionsInterest;
+    private Set<BrazilianState> regionsInterest;
 
     @ElementCollection
     @Enumerated(EnumType.STRING)
@@ -52,14 +53,9 @@ public class Broker {
     @Column(name = "property_type", nullable = true)
     private Set<PropertyType> propertyTypes;
 
-    @ElementCollection
     @Enumerated(EnumType.STRING)
-    @CollectionTable(
-        name = "brokers_business_types",
-        joinColumns = @JoinColumn(name = "broker_id")
-    )
     @Column(name = "business_type", nullable = true)
-    private Set<PropertyBusinessType> businessTypes;
+    private PropertyBusinessType businessType;
 
     @Past
     @Column(name ="birth_date", nullable = false)

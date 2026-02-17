@@ -92,8 +92,8 @@ public class BrokerServiceImpl implements BrokerService {
             isUpdated = true;
         }
 
-        if(brokerPatchDTO.getBusinessTypes() != null) {
-            broker.setBusinessTypes(brokerPatchDTO.getBusinessTypes());
+        if(brokerPatchDTO.getBusinessType() != null) {
+            broker.setBusinessType(brokerPatchDTO.getBusinessType());
             isUpdated = true;
         }
         
@@ -140,8 +140,8 @@ public class BrokerServiceImpl implements BrokerService {
             isUpdated = true;
         }
 
-        if(brokerPatchDTO.getBusinessTypes() != null) {
-            broker.setBusinessTypes(brokerPatchDTO.getBusinessTypes());
+        if(brokerPatchDTO.getBusinessType() != null) {
+            broker.setBusinessType(brokerPatchDTO.getBusinessType());
             isUpdated = true;
         }
 
@@ -361,7 +361,7 @@ public class BrokerServiceImpl implements BrokerService {
                         || (b.getRegionsInterest() != null &&
                         b.getRegionsInterest().contains(regionInterest)))
                 .filter(b -> propertyType == null || b.getPropertyTypes().contains(propertyType))
-                .filter(b -> businessType == null || b.getBusinessTypes().contains(businessType))
+                .filter(b -> businessType == null || b.getBusinessType() == businessType)
                 .map(this::buildBrokerResponseDto)
                 .collect(Collectors.toList());
     }
@@ -376,12 +376,13 @@ public class BrokerServiceImpl implements BrokerService {
             .cpf(broker.getCpf())
             .regionsInterest(broker.getRegionsInterest())
             .propertyTypes(broker.getPropertyTypes())
-            .businessTypes(broker.getBusinessTypes())
+            .businessType(broker.getBusinessType())
             .birthDate(broker.getBirthDate())
             .whatsAppPhoneNumber(broker.getWhatsAppPhoneNumber())
             .personalPhoneNumber(broker.getPersonalPhoneNumber())
             .email(broker.getUser().getEmail())
             .role(broker.getUser().getRole())
+            .profileKey(broker.getUser().getProfileKey())
             .isEmailVerified(broker.getUser().isEmailVerified())
             .accountStatus(broker.getAccountStatus())
         .build();

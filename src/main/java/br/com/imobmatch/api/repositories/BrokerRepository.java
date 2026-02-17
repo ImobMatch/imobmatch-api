@@ -39,11 +39,6 @@ public interface BrokerRepository extends JpaRepository<Broker, UUID> {
   """)
   List<Broker> findByPropertyType(PropertyType propertyType);
 
-  @Query("""
-      SELECT DISTINCT b
-      FROM brokers b
-      WHERE :businessType MEMBER OF b.businessTypes
-  """)
   List<Broker> findByBusinessType(PropertyBusinessType businessType);
 
   List<Broker> findByAccountStatus(BrokerAccountStatus accountStatus);  

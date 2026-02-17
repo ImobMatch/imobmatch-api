@@ -26,6 +26,7 @@ import br.com.imobmatch.api.dtos.broker.BrokerPostDTO;
 import br.com.imobmatch.api.dtos.broker.BrokerResponseDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.infra.security.services.token.TokenService;
+import br.com.imobmatch.api.models.enums.BrazilianState;
 import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
 import br.com.imobmatch.api.models.enums.PropertyBusinessType;
 import br.com.imobmatch.api.models.enums.PropertyType;
@@ -209,7 +210,7 @@ class BrokerServiceImplTest {
         assertNotNull(createdBroker);
 
         BrokerPatchDTO patchDto = new BrokerPatchDTO();
-        patchDto.setRegionsInterest(new HashSet<>(Set.of("PB"))); 
+        patchDto.setRegionsInterest(new HashSet<>(Set.of(BrazilianState.PB))); 
 
         mockAuthenticatedUser(createdBroker.getId());
         brokerService.updateBroker(patchDto);
@@ -244,7 +245,7 @@ class BrokerServiceImplTest {
 
         BrokerPatchDTO patchDto = new BrokerPatchDTO();
 
-        patchDto.setBusinessTypes(new HashSet<>(Set.of(PropertyBusinessType.SALE)));
+        patchDto.setBusinessType(PropertyBusinessType.SALE);
 
         mockAuthenticatedUser(createdBroker.getId());
         brokerService.updateBroker(patchDto);

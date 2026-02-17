@@ -6,6 +6,7 @@ import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerUpdateDTO;
 import br.com.imobmatch.api.exceptions.owner.OwnerExistsException;
 import br.com.imobmatch.api.dtos.owner.OwnerGetAllByResponseDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -49,6 +50,5 @@ public interface OwnerService {
      * @param passwordUserDeleteDTO User password.
      */
     void deleteOwner(PasswordUserDeleteDTO passwordUserDeleteDTO);
-
 
 }

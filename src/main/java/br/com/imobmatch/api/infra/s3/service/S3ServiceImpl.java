@@ -16,17 +16,7 @@ public class S3ServiceImpl implements S3Service {
     public String uploadProfilePhoto(UUID userId, byte[] content) {
         return this.s3Repository.uploadProfilePhoto(userId, content);
     }
-
-    @Override
-    public String uploadCreciDocument(UUID userId, byte[] content) {
-        return  this.s3Repository.uploadCreciDocument(userId, content);
-    }
-
-    @Override
-    public String uploadPropertyDocument(UUID propertyId, byte[] content) {
-        return this.s3Repository.uploadPropertyDocument(propertyId, content);
-    }
-
+    
     @Override
     public String uploadPropertyImage(UUID propertyId, byte[] content) {
         return this.s3Repository.uploadPropertyImage(propertyId, content);
@@ -35,16 +25,6 @@ public class S3ServiceImpl implements S3Service {
     @Override
     public byte[] downloadProfilePhoto(String key) {
         return this.s3Repository.downloadProfilePhoto(key);
-    }
-
-    @Override
-    public byte[] downloadCreciDocument(String key) {
-        return this.s3Repository.downloadCreciDocument(key);
-    }
-
-    @Override
-    public byte[] downloadPropertyDocument(String key) {
-        return this.s3Repository.downloadPropertyDocument(key);
     }
 
     @Override
@@ -57,15 +37,6 @@ public class S3ServiceImpl implements S3Service {
         this.s3Repository.deleteProfilePhoto(key);
     }
 
-    @Override
-    public void deleteCreciDocument(String key) {
-        this.s3Repository.deleteCreciDocument(key);
-    }
-
-    @Override
-    public void deletePropertyDocument(String key) {
-        this.s3Repository.deletePropertyDocument(key);
-    }
 
     @Override
     public void deletePropertyImage(String key) {

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Set;
 import java.util.UUID;
 
+import br.com.imobmatch.api.models.enums.BrazilianState;
 import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
 import br.com.imobmatch.api.models.enums.PropertyBusinessType;
 import br.com.imobmatch.api.models.enums.PropertyType;
@@ -19,9 +20,10 @@ public class BrokerResponseDTO {
     private String name;
     private String creci;
     private String cpf;
-    private Set<String> regionsInterest;
+    private String profileKey;
+    private Set<BrazilianState> regionsInterest;
     private Set<PropertyType> propertyTypes;
-    private Set<PropertyBusinessType> businessTypes;
+    private PropertyBusinessType businessType;
     private LocalDate birthDate;
     private String whatsAppPhoneNumber;
     private String personalPhoneNumber;

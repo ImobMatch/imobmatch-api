@@ -8,7 +8,7 @@ import org.mapstruct.*;
 
 @Mapper( componentModel = "spring",
         uses = {AddressMapper.class, PropertyCharacteristicMapper.class,
-        CondominiumMapper.class},
+        CondominiumMapper.class, PropertyImageMapper.class },
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface PropertyMapper {
 

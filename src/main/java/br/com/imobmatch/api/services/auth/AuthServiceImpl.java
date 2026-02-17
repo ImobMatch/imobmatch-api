@@ -46,9 +46,7 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public UserResponseDTO getMe() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        return userService.getByEmail(email);
+        return userService.getMe();
     }
 
     @Override
@@ -63,6 +61,8 @@ public class AuthServiceImpl implements AuthService{
         String newAccessToken = tokenService.generateAccessToken(user);
         return new LoginResponseDTO(newAccessToken, refreshToken);
     }
+
+
 
 
 
