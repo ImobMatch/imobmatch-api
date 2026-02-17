@@ -1,7 +1,7 @@
 package br.com.imobmatch.api.services.feed.broker;
 
 import br.com.imobmatch.api.dtos.broker.BrokerPreferencesDTO;
-import br.com.imobmatch.api.dtos.property.PropertyResponseDTO;
+import br.com.imobmatch.api.dtos.property.FeedResponseDTO;
 import br.com.imobmatch.api.exceptions.broker.BrokerNotFoundException;
 import br.com.imobmatch.api.mappers.PropertyMapper;
 import br.com.imobmatch.api.models.broker.Broker;
@@ -71,7 +71,7 @@ public class BrokerFeedServiceImpl implements BrokerFeedService {
     }
 
     @Override
-    public Page<PropertyResponseDTO> getRecommendationsForUser(UUID userId, Pageable pageable) {
+    public Page<FeedResponseDTO> getRecommendationsForUser(UUID userId, Pageable pageable) {
         //Use default values for fist login
         Broker user = brokerRepository.findById(userId).orElseThrow(BrokerNotFoundException :: new);
         BrokerPreferencesDTO profile = getPreferences(user);
@@ -112,7 +112,7 @@ public class BrokerFeedServiceImpl implements BrokerFeedService {
                 regionsOfInterest,
                 pageable
         );
-        return recommendations.map(mapper::toDTO);
+        return recommendations.map(mapper::toFeedDTO);
     }
 
     private Double calculateAvg(List<PropertyViewHistory> list, Function<Property, Short> extractor) {
