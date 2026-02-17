@@ -15,8 +15,8 @@ import br.com.imobmatch.api.exceptions.broker.BrokerNotFoundException;
 import br.com.imobmatch.api.exceptions.broker.BrokerNoValidDataProvideException;
 import br.com.imobmatch.api.models.broker.Broker;
 import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
-import br.com.imobmatch.api.models.enums.BrokerBusinessType;
-import br.com.imobmatch.api.models.enums.BrokerPropertyType;
+import br.com.imobmatch.api.models.enums.PropertyBusinessType;
+import br.com.imobmatch.api.models.enums.PropertyType;
 import br.com.imobmatch.api.models.user.User;
 import br.com.imobmatch.api.models.enums.UserRole;
 import br.com.imobmatch.api.repositories.BrokerRepository;
@@ -44,8 +44,6 @@ public class BrokerServiceImpl implements BrokerService {
         String cleanCpf = removeNonDigits(brokerPostDTO.getCpf());
         String cleanCreci = getCleanCreci(brokerPostDTO.getCreci());
         String cleanWhatsAppPhoneNumber = removeNonDigits(brokerPostDTO.getWhatsAppPhoneNumber());
-        String cleanPersonalPhoneNumber = brokerPostDTO.getPersonalPhoneNumber() != null ?
-            removeNonDigits(brokerPostDTO.getPersonalPhoneNumber()) : null;
 
         if(brokerRepository.existsBrokerByCpf(cleanCpf) ||
         brokerRepository.existsBrokerByCreci(cleanCreci) ||
@@ -63,14 +61,9 @@ public class BrokerServiceImpl implements BrokerService {
             .name(brokerPostDTO.getName().strip())
             .creci(cleanCreci)
             .cpf(cleanCpf)
-            .regionInterest(nullableStrip(brokerPostDTO.getRegionInterest()))
-            .propertyType(brokerPostDTO.getPropertyType())
-            .operationCity(nullableStrip(brokerPostDTO.getOperationCity()))
-            .businessType(brokerPostDTO.getBusinessType())
             .user(user)
             .birthDate(brokerPostDTO.getBirthDate())
             .whatsAppPhoneNumber(cleanWhatsAppPhoneNumber)
-            .personalPhoneNumber(cleanPersonalPhoneNumber)
             .accountStatus(BrokerAccountStatus.PENDING)
         .build();
 
@@ -89,25 +82,21 @@ public class BrokerServiceImpl implements BrokerService {
             isUpdated = true;
         }
 
-        if(brokerPatchDTO.getRegionInterest() != null && !brokerPatchDTO.getRegionInterest().isBlank()) {
-            broker.setRegionInterest(nullableStrip(brokerPatchDTO.getRegionInterest()));
+        if(brokerPatchDTO.getRegionsInterest() != null) {
+            broker.setRegionsInterest(brokerPatchDTO.getRegionsInterest());
             isUpdated = true;
         }
 
-        if(brokerPatchDTO.getOperationCity() != null && !brokerPatchDTO.getOperationCity().isBlank()) {
-            broker.setOperationCity(nullableStrip(brokerPatchDTO.getOperationCity()));
+        if(brokerPatchDTO.getPropertyTypes() != null) {
+            broker.setPropertyTypes(brokerPatchDTO.getPropertyTypes());
             isUpdated = true;
         }
 
-        if(brokerPatchDTO.getPropertyType() != null && !brokerPatchDTO.getPropertyType().toString().isBlank()) {
-            broker.setPropertyType(brokerPatchDTO.getPropertyType());
-            isUpdated = true;
-        }
-
-        if(brokerPatchDTO.getBusinessType() != null && !brokerPatchDTO.getBusinessType().toString().isBlank()) {
+        if(brokerPatchDTO.getBusinessType() != null) {
             broker.setBusinessType(brokerPatchDTO.getBusinessType());
             isUpdated = true;
         }
+        
         if(brokerPatchDTO.getBirthDate() != null) {
             broker.setBirthDate(brokerPatchDTO.getBirthDate());
             isUpdated = true;
@@ -141,25 +130,21 @@ public class BrokerServiceImpl implements BrokerService {
             isUpdated = true;
         }
 
-        if(brokerPatchDTO.getRegionInterest() != null && !brokerPatchDTO.getRegionInterest().isBlank()) {
-            broker.setRegionInterest(nullableStrip(brokerPatchDTO.getRegionInterest()));
+        if(brokerPatchDTO.getRegionsInterest() != null) {
+            broker.setRegionsInterest(brokerPatchDTO.getRegionsInterest());
             isUpdated = true;
         }
 
-        if(brokerPatchDTO.getOperationCity() != null && !brokerPatchDTO.getOperationCity().isBlank()) {
-            broker.setOperationCity(nullableStrip(brokerPatchDTO.getOperationCity()));
+        if(brokerPatchDTO.getPropertyTypes() != null) {
+            broker.setPropertyTypes(brokerPatchDTO.getPropertyTypes());
             isUpdated = true;
         }
 
-        if(brokerPatchDTO.getPropertyType() != null && !brokerPatchDTO.getPropertyType().toString().isBlank()) {
-            broker.setPropertyType(brokerPatchDTO.getPropertyType());
-            isUpdated = true;
-        }
-
-        if(brokerPatchDTO.getBusinessType() != null && !brokerPatchDTO.getBusinessType().toString().isBlank()) {
+        if(brokerPatchDTO.getBusinessType() != null) {
             broker.setBusinessType(brokerPatchDTO.getBusinessType());
             isUpdated = true;
         }
+
         if(brokerPatchDTO.getBirthDate() != null) {
             broker.setBirthDate(brokerPatchDTO.getBirthDate());
             isUpdated = true;
@@ -254,26 +239,14 @@ public class BrokerServiceImpl implements BrokerService {
             throw new BrokerNoValidDataProvideException();
         }
 
-        List<Broker> brokers = brokerRepository.findByRegionInterestContainingIgnoreCase(regionInterest.strip());
+        List<Broker> brokers = brokerRepository.findByRegionInterest(regionInterest.strip());
         return brokers.stream()
         .map(broker -> buildBrokerResponseDto(broker))
         .collect(Collectors.toList());
     }
 
     @Override
-    public List<BrokerResponseDTO> getBrokersByOperationCity(String operationCity) {
-        if(operationCity == null || operationCity.isBlank()) {
-            throw new BrokerNoValidDataProvideException();
-        }
-
-        List<Broker> brokers = brokerRepository.findByOperationCityContainingIgnoreCase(operationCity.strip());
-        return brokers.stream()
-        .map(broker -> buildBrokerResponseDto(broker))
-        .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<BrokerResponseDTO> getBrokersByPropertyType(BrokerPropertyType propertyType) {
+    public List<BrokerResponseDTO> getBrokersByPropertyType(PropertyType propertyType) {
         if(propertyType == null) {
             throw new BrokerNoValidDataProvideException();
         }
@@ -285,7 +258,7 @@ public class BrokerServiceImpl implements BrokerService {
     }
 
     @Override
-    public List<BrokerResponseDTO> getBrokersByBusinessType(BrokerBusinessType businessType) {
+    public List<BrokerResponseDTO> getBrokersByBusinessType(PropertyBusinessType businessType) {
         if(businessType == null) {
             throw new BrokerNoValidDataProvideException();
         }
@@ -378,20 +351,16 @@ public class BrokerServiceImpl implements BrokerService {
     @Override
     public List<BrokerResponseDTO> search(
             String regionInterest,
-            String operationCity,
-            BrokerPropertyType propertyType,
-            BrokerBusinessType businessType
+            PropertyType propertyType,
+            PropertyBusinessType businessType
     ) {
         List<Broker> brokers = brokerRepository.findAll();
 
         return brokers.stream()
                 .filter(b -> regionInterest == null || regionInterest.isBlank()
-                        || (b.getRegionInterest() != null &&
-                        b.getRegionInterest().toLowerCase().contains(regionInterest.strip().toLowerCase())))
-                .filter(b -> operationCity == null || operationCity.isBlank()
-                        || (b.getOperationCity() != null &&
-                        b.getOperationCity().toLowerCase().contains(operationCity.strip().toLowerCase())))
-                .filter(b -> propertyType == null || b.getPropertyType() == propertyType)
+                        || (b.getRegionsInterest() != null &&
+                        b.getRegionsInterest().contains(regionInterest)))
+                .filter(b -> propertyType == null || b.getPropertyTypes().contains(propertyType))
                 .filter(b -> businessType == null || b.getBusinessType() == businessType)
                 .map(this::buildBrokerResponseDto)
                 .collect(Collectors.toList());
@@ -405,15 +374,15 @@ public class BrokerServiceImpl implements BrokerService {
             .name(broker.getName())
             .creci(broker.getCreci())
             .cpf(broker.getCpf())
-            .regionInterest(broker.getRegionInterest())
-            .propertyType(broker.getPropertyType())
-            .operationCity(broker.getOperationCity())
+            .regionsInterest(broker.getRegionsInterest())
+            .propertyTypes(broker.getPropertyTypes())
             .businessType(broker.getBusinessType())
             .birthDate(broker.getBirthDate())
             .whatsAppPhoneNumber(broker.getWhatsAppPhoneNumber())
             .personalPhoneNumber(broker.getPersonalPhoneNumber())
             .email(broker.getUser().getEmail())
             .role(broker.getUser().getRole())
+            .profileKey(broker.getUser().getProfileKey())
             .isEmailVerified(broker.getUser().isEmailVerified())
             .accountStatus(broker.getAccountStatus())
         .build();
@@ -425,9 +394,5 @@ public class BrokerServiceImpl implements BrokerService {
 
     private String removeNonDigits(String cpf) {
         return cpf.replaceAll("\\D", "");
-    }
-
-    private String nullableStrip(String arg) {
-        return arg != null ? arg.strip() : null;
     }
 }

@@ -1,6 +1,5 @@
 package br.com.imobmatch.api.dtos.property.characteristic;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -18,13 +18,6 @@ public class CharacteristicUpdateDTO {
 
     @Positive
     private BigDecimal area;
-    @Positive
-    private BigDecimal landArea;
-    @Positive
-    private BigDecimal usableArea;
-    @Positive
-    private BigDecimal totalArea;
-
     private Short numBedrooms;
     private Short numSuites;
     private Short numBathrooms;

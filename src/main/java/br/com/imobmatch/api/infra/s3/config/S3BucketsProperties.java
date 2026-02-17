@@ -11,7 +11,5 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "aws.s3.bucket")
 public class S3BucketsProperties {
     private String profilePhotos;
-    private String creciDocuments;
-    private String propertyDocuments;
     private String propertyImages;
 }

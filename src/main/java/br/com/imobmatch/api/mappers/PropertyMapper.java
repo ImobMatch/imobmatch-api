@@ -8,12 +8,14 @@ import org.mapstruct.*;
 
 @Mapper( componentModel = "spring",
         uses = {AddressMapper.class, PropertyCharacteristicMapper.class,
-        CondominiumMapper.class},
+        CondominiumMapper.class, PropertyImageMapper.class },
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface PropertyMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "publisher", ignore = true)
+    @Mapping(target = "publicationDate", ignore = true)
+    @Mapping(target = "updatedDate", ignore = true)
     @Mapping(target = "isAvailable", qualifiedByName = "mapToBoolean")
     Property toEntity(PropertyCreateDTO propertyCreateDTO);
 
@@ -24,6 +26,9 @@ public interface PropertyMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "publisher", ignore = true)
     @Mapping(target = "isAvailable", qualifiedByName = "mapToBoolean")
+    @Mapping(target = "publicationDate", ignore = true)
+    @Mapping(target = "updatedDate", ignore = true)
+
     void updatePropertyFromDTO(PropertyUpdateDTO propertyUpdateDTO, @MappingTarget Property entity);
 
     @Named("mapToBoolean")

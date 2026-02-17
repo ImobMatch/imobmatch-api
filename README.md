@@ -184,8 +184,6 @@ aws:
   s3:
     bucket:
       profile-photos: profile-photos
-      creci-documents: creci-documents
-      property-documents: property-documents
       property-images: property-images
 ```
 

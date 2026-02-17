@@ -7,20 +7,9 @@ spring:
         password: ${DATASOURCE_PASSWORD}  # Database password
 
     jpa:
-        database-platform: org.hibernate.dialect.PostgreSQLDialect  # Hibernate dialect for PostgreSQL
         hibernate:
             ddl-auto: update  # Automatically update schema (use cautiously in prod)
         show-sql: true  # Show SQL statements in logs
-    # Email configuration
-    mail:
-        username: ${MAIL_USERNAME}  # Email account username
-        password: ${MAIL_PASSWORD}  # Email account password
-
-# JWT configuration
-api:
-    security:
-        token:
-            secret: ${JWT_SECRET}  # Secret key for signing JWT tokens
 
 
 # AWS S3 configuration
@@ -29,11 +18,10 @@ aws:
     access-key: ${AWS_ACCESS_KEY_ID}  # AWS access key ID
     secret-key: ${AWS_SECRET_ACCESS_KEY}  # AWS secret access key
     s3:
-        endpoint: ${AWS_S3_ENDPOINT}  # Custom S3 endpoint (optional)
+        endpoint: ${AWS_S3_ENDPOINT}
+        public-base-url: ${AWS_S3_ENDPOINT}  # Custom S3 endpoint (optional)
         bucket:
             profile-photos: profile-photos  # Bucket for user profile photos
-            creci-documents: creci-documents  # Bucket for CRECI documents
-            property-documents: property-documents  # Bucket for property documents
             property-images: property-images  # Bucket for property images
 
 user:

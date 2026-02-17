@@ -3,6 +3,7 @@ package br.com.imobmatch.api.controllers;
 import java.util.List;
 import java.util.UUID;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,35 +15,30 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 
-import org.springframework.http.MediaType;
 import br.com.imobmatch.api.dtos.broker.*;
 import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
-import br.com.imobmatch.api.models.enums.BrokerBusinessType;
-import br.com.imobmatch.api.models.enums.BrokerPropertyType;
+import br.com.imobmatch.api.models.enums.PropertyBusinessType;
+import br.com.imobmatch.api.models.enums.PropertyType;
 import br.com.imobmatch.api.services.broker.BrokerService;
-import br.com.imobmatch.api.services.broker.BrokerValidationService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.*;
 
-
 @RestController
 @RequestMapping("/brokers")
 @AllArgsConstructor
+@Tag(name = "Brokers", description = "Endpoints for Brokers management")
 public class BrokerController {
 
     private final BrokerService brokerService;
 
     @PostMapping
     public ResponseEntity<BrokerResponseDTO> create(
-            @RequestBody @Valid BrokerPostDTO data
-    ) {
+            @RequestBody @Valid BrokerPostDTO data) {
         BrokerResponseDTO response = brokerService.createBroker(data);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -60,8 +56,6 @@ public class BrokerController {
     public ResponseEntity<BrokerResponseDTO> getMe() {
         return ResponseEntity.ok(brokerService.getBroker());
     }
-
-    // ===== BUSCAS ESPECÍFICAS =====
 
     @GetMapping("/search/id/{id}")
     @SecurityRequirement(name = "bearerAuth")
@@ -91,19 +85,16 @@ public class BrokerController {
         return ResponseEntity.ok(brokerService.getBrokersByName(name));
     }
 
-    // ===== BUSCAS POR PARAMETROS =====
-
     @GetMapping("/search")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAnyRole('ADMIN','BROKER','OWNER')")
     public ResponseEntity<List<BrokerResponseDTO>> search(
             @RequestParam(required = false) String regionInterest,
-            @RequestParam(required = false) String operationCity,
-            @RequestParam(required = false) BrokerPropertyType propertyType,
-            @RequestParam(required = false) BrokerBusinessType businessType
+            @RequestParam(required = false) PropertyType propertyType,
+            @RequestParam(required = false) PropertyBusinessType businessType
     ) {
         return ResponseEntity.ok(
-                brokerService.search(regionInterest, operationCity, propertyType, businessType)
+                brokerService.search(regionInterest, propertyType, businessType)
         );
     }
 
@@ -117,7 +108,7 @@ public class BrokerController {
     @DeleteMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('BROKER')")
-    public ResponseEntity<Void> deleteMe(@RequestBody PasswordUserDeleteDTO dto){
+    public ResponseEntity<Void> deleteMe(@RequestBody PasswordUserDeleteDTO dto) {
         brokerService.deleteBroker(dto);
         return ResponseEntity.noContent().build();
     }
