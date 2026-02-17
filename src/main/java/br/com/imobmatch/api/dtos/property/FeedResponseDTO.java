@@ -27,4 +27,5 @@ public class FeedResponseDTO {
     private Short suites;
     private Short bathrooms;
     private Short garages;
+    private Boolean isFavorite;
 }

@@ -9,11 +9,13 @@ import br.com.imobmatch.api.models.enums.BrazilianState;
 import br.com.imobmatch.api.models.enums.PropertyBusinessType;
 import br.com.imobmatch.api.models.enums.PropertyPurpose;
 import br.com.imobmatch.api.models.enums.PropertyType;
+import br.com.imobmatch.api.models.favorite.Favorite;
 import br.com.imobmatch.api.models.property.Property;
 import br.com.imobmatch.api.models.property.PropertyViewHistory;
 import br.com.imobmatch.api.repositories.BrokerRepository;
 import br.com.imobmatch.api.repositories.PropertyRepository;
 import br.com.imobmatch.api.repositories.PropertyViewHistoryRepository;
+import br.com.imobmatch.api.services.favorite.FavoriteServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +35,7 @@ public class BrokerFeedServiceImpl implements BrokerFeedService {
     private final PropertyViewHistoryRepository repository;
     private final BrokerRepository brokerRepository;
     private final PropertyRepository propertyRepository;
+    private final FavoriteServiceImpl favoriteService;
     private final PropertyMapper mapper;
 
 
@@ -112,7 +115,21 @@ public class BrokerFeedServiceImpl implements BrokerFeedService {
                 regionsOfInterest,
                 pageable
         );
-        return recommendations.map(mapper::toFeedDTO);
+
+        Set<UUID> favoriteIds = favoriteService.getUserFavoritePropertyIds(userId);
+        if (favoriteIds == null) {
+            favoriteIds = Collections.emptySet();
+        }
+
+        //for lambda
+        Set<UUID> finalFavoriteIds = favoriteIds;
+
+        return recommendations.map(property -> {
+            FeedResponseDTO dto = mapper.toFeedDTO(property);
+            boolean isFav = finalFavoriteIds.contains(property.getId());
+            dto.setIsFavorite(isFav);
+            return dto;
+        });
     }
 
     private Double calculateAvg(List<PropertyViewHistory> list, Function<Property, Short> extractor) {
