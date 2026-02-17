@@ -6,6 +6,7 @@ import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerUpdateDTO;
 import br.com.imobmatch.api.exceptions.owner.OwnerExistsException;
 import br.com.imobmatch.api.dtos.owner.OwnerGetAllByResponseDTO;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -51,6 +52,5 @@ public interface OwnerService {
      * @param passwordUserDeleteDTO User password.
      */
     void deleteOwner(PasswordUserDeleteDTO passwordUserDeleteDTO);
-
 
 }

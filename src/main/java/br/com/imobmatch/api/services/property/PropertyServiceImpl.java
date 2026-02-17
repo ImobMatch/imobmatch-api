@@ -1,17 +1,24 @@
 package br.com.imobmatch.api.services.property;
 
+import br.com.imobmatch.api.dtos.property.PropertiesImageDTO;
 import br.com.imobmatch.api.dtos.property.PropertyCreateDTO;
 import br.com.imobmatch.api.dtos.property.PropertyFilterDTO;
 import br.com.imobmatch.api.dtos.property.PropertyResponseDTO;
 import br.com.imobmatch.api.dtos.property.PropertyUpdateDTO;
+import br.com.imobmatch.api.dtos.property.UploadImagenResponseDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
+import br.com.imobmatch.api.exceptions.auth.AuthenticationException;
 import br.com.imobmatch.api.exceptions.property.PropertyIllegalBusinessPriceValueException;
 import br.com.imobmatch.api.exceptions.property.PropertyNotFoundException;
+import br.com.imobmatch.api.exceptions.property.PropertyNotUploadImagen;
+import br.com.imobmatch.api.infra.s3.service.S3Service;
 import br.com.imobmatch.api.mappers.PropertyMapper;
 import br.com.imobmatch.api.models.enums.PropertyBusinessType;
 import br.com.imobmatch.api.models.property.Property;
+import br.com.imobmatch.api.models.property.PropertyImage;
 import br.com.imobmatch.api.models.user.User;
 import br.com.imobmatch.api.repositories.BrokerRepository;
+import br.com.imobmatch.api.repositories.PropertiesImagesRepository;
 import br.com.imobmatch.api.repositories.PropertyRepository;
 import br.com.imobmatch.api.services.auth.AuthService;
 import br.com.imobmatch.api.services.feed.broker.BrokerFeedServiceImpl;
@@ -20,9 +27,12 @@ import br.com.imobmatch.api.specs.property.PropertySpecs;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -30,7 +40,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PropertyServiceImpl implements PropertyService {
 
     private  final BrokerFeedServiceImpl viewService;
@@ -39,6 +49,10 @@ public class PropertyServiceImpl implements PropertyService {
     private final UserService userService;
     private final BrokerRepository  brokerRepository;
     private final AuthService authService;
+    private final PropertiesImagesRepository propertiesImagesRepository;
+    private final S3Service s3Service;
+    private int numberOfPropertiesImages = 15;
+
 
     @Transactional
     public PropertyResponseDTO createProperty(PropertyCreateDTO dto) {
@@ -96,6 +110,62 @@ public class PropertyServiceImpl implements PropertyService {
             throw new PropertyNotFoundException();
         }
         repository.deleteById(id);
+    }
+
+    @Override
+    public UploadImagenResponseDTO uploadImagen(UUID id, MultipartFile file) {
+        UserResponseDTO user = this.userService.getMe();
+        Property property = repository.findById(id).orElseThrow(PropertyNotFoundException::new);
+        if(!property.getPublisher().getId().equals(user.getId())) {
+            throw new AuthenticationException();
+        }
+
+        if (this.propertiesImagesRepository.countByPropertyId(property.getId()) >= this.numberOfPropertiesImages) {
+            throw new PropertyNotUploadImagen();
+        }
+
+        try {
+            byte[] bytes = file.getBytes();
+            String key = this.s3Service.uploadPropertyImage(property.getId(), bytes);
+            PropertyImage image = new PropertyImage();
+
+            image.setProperty(property);
+            image.setImagenKey(key);
+            this.propertiesImagesRepository.save(image);
+            return new UploadImagenResponseDTO(property.getId(), image.getId());
+
+        } catch (IOException e) {
+            throw new RuntimeException("ERROR PROPERTY IMAGEn READ", e);
+        }
+
+    }
+
+    @Override
+    public byte[] downloadImage(PropertiesImageDTO dto) {
+        UUID id = dto.id();
+        UUID imageId = dto.imageId();
+        repository.findById(id).orElseThrow(PropertyNotFoundException::new);
+        PropertyImage p = this.propertiesImagesRepository.findById(imageId).orElseThrow(PropertyNotFoundException::new);
+        return this.s3Service.downloadPropertyImage(p.getImagenKey());
+    }
+
+    @Override
+    public void removeImagen(PropertiesImageDTO dto) {
+        UUID id = dto.id();
+        UUID imageId = dto.imageId();
+        UserResponseDTO user = this.userService.getMe();
+        Property property = repository.findById(id).orElseThrow(PropertyNotFoundException::new);
+        PropertyImage p = this.propertiesImagesRepository.findById(imageId).orElseThrow(PropertyNotFoundException::new);
+
+        if (!user.getId().equals(property.getPublisher().getId())) {
+            throw new AuthenticationException();
+        }
+
+        if (!p.getProperty().equals(property)) {
+            throw new PropertyNotUploadImagen();
+        }
+
+        this.propertiesImagesRepository.delete(p);
     }
 
     private void validateBusinessValue(PropertyBusinessType type, BigDecimal rentPrice, BigDecimal salePrice) {

@@ -196,6 +196,7 @@ public class OwnerServiceImpl implements OwnerService {
                 .whatsAppPhoneNumber(owner.getWhatsAppPhoneNumber())
                 .personalPhoneNumber(owner.getPersonalPhoneNumber())
                 .birthDate(owner.getBirthDate())
+                .profileKey(owner.getUser().getProfileKey())
                 .isEmailVerified(owner.getUser().isEmailVerified())
                 .build();
     }

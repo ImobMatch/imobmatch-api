@@ -57,6 +57,10 @@ public class User implements UserDetails {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
+    @Column(name = "profile_key", nullable = true)
+    private String profileKey = null;
+
+
     public User(String email, String password, UserRole role) {
         this.email = email;
         this.password = password;

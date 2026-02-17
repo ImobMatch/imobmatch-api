@@ -36,8 +36,6 @@ aws:
     s3:
         bucket:
             profile-photos: profile-photos  # Fake bucket for profile photos
-            creci-documents: creci-documents  # Fake bucket for CRECI documents
-            property-documents: property-documents  # Fake bucket for property documents
             property-images: property-images  # Fake bucket for property images
 
 

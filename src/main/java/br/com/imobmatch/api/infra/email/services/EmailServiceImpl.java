@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
-    
+
     @Override
     public void sendEmail(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
@@ -29,7 +29,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendValidationEmail(String to, String code) {
         try {
-            ClassPathResource resource = new ClassPathResource("validate-email.html");
+            ClassPathResource resource = new ClassPathResource("email/validate-email.html");
             String html = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
 
             html = html.replace("{{CODIGO_VALIDACAO}}", code);
@@ -51,7 +51,7 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendValidationEmailForResetPassword(String to, String code) {
         try {
-            ClassPathResource resource = new ClassPathResource("reset-password.html");
+            ClassPathResource resource = new ClassPathResource("email/reset-password.html");
             String html = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
 
             html = html.replace("{{CODIGO_VALIDACAO}}", code);

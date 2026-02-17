@@ -7,6 +7,7 @@ import br.com.imobmatch.api.dtos.email.ValidateEmailResponseDTO;
 import br.com.imobmatch.api.dtos.password.RequestPasswordResetDTO;
 import br.com.imobmatch.api.dtos.password.ResetPasswordDTO;
 import br.com.imobmatch.api.dtos.password.StatusPasswordResetDTO;
+import br.com.imobmatch.api.dtos.user.UploadProfileImageResponse;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.exceptions.auth.AuthenticationException;
 import br.com.imobmatch.api.exceptions.email.ErroSendEmailException;
@@ -16,12 +17,15 @@ import br.com.imobmatch.api.exceptions.email.RequestNotFoundException;
 import br.com.imobmatch.api.exceptions.user.UserExistsException;
 import br.com.imobmatch.api.exceptions.user.UserNotFoundException;
 import br.com.imobmatch.api.infra.email.services.EmailService;
+import br.com.imobmatch.api.infra.s3.service.S3Service;
 import br.com.imobmatch.api.models.user.User;
 import br.com.imobmatch.api.models.user.UserVerificationCode;
 import br.com.imobmatch.api.models.enums.UserRole;
 import br.com.imobmatch.api.models.enums.VerificationType;
 import br.com.imobmatch.api.repositories.UserRepository;
 import br.com.imobmatch.api.utils.Utils;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Comparator;
 
@@ -32,9 +36,12 @@ import java.util.UUID;
 import br.com.imobmatch.api.repositories.UserVerificationCodeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @Service
@@ -45,10 +52,41 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder cryptPasswordEncoder;
     private final UserVerificationCodeRepository userVerificationRepository;
     private final EmailService emailService;
+    private final S3Service s3Service;
 
     @Value("${user.email.verified.default}")
     private boolean defaultEmailVerified;
 
+    @Override
+    public UserResponseDTO getMe() {
+        User user = getMeUserAuthentication();
+        return new UserResponseDTO(
+                user.getId(),
+                user.getEmail(),
+                user.getRole(),
+                user.getProfileKey()
+        );
+    }
+
+    @Override
+    public byte[] downloadProfileME() {
+        User user = getMeUserAuthentication();
+        return this.s3Service.downloadProfilePhoto(user.getProfileKey());
+    }
+
+    @Override
+    public byte[] downloadProfile(String key) {
+        getMeUserAuthentication();
+        return this.s3Service.downloadProfilePhoto(key);
+    }
+
+
+
+    private User getMeUserAuthentication(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        return userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+    }
 
     public UserResponseDTO create(String email, String password, UserRole role) {
         if (this.userRepository.findByEmail(email).isPresent()) {
@@ -62,6 +100,10 @@ public class UserServiceImpl implements UserService {
                 role
         );
 
+        if (defaultEmailVerified) {
+            newUser.setEmailVerified(true);
+        }
+
         this.userRepository.save(newUser);
 
         UserResponseDTO userResponseDTO = new UserResponseDTO();
@@ -72,25 +114,14 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserResponseDTO getById(UUID id) {
-        Optional<User> optionalUser = this.userRepository.findById(id);
-        if (optionalUser.isPresent()) {
-            UserResponseDTO userResponseDTO = new UserResponseDTO();
-            userResponseDTO.setId(optionalUser.get().getId());
-            userResponseDTO.setEmail(optionalUser.get().getEmail());
-            userResponseDTO.setRole(optionalUser.get().getRole());
-            return userResponseDTO;
-        }
-        throw new UserNotFoundException();
+        User user = this.userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        return buildUserResponseDTO(user);
     }
 
     public UserResponseDTO getByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(UserNotFoundException::new);
-        return new UserResponseDTO(
-                user.getId(),
-                user.getEmail(),
-                user.getRole()
-        );
+        return buildUserResponseDTO(user);
     }
 
     @Override
@@ -113,12 +144,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.delete(user);
 
-        UserResponseDTO userResponseDTO = new UserResponseDTO();
-        userResponseDTO.setId(user.getId());
-        userResponseDTO.setEmail(user.getEmail());
-        userResponseDTO.setRole(user.getRole());
-
-        return userResponseDTO;
+        return  buildUserResponseDTO(user);
     }
 
     @Override
@@ -223,6 +249,39 @@ public class UserServiceImpl implements UserService {
         return StatusPasswordResetDTO.builder().email(email).swapPassword(true).build();
     }
 
+    @Override
+    public UploadProfileImageResponse uploadProfileImage(MultipartFile file) {
+        User user = getMeUserAuthentication();
+
+        try {
+            byte[] bytes = file.getBytes();
+            String oldKey = user.getProfileKey();
+            String profileKey = this.s3Service.uploadProfilePhoto(user.getId(), bytes);
+
+            user.setProfileKey(profileKey);
+            userRepository.save(user);
+
+            if (oldKey != null) {
+                this.s3Service.deleteProfilePhoto(oldKey);
+            }
+            return new UploadProfileImageResponse(user.getId(),profileKey);
+
+        } catch (IOException e) {
+            throw new RuntimeException("ERROR PROFILE READ", e);
+        }
+    }
+
+    @Override
+    public void removeProfileImage() {
+        User user = getMeUserAuthentication();
+
+        String key = user.getProfileKey();
+        this.s3Service.deleteProfilePhoto(key);
+        user.setProfileKey(null);
+        this.userRepository.save(user);
+    }
+
+
     private UUID sendEmail(User user, VerificationType type) {
         try {
             String code = Utils.generateVerificationCode();
@@ -244,5 +303,14 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             throw new ErroSendEmailException();
         }
+    }
+
+    private UserResponseDTO buildUserResponseDTO(User user) {
+        return UserResponseDTO.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .profileKey(user.getProfileKey())
+                .role(user.getRole())
+                .build();
     }
 }
