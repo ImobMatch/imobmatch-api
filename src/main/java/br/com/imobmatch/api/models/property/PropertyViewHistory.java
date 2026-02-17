@@ -23,13 +23,13 @@ public class PropertyViewHistory {
     private UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "broker_id")
+    @JoinColumn(name = "broker_id", nullable = false)
     private Broker broker;
 
     @ManyToOne
-    @JoinColumn(name = "property_id")
+    @JoinColumn(name = "property_id", nullable = false)
     private Property property;
 
-    @Column(name = "viewed_at")
+    @Column(name = "viewed_at", nullable = false)
     private LocalDateTime viewedAt =  LocalDateTime.now();
 }
