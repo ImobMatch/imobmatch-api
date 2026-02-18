@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Comparator;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 import br.com.imobmatch.api.repositories.UserVerificationCodeRepository;
@@ -42,7 +41,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 
 @Service
 @RequiredArgsConstructor
@@ -64,8 +62,7 @@ public class UserServiceImpl implements UserService {
                 user.getId(),
                 user.getEmail(),
                 user.getRole(),
-                user.getProfileKey()
-        );
+                user.getProfileKey());
     }
 
     @Override
@@ -80,9 +77,7 @@ public class UserServiceImpl implements UserService {
         return this.s3Service.downloadProfilePhoto(key);
     }
 
-
-
-    private User getMeUserAuthentication(){
+    private User getMeUserAuthentication() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         return userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
@@ -97,8 +92,7 @@ public class UserServiceImpl implements UserService {
         User newUser = new User(
                 email,
                 encryptedPassword,
-                role
-        );
+                role);
 
         if (defaultEmailVerified) {
             newUser.setEmailVerified(true);
@@ -135,8 +129,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
 
-        boolean passwordMatches =
-                cryptPasswordEncoder.matches(password, user.getPassword());
+        boolean passwordMatches = cryptPasswordEncoder.matches(password, user.getPassword());
 
         if (!passwordMatches) {
             throw new AuthenticationException();
@@ -144,7 +137,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.delete(user);
 
-        return  buildUserResponseDTO(user);
+        return buildUserResponseDTO(user);
     }
 
     @Override
@@ -157,9 +150,8 @@ public class UserServiceImpl implements UserService {
         UUID verificationId = request.getVerificationId();
         String code = request.getCode();
 
-        UserVerificationCode verification =
-                this.userVerificationRepository.findById(verificationId)
-                        .orElseThrow(RequestNotFoundException::new);
+        UserVerificationCode verification = this.userVerificationRepository.findById(verificationId)
+                .orElseThrow(RequestNotFoundException::new);
 
         if (!verification.getCode().equals(code)) {
             throw new InvalidCodeException();
@@ -206,10 +198,9 @@ public class UserServiceImpl implements UserService {
         this.sendEmail(user, VerificationType.PASSWORD_RESET);
     }
 
-
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public StatusPasswordResetDTO resetPassword(ResetPasswordDTO request  ) {
+    public StatusPasswordResetDTO resetPassword(ResetPasswordDTO request) {
         String email = request.getEmail();
         String code = request.getCode();
         String newPassword = request.getNewPassword();
@@ -217,11 +208,13 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(UserNotFoundException::new);
 
-        List<UserVerificationCode> verifications =
-                userVerificationRepository.findByUserAndTypeAndVerifiedFalse(
-                        user,
-                        VerificationType.PASSWORD_RESET
-                );
+        List<UserVerificationCode> verifications = userVerificationRepository.findByUserAndTypeAndVerifiedFalse(
+                user,
+                VerificationType.PASSWORD_RESET);
+        System.out.println("User ID: " + user.getId());
+        System.out.println("Verification type: " + VerificationType.PASSWORD_RESET);
+        System.out.println("Total verifications in DB: " +
+                userVerificationRepository.findAll().size());
 
         if (verifications.isEmpty()) {
             throw new RequestNotFoundException();
@@ -264,7 +257,7 @@ public class UserServiceImpl implements UserService {
             if (oldKey != null) {
                 this.s3Service.deleteProfilePhoto(oldKey);
             }
-            return new UploadProfileImageResponse(user.getId(),profileKey);
+            return new UploadProfileImageResponse(user.getId(), profileKey);
 
         } catch (IOException e) {
             throw new RuntimeException("ERROR PROFILE READ", e);
@@ -281,7 +274,6 @@ public class UserServiceImpl implements UserService {
         this.userRepository.save(user);
     }
 
-
     private UUID sendEmail(User user, VerificationType type) {
         try {
             String code = Utils.generateVerificationCode();
@@ -289,13 +281,14 @@ public class UserServiceImpl implements UserService {
             UserVerificationCode verification = UserVerificationCode.builder()
                     .user(user)
                     .code(code)
-                    .type(VerificationType.EMAIL)
+                    .type(type)
                     .generatedAt(LocalDateTime.now())
                     .verified(false)
                     .build();
-            switch (type){
-                case VerificationType.EMAIL -> this.emailService.sendValidationEmail(user.getEmail(),code);
-                case VerificationType.PASSWORD_RESET -> this.emailService.sendValidationEmailForResetPassword(user.getEmail(), code);
+            switch (type) {
+                case VerificationType.EMAIL -> this.emailService.sendValidationEmail(user.getEmail(), code);
+                case VerificationType.PASSWORD_RESET ->
+                    this.emailService.sendValidationEmailForResetPassword(user.getEmail(), code);
                 default -> throw new IllegalStateException("Unexpected value: " + type);
             }
             this.userVerificationRepository.save(verification);

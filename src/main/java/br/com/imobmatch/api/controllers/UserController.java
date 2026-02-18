@@ -29,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/users")
-@SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 @Tag(name = "Users", description = "Endpoints for users management")
 public class UserController {
@@ -38,13 +37,12 @@ public class UserController {
 
     @GetMapping("/me")
     @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasAnyRole('BROKER', 'OWNER')")
+    @PreAuthorize("hasAnyRole('BROKER', 'OWNER', 'ADMIN')")
     public ResponseEntity<UserResponseDTO> getMeUserAuthentication() {
         return ResponseEntity.ok(this.userService.getMe());
     }
 
     @PostMapping("/send-password-code")
-    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<?> sendEmailCodeForPassword(@RequestBody RequestPasswordResetDTO request) {
         this.userService.requestPasswordReset(request);
         return ResponseEntity.ok().build();
@@ -56,7 +54,8 @@ public class UserController {
     }
 
     @PostMapping("/send-email-code")
-    public ResponseEntity<RequestValidationEmailResponseDTO> sendEmailCode(@RequestBody RequestValidationEmailDTO request) {
+    public ResponseEntity<RequestValidationEmailResponseDTO> sendEmailCode(
+            @RequestBody RequestValidationEmailDTO request) {
         return ResponseEntity.ok(userService.sendEmailVerification(request));
     }
 
@@ -73,7 +72,7 @@ public class UserController {
     }
 
     @GetMapping("/profile-image/{key}")
-    @PreAuthorize("hasAnyRole('BROKER', 'OWNER')")
+    @PreAuthorize("hasAnyRole('BROKER', 'OWNER', 'ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<byte[]> downloadProfileImage(@PathVariable String key) {
         return ResponseEntity.ok(this.userService.downloadProfile(key));
@@ -83,8 +82,7 @@ public class UserController {
     @PreAuthorize("hasAnyRole('BROKER', 'OWNER')")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<UploadProfileImageResponse> uploadProfileImage(
-            @RequestParam("file") MultipartFile file
-    ) {
+            @RequestParam("file") MultipartFile file) {
         return ResponseEntity.ok(userService.uploadProfileImage(file));
     }
 
@@ -98,18 +96,12 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-
-    @PatchMapping
+    @PatchMapping(value = "/profile-image/me", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyRole('BROKER', 'OWNER')")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<UploadProfileImageResponse> updateProfileImage(
-            @RequestParam("file") MultipartFile file
-    ) {
+            @RequestParam("file") MultipartFile file) {
         return ResponseEntity.ok(userService.uploadProfileImage(file));
     }
-
-
-
-
 
 }

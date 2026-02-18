@@ -10,6 +10,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -95,34 +98,29 @@ public class OwnerController {
     }
 
     /**
-     * Retrieve a list of owners based on optional filters.
-     * <p>If no parameters are provided, it returns all owners.</p>
+     * Retrieve a paginated list of owners based on optional filters.
+     * <p>If no parameters are provided, it returns all owners paginated.</p>
      *
      * @param name (Optional) Filters by owner's name.
      * @param birthDate (Optional) Filters by owner's birthdate (Format: YYYY-MM-DD).
-     * @return A list of owners wrapped in a DTO.
-     *
-     * @apiNote <p><b>Filter Priority:</b></p>
-     * <ol>
-     * <li>If <code>name</code> is provided, it returns owners matching the name.</li>
-     * <li>If <code>birthDate</code> is provided (and name is null), it returns owners matching the date.</li>
-     * <li>If neither is provided, returns all owners.</li>
-     * </ol>
+     * @param pageable Pagination configuration (page, size, sort).
+     * @return A Page of OwnerResponseDTO.
      */
     @GetMapping()
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAnyRole('BROKER', 'ADMIN')")
-    public ResponseEntity<OwnerGetAllByResponseDTO> getAll(
+    public ResponseEntity<Page<OwnerResponseDTO>> getAll(
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) LocalDate birthDate
+            @RequestParam(required = false) LocalDate birthDate,
+            @PageableDefault(page = 0, size = 10, sort = "name") Pageable pageable
     ) {
         if (name != null && !name.isBlank()) {
-            return ResponseEntity.ok(ownerService.getAllOwnersByName(name));
+            return ResponseEntity.ok(ownerService.getAllOwnersByName(name, pageable));
         }
         if (birthDate != null) {
-            return ResponseEntity.ok(ownerService.getAllOwnersByBirthDate(birthDate));
+            return ResponseEntity.ok(ownerService.getAllOwnersByBirthDate(birthDate, pageable));
         }
-        return ResponseEntity.ok(ownerService.getAllOwners());
+        return ResponseEntity.ok(ownerService.getAllOwners(pageable));
     }
 
     /**

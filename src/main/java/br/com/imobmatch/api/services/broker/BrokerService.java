@@ -11,8 +11,8 @@ import br.com.imobmatch.api.dtos.broker.BrokerPostDTO;
 import br.com.imobmatch.api.dtos.broker.BrokerResponseDTO;
 import br.com.imobmatch.api.models.broker.Broker;
 import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
-import br.com.imobmatch.api.models.enums.BrokerBusinessType;
-import br.com.imobmatch.api.models.enums.BrokerPropertyType;
+import br.com.imobmatch.api.models.enums.PropertyBusinessType;
+import br.com.imobmatch.api.models.enums.PropertyType;
 
 public interface BrokerService {
     
@@ -36,11 +36,9 @@ public interface BrokerService {
 
     List<BrokerResponseDTO> getBrokersByRegionInterest(String regionInterest);
 
-    List<BrokerResponseDTO> getBrokersByOperationCity(String operationCity);
+    List<BrokerResponseDTO> getBrokersByPropertyType(PropertyType propertyType);
 
-    List<BrokerResponseDTO> getBrokersByPropertyType(BrokerPropertyType propertyType);
-
-    List<BrokerResponseDTO> getBrokersByBusinessType(BrokerBusinessType businessType);
+    List<BrokerResponseDTO> getBrokersByBusinessType(PropertyBusinessType businessType);
     
     List<BrokerResponseDTO> getAllBrokers();
 
@@ -56,5 +54,5 @@ public interface BrokerService {
 
     void deleteBroker(UUID id);
 
-    List<BrokerResponseDTO> search(String regionInterest, String operationCity, BrokerPropertyType propertyType, BrokerBusinessType businessType);
+    List<BrokerResponseDTO> search(String regionInterest, PropertyType propertyType, PropertyBusinessType businessType);
 }

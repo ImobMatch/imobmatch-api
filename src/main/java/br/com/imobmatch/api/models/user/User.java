@@ -79,6 +79,13 @@ public class User implements UserDetails {
                     new SimpleGrantedAuthority("ROLE_USER")
             );
         }
+
+        if (this.role == UserRole.BROKER) {
+            return List.of(
+                    new SimpleGrantedAuthority("ROLE_BROKER"),
+                    new SimpleGrantedAuthority("ROLE_USER")
+            );
+        }
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 

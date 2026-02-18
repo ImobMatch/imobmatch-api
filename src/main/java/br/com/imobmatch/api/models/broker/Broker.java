@@ -1,11 +1,13 @@
 package br.com.imobmatch.api.models.broker;
 
 import java.time.LocalDate;
+import java.util.Set;
 import java.util.UUID;
 
+import br.com.imobmatch.api.models.enums.BrazilianState;
 import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
-import br.com.imobmatch.api.models.enums.BrokerBusinessType;
-import br.com.imobmatch.api.models.enums.BrokerPropertyType;
+import br.com.imobmatch.api.models.enums.PropertyBusinessType;
+import br.com.imobmatch.api.models.enums.PropertyType;
 import br.com.imobmatch.api.models.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Past;
@@ -34,19 +36,26 @@ public class Broker {
     @Column(name = "cpf", nullable = false, length = 11, unique = true)
     private String cpf;
 
-    @Column(name = "region_interest", nullable = true)
-    private String regionInterest;
+    @ElementCollection
+    @CollectionTable(
+        name = "brokers_regions_interest",
+        joinColumns = @JoinColumn(name = "broker_id")
+    )
+    @Column(name = "region", nullable = true)
+    private Set<BrazilianState> regionsInterest;
 
+    @ElementCollection
     @Enumerated(EnumType.STRING)
+    @CollectionTable(
+        name = "brokers_property_types",
+        joinColumns = @JoinColumn(name = "broker_id")
+    )
     @Column(name = "property_type", nullable = true)
-    private BrokerPropertyType propertyType;
-
-    @Column(name = "operation_city", nullable = true)
-    private String operationCity;
+    private Set<PropertyType> propertyTypes;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "business_type", nullable = true)
-    private BrokerBusinessType businessType;
+    private PropertyBusinessType businessType;
 
     @Past
     @Column(name ="birth_date", nullable = false)
