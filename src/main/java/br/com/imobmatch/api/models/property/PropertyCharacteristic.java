@@ -13,6 +13,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "property_characteristic")
 public class PropertyCharacteristic {
 
@@ -76,6 +77,5 @@ public class PropertyCharacteristic {
 
     @Column(name = "has_storage")
     private Boolean hasStorage;
-
 
 }

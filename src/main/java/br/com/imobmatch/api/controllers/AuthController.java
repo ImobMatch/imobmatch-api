@@ -1,16 +1,7 @@
 package br.com.imobmatch.api.controllers;
 
 import br.com.imobmatch.api.dtos.auth.LoginResponseDTO;
-import br.com.imobmatch.api.dtos.email.RequestValidationEmailDTO;
-import br.com.imobmatch.api.dtos.email.RequestValidationEmailResponseDTO;
-import br.com.imobmatch.api.dtos.email.ValidateEmailRequestDTO;
-import br.com.imobmatch.api.dtos.email.ValidateEmailResponseDTO;
-import br.com.imobmatch.api.dtos.password.RequestPasswordResetDTO;
-import br.com.imobmatch.api.dtos.password.ResetPasswordDTO;
-import br.com.imobmatch.api.dtos.password.StatusPasswordResetDTO;
-import br.com.imobmatch.api.dtos.user.UserResponseDTO;
 import br.com.imobmatch.api.services.auth.AuthService;
-import br.com.imobmatch.api.services.user.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

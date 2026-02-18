@@ -1,13 +1,10 @@
 package br.com.imobmatch.api.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import br.com.imobmatch.api.dtos.favorite.FavoriteResponseDTO;
 import br.com.imobmatch.api.dtos.property.PropertyResponseDTO;
 import br.com.imobmatch.api.services.favorite.FavoriteService;
-import io.micrometer.core.ipc.http.HttpSender.Response;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -23,7 +20,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 @RestController
 @RequestMapping("/favorites")
 @AllArgsConstructor
@@ -31,14 +27,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
-    
+
     @PostMapping()
     @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAnyRole('BROKER', 'ADMIN')")
     public ResponseEntity<FavoriteResponseDTO> create(@RequestBody UUID propertyId) {
         return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(favoriteService.favoriteProperty(propertyId));
+                .status(HttpStatus.CREATED)
+                .body(favoriteService.favoriteProperty(propertyId));
     }
 
     @DeleteMapping()
@@ -54,14 +50,12 @@ public class FavoriteController {
     @PreAuthorize("hasAnyRole('BROKER', 'ADMIN')")
     public ResponseEntity<List<FavoriteResponseDTO>> getAll() {
         return ResponseEntity.ok(
-                favoriteService.getAllBrokerFavorites()
-        );
+                favoriteService.getAllBrokerFavorites());
     }
 
     @GetMapping("/processed")
     public ResponseEntity<List<PropertyResponseDTO>> getAllProcessed() {
         return ResponseEntity.ok(
-                favoriteService.getAllBrokerFavoriteProperties()
-        );
-    }    
+                favoriteService.getAllBrokerFavoriteProperties());
+    }
 }

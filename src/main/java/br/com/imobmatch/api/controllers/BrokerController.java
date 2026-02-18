@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 
 import br.com.imobmatch.api.dtos.broker.*;
-import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
 import br.com.imobmatch.api.models.enums.PropertyBusinessType;
 import br.com.imobmatch.api.models.enums.PropertyType;
 import br.com.imobmatch.api.services.broker.BrokerService;

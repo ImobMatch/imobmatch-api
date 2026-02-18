@@ -9,7 +9,6 @@ import br.com.imobmatch.api.models.enums.BrazilianState;
 import br.com.imobmatch.api.models.enums.PropertyBusinessType;
 import br.com.imobmatch.api.models.enums.PropertyPurpose;
 import br.com.imobmatch.api.models.enums.PropertyType;
-import br.com.imobmatch.api.models.favorite.Favorite;
 import br.com.imobmatch.api.models.property.Property;
 import br.com.imobmatch.api.models.property.PropertyViewHistory;
 import br.com.imobmatch.api.repositories.BrokerRepository;
@@ -38,7 +37,6 @@ public class BrokerFeedServiceImpl implements BrokerFeedService {
     private final FavoriteServiceImpl favoriteService;
     private final PropertyMapper mapper;
 
-
     @Override
     public void trackView(Property property, Broker broker) {
 
@@ -51,6 +49,7 @@ public class BrokerFeedServiceImpl implements BrokerFeedService {
 
     /**
      * Build a dto based in average data obtained from "clicks" in properties
+     * 
      * @param broker Broker object for find
      * @return A DTO which average preferences
      */
@@ -59,7 +58,8 @@ public class BrokerFeedServiceImpl implements BrokerFeedService {
 
         List<PropertyViewHistory> history = repository.findTop20ByBrokerOrderByViewedAtDesc(broker);
 
-        if (history.isEmpty()) return null;
+        if (history.isEmpty())
+            return null;
 
         return BrokerPreferencesDTO.builder()
                 .avgBedrooms(calculateAvg(history, p -> p.getCharacteristic().getNumBedrooms()))
@@ -75,16 +75,17 @@ public class BrokerFeedServiceImpl implements BrokerFeedService {
 
     @Override
     public Page<FeedResponseDTO> getRecommendationsForUser(UUID userId, Pageable pageable) {
-        //Use default values for fist login
-        Broker user = brokerRepository.findById(userId).orElseThrow(BrokerNotFoundException :: new);
+        // Use default values for fist login
+        Broker user = brokerRepository.findById(userId).orElseThrow(BrokerNotFoundException::new);
         BrokerPreferencesDTO profile = getPreferences(user);
 
-        PropertyBusinessType businessType = profile != null ? profile.getBusinessType() : PropertyBusinessType.SALE_AND_RENT;
+        PropertyBusinessType businessType = profile != null ? profile.getBusinessType()
+                : PropertyBusinessType.SALE_AND_RENT;
         PropertyPurpose purpose = profile != null ? profile.getPropertyPurpose() : PropertyPurpose.RESIDENTIAL;
         PropertyType type = profile != null ? profile.getFavoriteType() : PropertyType.APARTMENT;
         BigDecimal price = profile != null ? profile.getAvgPrice() : new BigDecimal("500000");
 
-        //prioritize recents
+        // prioritize recents
         LocalDate twoWeeksAgo = LocalDate.now().minusDays(14);
         LocalDate threeDaysAgo = LocalDate.now().minusDays(3);
 
@@ -101,27 +102,26 @@ public class BrokerFeedServiceImpl implements BrokerFeedService {
 
         Page<Property> recommendations = propertyRepository
                 .findRecommendations(
-                purpose,
-                type,
-                price,
-                bedrooms,
-                suites,
-                garage,
-                bathrooms,
-                businessType,
-                twoWeeksAgo,
-                threeDaysAgo,
-                userId,
-                regionsOfInterest,
-                pageable
-        );
+                        purpose,
+                        type,
+                        price,
+                        bedrooms,
+                        suites,
+                        garage,
+                        bathrooms,
+                        businessType,
+                        twoWeeksAgo,
+                        threeDaysAgo,
+                        userId,
+                        regionsOfInterest,
+                        pageable);
 
         Set<UUID> favoriteIds = favoriteService.getUserFavoritePropertyIds(userId);
         if (favoriteIds == null) {
             favoriteIds = Collections.emptySet();
         }
 
-        //for lambda
+        // for lambda
         Set<UUID> finalFavoriteIds = favoriteIds;
 
         return recommendations.map(property -> {
