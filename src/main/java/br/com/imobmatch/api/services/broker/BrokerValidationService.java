@@ -17,7 +17,7 @@ public class BrokerValidationService {
     public void run(BrokerPostDTO data) {
         // PDF validation removed temporarily.
         if (!isCreciValid(data.getCreci())) {
-            throw new IllegalArgumentException("O formato do CRECI é inválido. Ex: 12345F");
+            throw new IllegalArgumentException("Invalid CRECI. Ex: 12345PB");
         }
     }
 
@@ -29,6 +29,6 @@ public class BrokerValidationService {
         
         String cleanCreci = creci.replaceAll("[^a-zA-Z0-9]", "").toUpperCase();
         
-        return cleanCreci.matches("^\\d{4,6}[A-Z]$");
+        return cleanCreci.matches("^\\d{4,6}[A-Z]{2}$");
     }
 }
