@@ -15,6 +15,6 @@ public interface FavoriteRepository extends JpaRepository<Favorite, UUID>{
 
     List<Favorite> findAllByBroker_Id(UUID brokerId);
     Optional<Favorite> findByBroker_IdAndProperty_Id(UUID brokerId, UUID propertyId);
-    @Query("SELECT f.property.id FROM Favorite f WHERE f.broker.id = :brokerId")
+    @Query("SELECT f.property.id FROM favorites f WHERE f.broker.id = :brokerId")
     Set<UUID> findAllPropertyIdsByBrokerId(@Param("brokerId") UUID brokerId);
 }

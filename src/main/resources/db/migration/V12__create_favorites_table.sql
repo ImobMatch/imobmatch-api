@@ -6,7 +6,7 @@ CREATE TABLE favorites (
 
     CONSTRAINT fk_favorite_broker
         FOREIGN KEY (broker_id)
-        REFERENCES broker (id)
+        REFERENCES brokers (id)
         ON DELETE CASCADE,
 
     CONSTRAINT fk_favorite_property
