@@ -22,54 +22,61 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfigurations {
-    private final SecurityFilter securityFilter;
-    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
-    private final CustomAccessDeniedHandler accessDeniedHandler;
+        private final SecurityFilter securityFilter;
+        private final CustomAuthenticationEntryPoint authenticationEntryPoint;
+        private final CustomAccessDeniedHandler accessDeniedHandler;
 
-    public SecurityConfigurations(SecurityFilter securityFilter, CustomAuthenticationEntryPoint authenticationEntryPoint, CustomAccessDeniedHandler accessDeniedHandler) {
-        this.securityFilter = securityFilter;
-        this.authenticationEntryPoint = authenticationEntryPoint;
-        this.accessDeniedHandler = accessDeniedHandler;
-    }
+        public SecurityConfigurations(SecurityFilter securityFilter,
+                        CustomAuthenticationEntryPoint authenticationEntryPoint,
+                        CustomAccessDeniedHandler accessDeniedHandler) {
+                this.securityFilter = securityFilter;
+                this.authenticationEntryPoint = authenticationEntryPoint;
+                this.accessDeniedHandler = accessDeniedHandler;
+        }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return  httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests( authorize -> authorize
-                        .requestMatchers(HttpMethod.POST,
-                                "/auth/login"
-                        ).permitAll()
-                        .requestMatchers(HttpMethod.POST,
-                                "/users/send-email-code",
-                                "/users/validate-email",
-                                "/users/reset-password",
-                                "/users/send-password-code").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/users").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/brokers").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/owners").permitAll()
-                        .requestMatchers("/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui.html").permitAll()
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+                return httpSecurity
+                                .csrf(AbstractHttpConfigurer::disable)
+                                .sessionManagement(session -> session
+                                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                                .authorizeHttpRequests(authorize -> authorize
+                                                .requestMatchers(HttpMethod.POST,
+                                                                "/auth/login")
+                                                .permitAll()
+                                                .requestMatchers(HttpMethod.POST,
+                                                                "/users/send-email-code",
+                                                                "/users/validate-email",
+                                                                "/users/send-password-code")
+                                                .permitAll()
+                                                .requestMatchers(HttpMethod.PATCH,
+                                                                "/users/reset-password")
+                                                .permitAll()
 
-                        .anyRequest().authenticated()
-                )
-                .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint(authenticationEntryPoint)
-                        .accessDeniedHandler(accessDeniedHandler)
-                )
-                .addFilterBefore(this.securityFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
-    }
+                                                .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                                                .requestMatchers(HttpMethod.POST, "/brokers").permitAll()
+                                                .requestMatchers(HttpMethod.POST, "/owners").permitAll()
+                                                .requestMatchers("/swagger-ui/**",
+                                                                "/v3/api-docs/**",
+                                                                "/swagger-ui.html")
+                                                .permitAll()
 
-    @Bean
-    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
+                                                .anyRequest().authenticated())
+                                .exceptionHandling(ex -> ex
+                                                .authenticationEntryPoint(authenticationEntryPoint)
+                                                .accessDeniedHandler(accessDeniedHandler))
+                                .addFilterBefore(this.securityFilter, UsernamePasswordAuthenticationFilter.class)
+                                .build();
+        }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+        @Bean
+        public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration)
+                        throws Exception {
+                return authenticationConfiguration.getAuthenticationManager();
+        }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 }
