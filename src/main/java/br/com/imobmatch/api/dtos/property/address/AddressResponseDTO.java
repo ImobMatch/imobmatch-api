@@ -16,5 +16,7 @@ public class AddressResponseDTO {
     private BrazilianState state;
     private String zipCode;
     private String referencePoint;
+    private String latitude;
+    private String longitude;
 }
 

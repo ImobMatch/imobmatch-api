@@ -4,15 +4,16 @@ import br.com.imobmatch.api.dtos.property.PropertyCreateDTO;
 import br.com.imobmatch.api.dtos.property.PropertyFilterDTO;
 import br.com.imobmatch.api.dtos.property.PropertyResponseDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
-import br.com.imobmatch.api.exceptions.property.PropertyIllegalBusinessPriceValueException;
 import br.com.imobmatch.api.mappers.PropertyMapper;
 import br.com.imobmatch.api.models.enums.PropertyBusinessType;
 import br.com.imobmatch.api.models.enums.PropertyPurpose;
 import br.com.imobmatch.api.models.enums.PropertyType;
 import br.com.imobmatch.api.models.property.Property;
 import br.com.imobmatch.api.models.user.User;
+import br.com.imobmatch.api.repositories.BrokerRepository;
 import br.com.imobmatch.api.repositories.PropertyRepository;
 import br.com.imobmatch.api.services.auth.AuthService;
+import br.com.imobmatch.api.services.feed.broker.BrokerFeedServiceImpl;
 import br.com.imobmatch.api.services.user.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +23,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
@@ -50,6 +55,13 @@ class PropertyServiceImplTest {
 
     @Mock
     private AuthService authService;
+
+    // Novas dependências injetadas
+    @Mock
+    private BrokerFeedServiceImpl viewService;
+
+    @Mock
+    private BrokerRepository brokerRepository;
 
     @Test
     @DisplayName("Should create property successfully when all data is valid")
@@ -149,8 +161,9 @@ class PropertyServiceImplTest {
     }
 
     @Test
-    @DisplayName("Should return filtered properties when complex filter is provided")
+    @DisplayName("Should return paginated filtered properties when complex filter is provided")
     void findAll_WithComplexFilters_Success() {
+        // Arrange
         PropertyFilterDTO complexFilter = PropertyFilterDTO.builder()
                 .type(PropertyType.APARTMENT)
                 .isAvailable(true)
@@ -160,62 +173,82 @@ class PropertyServiceImplTest {
                 .maxCondoPrice(new BigDecimal("1500.00"))
                 .build();
 
+        Pageable pageable = PageRequest.of(0, 10); // Criação do Pageable
+
         Property propertyMatch = new Property();
         propertyMatch.setId(UUID.randomUUID());
         propertyMatch.setType(PropertyType.APARTMENT);
 
-        List<Property> mockedEntityList = List.of(propertyMatch);
+        // Criando uma página de retorno com 1 item
+        Page<Property> mockedPage = new PageImpl<>(List.of(propertyMatch));
 
         PropertyResponseDTO responseDTO = new PropertyResponseDTO();
         responseDTO.setId(propertyMatch.getId());
 
-        when(repository.findAll(any(Specification.class))).thenReturn(mockedEntityList);
+        // Mocks atualizados para aceitar Pageable
+        when(repository.findAll(any(Specification.class), eq(pageable))).thenReturn(mockedPage);
         when(mapper.toDTO(propertyMatch)).thenReturn(responseDTO);
 
-        List<PropertyResponseDTO> result = propertyService.findAll(complexFilter);
+        // Act
+        Page<PropertyResponseDTO> result = propertyService.findAll(complexFilter, pageable);
 
+        // Assert
         assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals(propertyMatch.getId(), result.get(0).getId());
+        assertEquals(1, result.getTotalElements()); // Verifica o total na página
+        assertEquals(propertyMatch.getId(), result.getContent().get(0).getId()); // Verifica o conteúdo
 
-        verify(repository).findAll(any(Specification.class));
+        verify(repository).findAll(any(Specification.class), eq(pageable));
         verify(mapper, times(1)).toDTO(propertyMatch);
     }
 
     @Test
-    @DisplayName("Should return empty list when no property matches the filters")
+    @DisplayName("Should return empty page when no property matches the filters")
     void findAll_WithFilters_NoMatch() {
+        // Arrange
         PropertyFilterDTO restrictiveFilter = PropertyFilterDTO.builder()
                 .minArea(new BigDecimal("9000.0"))
                 .build();
 
-        when(repository.findAll(any(Specification.class))).thenReturn(Collections.emptyList());
+        Pageable pageable = PageRequest.of(0, 10);
 
-        List<PropertyResponseDTO> result = propertyService.findAll(restrictiveFilter);
+        // Mockando retorno vazio
+        when(repository.findAll(any(Specification.class), eq(pageable))).thenReturn(Page.empty());
 
+        // Act
+        Page<PropertyResponseDTO> result = propertyService.findAll(restrictiveFilter, pageable);
+
+        // Assert
         assertNotNull(result);
         assertTrue(result.isEmpty());
+        assertEquals(0, result.getTotalElements());
 
-        verify(repository).findAll(any(Specification.class));
+        verify(repository).findAll(any(Specification.class), eq(pageable));
         verify(mapper, never()).toDTO(any());
     }
 
     @Test
-    @DisplayName("Should return all properties when filter is empty")
+    @DisplayName("Should return all properties paginated when filter is empty")
     void findAll_NoFilters_ReturnsAll() {
+        // Arrange
         PropertyFilterDTO emptyFilter = new PropertyFilterDTO();
+        Pageable pageable = PageRequest.of(0, 10);
 
         Property p1 = new Property(); p1.setId(UUID.randomUUID());
         Property p2 = new Property(); p2.setId(UUID.randomUUID());
-        List<Property> allProperties = List.of(p1, p2);
 
-        when(repository.findAll(any(Specification.class))).thenReturn(allProperties);
+        // Criando página com 2 itens
+        Page<Property> allPropertiesPage = new PageImpl<>(List.of(p1, p2));
+
+        when(repository.findAll(any(Specification.class), eq(pageable))).thenReturn(allPropertiesPage);
         when(mapper.toDTO(any(Property.class))).thenReturn(new PropertyResponseDTO());
 
-        List<PropertyResponseDTO> result = propertyService.findAll(emptyFilter);
+        // Act
+        Page<PropertyResponseDTO> result = propertyService.findAll(emptyFilter, pageable);
 
+        // Assert
         assertNotNull(result);
-        assertEquals(2, result.size());
+        assertEquals(2, result.getTotalElements());
+        assertEquals(2, result.getContent().size());
 
         verify(mapper, times(2)).toDTO(any(Property.class));
     }

@@ -12,6 +12,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -40,8 +43,12 @@ public class PropertyController {
     @GetMapping
     @PreAuthorize("hasAnyRole('OWNER', 'ADMIN', 'BROKER')")
     @SecurityRequirement(name = "bearerAuth")
-    public ResponseEntity<List<PropertyResponseDTO>> getAll(PropertyFilterDTO filter) {
-        return ResponseEntity.ok(service.findAll(filter));
+    public ResponseEntity<Page<PropertyResponseDTO>> getAll(
+            PropertyFilterDTO filter,
+            @PageableDefault(page = 0, size = 10, sort = "publicationDate")
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(service.findAll(filter, pageable));
     }
 
     @GetMapping("/{id}")

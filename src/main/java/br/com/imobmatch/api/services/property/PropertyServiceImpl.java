@@ -17,11 +17,16 @@ import br.com.imobmatch.api.models.enums.PropertyBusinessType;
 import br.com.imobmatch.api.models.property.Property;
 import br.com.imobmatch.api.models.property.PropertyImage;
 import br.com.imobmatch.api.models.user.User;
+import br.com.imobmatch.api.repositories.BrokerRepository;
 import br.com.imobmatch.api.repositories.PropertiesImagesRepository;
 import br.com.imobmatch.api.repositories.PropertyRepository;
 import br.com.imobmatch.api.services.auth.AuthService;
+import br.com.imobmatch.api.services.feed.broker.BrokerFeedServiceImpl;
 import br.com.imobmatch.api.services.user.UserService;
 import br.com.imobmatch.api.specs.property.PropertySpecs;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,9 +43,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PropertyServiceImpl implements PropertyService {
 
+    private  final BrokerFeedServiceImpl viewService;
     private final PropertyRepository repository;
     private final PropertyMapper mapper;
     private final UserService userService;
+    private final BrokerRepository  brokerRepository;
     private final AuthService authService;
     private final PropertiesImagesRepository propertiesImagesRepository;
     private final S3Service s3Service;
@@ -61,19 +68,21 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Transactional(readOnly = true)
-    public List<PropertyResponseDTO> findAll(PropertyFilterDTO filter) {
-        List<Property> properties = repository.findAll(PropertySpecs.usingFilter(filter));
+    public Page<PropertyResponseDTO> findAll(PropertyFilterDTO filter, Pageable pageable){
+        Page<Property> propertiesPage = repository.findAll(PropertySpecs.usingFilter(filter), pageable);
 
-        return properties.stream()
-                .map(mapper::toDTO)
-                .collect(Collectors.toList());
+        return propertiesPage.map(mapper::toDTO);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional()
     public PropertyResponseDTO findById(UUID id) {
-        return repository.findById(id)
-                .map(mapper::toDTO)
-                .orElseThrow((PropertyNotFoundException :: new));
+        Property property = repository.findById(id)
+                .orElseThrow(PropertyNotFoundException::new);
+        UserResponseDTO currentUser = authService.getMe();
+        brokerRepository.findById(currentUser.getId())
+                .ifPresent(broker -> viewService.trackView(property, broker));
+
+        return mapper.toDTO(property);
     }
 
     @Transactional

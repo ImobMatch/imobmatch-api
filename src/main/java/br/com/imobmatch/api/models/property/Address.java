@@ -34,6 +34,10 @@ public class Address {
     private BrazilianState state;
     @Column(name = "zip_code", nullable = false)
     private String zipCode;
+    @Column(name = "latitude")
+    private String latitude;
+    @Column(name = "longitude")
+    private String longitude;
     @Column(name = "referencePoint")
     private String referencePoint;
 }
