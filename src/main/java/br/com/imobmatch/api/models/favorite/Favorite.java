@@ -20,8 +20,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-@Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"broker_id", "property_id"})})
+@Entity(name = "favorites")
+@Table(name = "favorites",
+    uniqueConstraints = {@UniqueConstraint(columnNames = {"broker_id", "property_id"})})
 public class Favorite {
     
     @Id
