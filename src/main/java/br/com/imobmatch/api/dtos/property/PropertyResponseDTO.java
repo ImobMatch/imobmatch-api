@@ -57,6 +57,6 @@ public class PropertyResponseDTO {
 
     private String ownerCpf;
 
-    private List<PropertyImage> images;
+    private List<PropertyImageDTO> images;
 
 }
