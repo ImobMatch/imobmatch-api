@@ -31,5 +31,5 @@ public class PropertyViewHistory {
     private Property property;
 
     @Column(name = "viewed_at", nullable = false)
-    private LocalDateTime viewedAt =  LocalDateTime.now();
+    private LocalDateTime viewedAt = LocalDateTime.now();
 }

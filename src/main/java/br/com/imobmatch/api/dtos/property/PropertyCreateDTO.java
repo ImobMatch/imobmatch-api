@@ -7,12 +7,9 @@ import br.com.imobmatch.api.models.enums.PropertyBusinessType;
 import br.com.imobmatch.api.models.enums.PropertyManager;
 import br.com.imobmatch.api.models.enums.PropertyPurpose;
 import br.com.imobmatch.api.models.enums.PropertyType;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,13 +30,11 @@ public class PropertyCreateDTO {
     @NotNull
     private String title;
 
-    @Positive
     private BigDecimal salePrice;
 
-    @Positive
     private BigDecimal rentPrice;
 
-    @Positive
+    @PositiveOrZero
     private BigDecimal iptuValue;
 
     @NotNull

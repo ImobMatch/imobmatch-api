@@ -4,15 +4,13 @@ import br.com.imobmatch.api.models.user.UserVerificationCode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import br.com.imobmatch.api.models.user.User;
 import br.com.imobmatch.api.models.enums.VerificationType;
-import br.com.imobmatch.api.models.user.UserVerificationCode;
 import java.util.List;
 import java.util.UUID;
 
 public interface UserVerificationCodeRepository
-        extends JpaRepository<UserVerificationCode, UUID> {
+                extends JpaRepository<UserVerificationCode, UUID> {
 
-    List<UserVerificationCode> findByUserAndTypeAndVerifiedFalse(
-            User user,
-            VerificationType type
-    );
+        List<UserVerificationCode> findByUserAndTypeAndVerifiedFalse(
+                        User user,
+                        VerificationType type);
 }

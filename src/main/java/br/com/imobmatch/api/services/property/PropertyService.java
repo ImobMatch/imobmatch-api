@@ -9,21 +9,26 @@ import br.com.imobmatch.api.dtos.property.UploadImagenResponseDTO;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
-
 
 public interface PropertyService {
 
     PropertyResponseDTO createProperty(PropertyCreateDTO propertyCreateDTO);
+
     Page<PropertyResponseDTO> findAll(PropertyFilterDTO filter, Pageable pageable);
+
     PropertyResponseDTO findById(UUID id);
+
+    Page<PropertyResponseDTO> findPropertyByPublisherId(UUID publisherId, Pageable pageable);
+
     PropertyResponseDTO updateProperty(UUID id, PropertyUpdateDTO propertyUpdateDTO);
+
     void deleteProperty(UUID id);
 
     UploadImagenResponseDTO uploadImagen(UUID id, MultipartFile file);
+
     byte[] downloadImage(PropertiesImageDTO dto);
+
     void removeImagen(PropertiesImageDTO dto);
 }

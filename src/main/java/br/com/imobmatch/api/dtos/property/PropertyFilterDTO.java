@@ -1,13 +1,10 @@
 package br.com.imobmatch.api.dtos.property;
 
 import br.com.imobmatch.api.models.enums.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.br.CNPJ;
 
 import java.math.BigDecimal;
 import java.util.UUID;

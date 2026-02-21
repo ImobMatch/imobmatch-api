@@ -84,4 +84,6 @@ public interface PropertyRepository extends JpaRepository<Property, UUID>,
             Pageable pageable
     );
 
+    Page<Property> findAllByPublisher_Id(UUID publisherId, Pageable pageable);;
+
 }

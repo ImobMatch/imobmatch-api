@@ -2,7 +2,6 @@ package br.com.imobmatch.api.controllers;
 
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerCreateDTO;
-import br.com.imobmatch.api.dtos.owner.OwnerGetAllByResponseDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerUpdateDTO;
 import br.com.imobmatch.api.services.owner.OwnerService;
@@ -14,22 +13,25 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
 /**
- * <p>Controller responsible for the <code>owner</code> entity's endpoints.</p>
- * <p>Endpoints are divided into three categories:
+ * <p>
+ * Controller responsible for the <code>owner</code> entity's endpoints.
+ * </p>
+ * <p>
+ * Endpoints are divided into three categories:
  * <ul>
  * <li><b>Public:</b> Registration (POST).</li>
- * <li><b>Contextual Actions (Root):</b> Update or Delete the currently logged-in profile (PATCH/DELETE).</li>
- * <li><b>Search & Management:</b> Broker or Admin views to list and find owners.</li>
+ * <li><b>Contextual Actions (Root):</b> Update or Delete the currently
+ * logged-in profile (PATCH/DELETE).</li>
+ * <li><b>Search & Management:</b> Broker or Admin views to list and find
+ * owners.</li>
  * </ul>
  * </p>
  */
@@ -45,15 +47,22 @@ public class OwnerController {
      * Create a new owner associated with a new user.
      *
      * @param dto Data requested for the endpoint.
-     * The requested data is: <code>email</code>, <code>password</code>, <code>name</code>,
-     * <code>cpf</code>, <code>birthDate</code>, <code>whatsAppPhoneNumber</code>.
-     * <code>personalPhoneNumber</code> is optional.
+     *            The requested data is: <code>email</code>, <code>password</code>,
+     *            <code>name</code>,
+     *            <code>cpf</code>, <code>birthDate</code>,
+     *            <code>whatsAppPhoneNumber</code>.
+     *            <code>personalPhoneNumber</code> is optional.
      *
-     * @return Return ResponseDTO containing: <code>name</code>, <code>cpf</code>, <code>email</code>,
-     * <code>whatsAppPhoneNumber</code>, <code>personalPhoneNumber</code>, <code>birthDate</code>,
-     * <code>isEmailVerified</code>.
+     * @return Return ResponseDTO containing: <code>name</code>, <code>cpf</code>,
+     *         <code>email</code>,
+     *         <code>whatsAppPhoneNumber</code>, <code>personalPhoneNumber</code>,
+     *         <code>birthDate</code>,
+     *         <code>isEmailVerified</code>.
      *
-     * @apiNote <p>This endpoint assumes the user has not been created previously.</p>
+     * @apiNote
+     *          <p>
+     *          This endpoint assumes the user has not been created previously.
+     *          </p>
      */
     @PostMapping
     public ResponseEntity<OwnerResponseDTO> create(@Valid @RequestBody OwnerCreateDTO dto) {
@@ -65,13 +74,18 @@ public class OwnerController {
     /**
      * Update authenticated owner data.
      *
-     * @param dto New data for update. Only data unique to the owner entity can be updated.
-     * Possible data to be entered are: <code>name</code>,
-     * <code>whatsAppPhoneNumber</code>, <code>personalPhoneNumber</code>, <code>birthDate</code>.
+     * @param dto New data for update. Only data unique to the owner entity can be
+     *            updated.
+     *            Possible data to be entered are: <code>name</code>,
+     *            <code>whatsAppPhoneNumber</code>,
+     *            <code>personalPhoneNumber</code>, <code>birthDate</code>.
      * @return Return updated ResponseDTO.
      *
-     * @apiNote <p>URL: <code>PATCH /owners</code></p>
-     * Updates the currently logged-in user based on the Auth Token.
+     * @apiNote
+     *          <p>
+     *          URL: <code>PATCH /owners</code>
+     *          </p>
+     *          Updates the currently logged-in user based on the Auth Token.
      */
     @PatchMapping
     @SecurityRequirement(name = "bearerAuth")
@@ -81,13 +95,21 @@ public class OwnerController {
     }
 
     /**
-     * Permanently removes the authenticated <code>owner</code> and their <code>user</code> from the system.
-     * <p>You must be logged into the system and submit the user's password to confirm the operation.</p>
+     * Permanently removes the authenticated <code>owner</code> and their
+     * <code>user</code> from the system.
+     * <p>
+     * You must be logged into the system and submit the user's password to confirm
+     * the operation.
+     * </p>
      *
-     * @param dto Object containing the User's <code>password</code> for confirmation.
-     * @apiNote <p>URL: <code>DELETE /owners</code></p>
-     * Deletes the currently logged-in user based on the Auth Token.
-     * The exclusion cannot be undone.
+     * @param dto Object containing the User's <code>password</code> for
+     *            confirmation.
+     * @apiNote
+     *          <p>
+     *          URL: <code>DELETE /owners</code>
+     *          </p>
+     *          Deletes the currently logged-in user based on the Auth Token.
+     *          The exclusion cannot be undone.
      */
     @DeleteMapping
     @SecurityRequirement(name = "bearerAuth")
@@ -99,11 +121,14 @@ public class OwnerController {
 
     /**
      * Retrieve a paginated list of owners based on optional filters.
-     * <p>If no parameters are provided, it returns all owners paginated.</p>
+     * <p>
+     * If no parameters are provided, it returns all owners paginated.
+     * </p>
      *
-     * @param name (Optional) Filters by owner's name.
-     * @param birthDate (Optional) Filters by owner's birthdate (Format: YYYY-MM-DD).
-     * @param pageable Pagination configuration (page, size, sort).
+     * @param name      (Optional) Filters by owner's name.
+     * @param birthDate (Optional) Filters by owner's birthdate (Format:
+     *                  YYYY-MM-DD).
+     * @param pageable  Pagination configuration (page, size, sort).
      * @return A Page of OwnerResponseDTO.
      */
     @GetMapping()
@@ -112,8 +137,7 @@ public class OwnerController {
     public ResponseEntity<Page<OwnerResponseDTO>> getAll(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) LocalDate birthDate,
-            @PageableDefault(page = 0, size = 10, sort = "name") Pageable pageable
-    ) {
+            @PageableDefault(page = 0, size = 10, sort = "name") Pageable pageable) {
         if (name != null && !name.isBlank()) {
             return ResponseEntity.ok(ownerService.getAllOwnersByName(name, pageable));
         }
@@ -155,7 +179,9 @@ public class OwnerController {
      * Search for a single owner by their unique CPF.
      *
      * @param cpf The CPF to search for.
+     * 
      * @return Return ResponseDTO.
+     * 
      * @apiNote Activated when the <code>cpf</code> query parameter is present.
      */
     @GetMapping(value = "/search", params = "cpf")

@@ -14,13 +14,11 @@ import br.com.imobmatch.api.services.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class AuthServiceImpl implements AuthService{
+public class AuthServiceImpl implements AuthService {
     private AuthenticationManager authenticationManager;
     private TokenService tokenService;
     private UserService userService;
@@ -35,8 +33,9 @@ public class AuthServiceImpl implements AuthService{
             throw new UserNotFoundException();
         }
 
-        if(!user.isEmailVerified()){
-            throw new EmailNotVerifiedException();        }
+        if (!user.isEmailVerified()) {
+            throw new EmailNotVerifiedException();
+        }
 
         String accessToken = this.tokenService.generateAccessToken(user);
         String refreshToken = this.tokenService.generateRefreshToken(user);
@@ -53,7 +52,7 @@ public class AuthServiceImpl implements AuthService{
     public LoginResponseDTO refreshToken(String refreshToken) throws TokenInvalidException {
         TokenDataDTO tokenData = tokenService.validateRefreshToken(refreshToken);
 
-        if(tokenData.getTokenType() != TokenType.REFRESH){
+        if (tokenData.getTokenType() != TokenType.REFRESH) {
             throw new TokenInvalidException("Token Send not REFRESH");
         }
 
@@ -61,10 +60,5 @@ public class AuthServiceImpl implements AuthService{
         String newAccessToken = tokenService.generateAccessToken(user);
         return new LoginResponseDTO(newAccessToken, refreshToken);
     }
-
-
-
-
-
 
 }

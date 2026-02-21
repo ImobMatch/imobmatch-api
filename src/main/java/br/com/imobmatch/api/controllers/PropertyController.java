@@ -22,7 +22,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -45,10 +44,17 @@ public class PropertyController {
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Page<PropertyResponseDTO>> getAll(
             PropertyFilterDTO filter,
-            @PageableDefault(page = 0, size = 10, sort = "publicationDate")
-            Pageable pageable
-    ) {
+            @PageableDefault(page = 0, size = 10, sort = "publicationDate") Pageable pageable) {
         return ResponseEntity.ok(service.findAll(filter, pageable));
+    }
+
+    @GetMapping("/publisher/{id}")
+    @PreAuthorize("hasAnyRole('OWNER', 'ADMIN', 'BROKER')")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<Page<PropertyResponseDTO>> getPropertyByPublisherId(
+            @PathVariable UUID id,
+            @PageableDefault(page = 0, size = 10, sort = "publicationDate") Pageable pageable) {
+        return ResponseEntity.ok(service.findPropertyByPublisherId(id, pageable));
     }
 
     @GetMapping("/{id}")
@@ -63,8 +69,7 @@ public class PropertyController {
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<PropertyResponseDTO> update(
             @PathVariable UUID id,
-            @RequestBody @Valid PropertyUpdateDTO dto
-    ) {
+            @RequestBody @Valid PropertyUpdateDTO dto) {
         return ResponseEntity.ok(service.updateProperty(id, dto));
     }
 
@@ -89,17 +94,15 @@ public class PropertyController {
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<UploadImagenResponseDTO> uploadImage(
             @PathVariable UUID id,
-            @RequestParam("file") MultipartFile file
-    ) {
-        return ResponseEntity.ok(service.uploadImagen(id,file));
+            @RequestParam("file") MultipartFile file) {
+        return ResponseEntity.ok(service.uploadImagen(id, file));
     }
 
     @DeleteMapping(value = "/image/", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasAnyRole('BROKER', 'OWNER')")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<UploadProfileImageResponse> deleteProfileImage(
-            @RequestBody PropertiesImageDTO dto
-    ) {
+            @RequestBody PropertiesImageDTO dto) {
         this.service.removeImagen(dto);
         return ResponseEntity.ok().build();
     }

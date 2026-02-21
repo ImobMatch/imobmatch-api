@@ -2,7 +2,6 @@ package br.com.imobmatch.api.services.owner;
 
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerCreateDTO;
-import br.com.imobmatch.api.dtos.owner.OwnerGetAllByResponseDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.dtos.owner.OwnerUpdateDTO;
 import br.com.imobmatch.api.dtos.user.UserResponseDTO;
@@ -23,8 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -37,7 +34,8 @@ public class OwnerServiceImpl implements OwnerService {
 
     /**
      * Creates a new owner and a new user.
-     * The Owner and User are unique and permanently linked to each other until their complete deletion.
+     * The Owner and User are unique and permanently linked to each other until
+     * their complete deletion.
      *
      * @param ownerCreateDTO Required data for create owner
      * @return Informative information's.
@@ -46,12 +44,13 @@ public class OwnerServiceImpl implements OwnerService {
     @Transactional
     public OwnerResponseDTO createOwner(OwnerCreateDTO ownerCreateDTO) {
 
-        if(ownerRepository.existsByCpf(ownerCreateDTO.getCpf())){throw new OwnerExistsException();}
+        if (ownerRepository.existsByCpf(ownerCreateDTO.getCpf())) {
+            throw new OwnerExistsException();
+        }
         UserResponseDTO userDto = userService.create(
                 ownerCreateDTO.getEmail(),
                 ownerCreateDTO.getPassword(),
-                UserRole.OWNER
-        );
+                UserRole.OWNER);
 
         User user = userService.findEntityById(userDto.getId());
         Owner owner = new Owner();
@@ -60,8 +59,9 @@ public class OwnerServiceImpl implements OwnerService {
         owner.setUser(user);
         owner.setBirthDate(ownerCreateDTO.getBirthDate());
         owner.setWhatsAppPhoneNumber(ownerCreateDTO.getWhatsAppPhoneNumber().replaceAll("\\D", ""));
-        owner.setPersonalPhoneNumber(ownerCreateDTO.getPersonalPhoneNumber() != null ?
-                ownerCreateDTO.getPersonalPhoneNumber().replaceAll("\\D", "") : null);
+        owner.setPersonalPhoneNumber(ownerCreateDTO.getPersonalPhoneNumber() != null
+                ? ownerCreateDTO.getPersonalPhoneNumber().replaceAll("\\D", "")
+                : null);
 
         ownerRepository.save(owner);
         return buildOwnerResponseDto(owner);
@@ -69,9 +69,10 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     /**
-     *Update authenticated owner information in the system.
+     * Update authenticated owner information in the system.
      *
-     * @param ownerUpdateDTO New value to be updated. Only valid and present (not null) data will be updated.
+     * @param ownerUpdateDTO New value to be updated. Only valid and present (not
+     *                       null) data will be updated.
      * @return informative information's.
      */
     @Override
@@ -87,7 +88,7 @@ public class OwnerServiceImpl implements OwnerService {
             isUpdated = true;
         }
 
-        if (ownerUpdateDTO.getPersonalPhoneNumber()!= null && !ownerUpdateDTO.getPersonalPhoneNumber().isBlank()) {
+        if (ownerUpdateDTO.getPersonalPhoneNumber() != null && !ownerUpdateDTO.getPersonalPhoneNumber().isBlank()) {
             owner.setPersonalPhoneNumber(ownerUpdateDTO.getPersonalPhoneNumber().replaceAll("\\D", ""));
             isUpdated = true;
         }
@@ -97,12 +98,14 @@ public class OwnerServiceImpl implements OwnerService {
             isUpdated = true;
         }
 
-        if(ownerUpdateDTO.getBirthDate() != null){
+        if (ownerUpdateDTO.getBirthDate() != null) {
             owner.setBirthDate(ownerUpdateDTO.getBirthDate());
             isUpdated = true;
         }
 
-        if(!isUpdated){throw new OwnerNoValidDataProvideException();}
+        if (!isUpdated) {
+            throw new OwnerNoValidDataProvideException();
+        }
 
         ownerRepository.save(owner);
         return buildOwnerResponseDto(owner);
@@ -112,7 +115,8 @@ public class OwnerServiceImpl implements OwnerService {
      * Returns a detailed view of the authenticated owner in the system.
      * Including their CPF and email address.
      *
-     * @return DTO containing id, name, cpf, email, role and primary phone of the owner
+     * @return DTO containing id, name, cpf, email, role and primary phone of the
+     *         owner
      */
     @Override
     public OwnerResponseDTO getOwner() {
@@ -127,7 +131,7 @@ public class OwnerServiceImpl implements OwnerService {
     public OwnerResponseDTO getOwnerByCpf(String cpf) {
         String cleanCpf = cpf.replaceAll("\\D", "");
         Owner owner = ownerRepository.findByCpf(cleanCpf)
-                .orElseThrow(OwnerNotFoundException :: new);
+                .orElseThrow(OwnerNotFoundException::new);
 
         return buildOwnerResponseDto(owner);
     }
@@ -136,7 +140,7 @@ public class OwnerServiceImpl implements OwnerService {
     public OwnerResponseDTO getOwnerById(UUID id) {
 
         Owner owner = ownerRepository.findById(id)
-                .orElseThrow(OwnerNotFoundException :: new);
+                .orElseThrow(OwnerNotFoundException::new);
 
         return buildOwnerResponseDto(owner);
     }
@@ -145,7 +149,7 @@ public class OwnerServiceImpl implements OwnerService {
     public OwnerResponseDTO getOwnerByEmail(String email) {
 
         Owner owner = ownerRepository.findByUser_Email(email)
-                .orElseThrow(OwnerNotFoundException :: new);
+                .orElseThrow(OwnerNotFoundException::new);
 
         return buildOwnerResponseDto(owner);
     }
@@ -168,24 +172,24 @@ public class OwnerServiceImpl implements OwnerService {
         return ownerPage.map(this::buildOwnerResponseDto);
     }
 
-
     /**
-     *Deletes the system owner and the user associated with them.
-     *Requires the user's password to confirm the deletion.
-     *It does not return any values.
+     * Deletes the system owner and the user associated with them.
+     * Requires the user's password to confirm the deletion.
+     * It does not return any values.
+     * 
      * @param passwordUserDeleteDTO User password.
      */
     @Override
     @Transactional
-    public void deleteOwner(PasswordUserDeleteDTO passwordUserDeleteDTO)throws AuthenticationException
-            , OwnerNotFoundException {
+    public void deleteOwner(PasswordUserDeleteDTO passwordUserDeleteDTO)
+            throws AuthenticationException, OwnerNotFoundException {
 
         UUID userId = authService.getMe().getId();
         ownerRepository.deleteById(userId);
         userService.deleteById(userId, passwordUserDeleteDTO.getPassword());
     }
 
-    private OwnerResponseDTO buildOwnerResponseDto(Owner owner){
+    private OwnerResponseDTO buildOwnerResponseDto(Owner owner) {
 
         return OwnerResponseDTO.builder()
                 .id(owner.getId())
