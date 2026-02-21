@@ -20,6 +20,8 @@ public interface PropertyService {
 
     PropertyResponseDTO findById(UUID id);
 
+    Page<PropertyResponseDTO> findPropertyByPublisherId(UUID publisherId, Pageable pageable);
+
     PropertyResponseDTO updateProperty(UUID id, PropertyUpdateDTO propertyUpdateDTO);
 
     void deleteProperty(UUID id);
