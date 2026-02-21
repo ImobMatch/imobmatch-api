@@ -81,6 +81,12 @@ public class PropertyServiceImpl implements PropertyService {
         return mapper.toDTO(property);
     }
 
+    @Override
+    public Page<PropertyResponseDTO> findPropertyByPublisherId(UUID publisherId, Pageable pageable) {
+        return repository.findAllByPublisher_Id(publisherId, pageable)
+                .map(mapper :: toDTO);
+    }
+
     @Transactional
     public PropertyResponseDTO updateProperty(UUID id, PropertyUpdateDTO dto) {
         Property property = repository.findById(id)

@@ -48,6 +48,15 @@ public class PropertyController {
         return ResponseEntity.ok(service.findAll(filter, pageable));
     }
 
+    @GetMapping("/publisher/{id}")
+    @PreAuthorize("hasAnyRole('OWNER', 'ADMIN', 'BROKER')")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<Page<PropertyResponseDTO>> getPropertyByPublisherId(
+            @PathVariable UUID id,
+            @PageableDefault(page = 0, size = 10, sort = "publicationDate") Pageable pageable) {
+        return ResponseEntity.ok(service.findPropertyByPublisherId(id, pageable));
+    }
+
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('OWNER', 'ADMIN', 'BROKER')")
     @SecurityRequirement(name = "bearerAuth")

@@ -2,6 +2,7 @@ package br.com.imobmatch.api.controllers;
 
 import br.com.imobmatch.api.dtos.owner.OwnerResponseDTO;
 import br.com.imobmatch.api.dtos.property.FeedResponseDTO;
+import br.com.imobmatch.api.dtos.property.PropertyResponseDTO;
 import br.com.imobmatch.api.services.feed.broker.BrokerFeedServiceImpl;
 import br.com.imobmatch.api.services.owner.OwnerService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -25,7 +26,6 @@ import java.util.UUID;
 public class feedController {
 
     private final BrokerFeedServiceImpl propertyViewHistoryService;
-    private final OwnerService ownerService;
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('OWNER', 'ADMIN', 'BROKER')")
@@ -37,16 +37,5 @@ public class feedController {
         Page<FeedResponseDTO> feed = propertyViewHistoryService.getRecommendationsForUser(id, pageable);
 
         return ResponseEntity.ok(feed);
-    }
-
-    @GetMapping()
-    @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasAnyRole('BROKER', 'ADMIN')")
-    public ResponseEntity<Page<OwnerResponseDTO>> getAll(
-            @PageableDefault(page = 0, size = 10, sort = "name")
-            Pageable pageable)
-
-    {
-        return ResponseEntity.ok(ownerService.getAllOwners(pageable));
     }
 }
