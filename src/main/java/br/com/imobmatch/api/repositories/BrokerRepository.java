@@ -1,6 +1,7 @@
 package br.com.imobmatch.api.repositories;
 
 import br.com.imobmatch.api.models.broker.Broker;
+import br.com.imobmatch.api.models.enums.BrazilianState;
 import br.com.imobmatch.api.models.enums.BrokerAccountStatus;
 import br.com.imobmatch.api.models.enums.PropertyBusinessType;
 import br.com.imobmatch.api.models.enums.PropertyType;
@@ -24,13 +25,13 @@ public interface BrokerRepository extends JpaRepository<Broker, UUID> {
   boolean existsByUser_Email(String email );
 
   List<Broker> findByNameContainingIgnoreCase(String name);
-  
+
   @Query("""
-      SELECT DISTINCT b
-      FROM brokers b
-      WHERE :regionInterest MEMBER OF b.regionsInterest
-  """)
-  List<Broker> findByRegionInterest(String regionInterest);
+    SELECT DISTINCT b
+    FROM brokers b
+    WHERE :regionInterest MEMBER OF b.regionsInterest
+""")
+  List<Broker> findByRegionInterest(BrazilianState regionInterest);
 
   @Query("""
       SELECT DISTINCT b

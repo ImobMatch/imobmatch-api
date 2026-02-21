@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import br.com.imobmatch.api.models.enums.BrazilianState;
 import org.springframework.stereotype.Service;
 
 import br.com.imobmatch.api.dtos.auth.PasswordUserDeleteDTO;
@@ -244,9 +245,17 @@ public class BrokerServiceImpl implements BrokerService {
             throw new BrokerNoValidDataProvideException();
         }
 
-        List<Broker> brokers = brokerRepository.findByRegionInterest(regionInterest.strip());
+        BrazilianState state;
+        try {
+            state = BrazilianState.valueOf(regionInterest.strip().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new BrokerNoValidDataProvideException();
+        }
+
+        List<Broker> brokers = brokerRepository.findByRegionInterest(state);
+
         return brokers.stream()
-                .map(broker -> buildBrokerResponseDto(broker))
+                .map(this::buildBrokerResponseDto)
                 .collect(Collectors.toList());
     }
 

@@ -73,7 +73,7 @@ class BrokerServiceImplTest {
         brokerPostDTO.setName("Test Broker");
         brokerPostDTO.setEmail("test@example.com");
         brokerPostDTO.setPassword("password123");
-        brokerPostDTO.setCreci("12345J");
+        brokerPostDTO.setCreci("12345PB");
         brokerPostDTO.setCpf("11122233344");
         brokerPostDTO.setBirthDate(java.time.LocalDate.of(1990, 1, 1));
         brokerPostDTO.setWhatsAppPhoneNumber("1234567890");
