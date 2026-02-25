@@ -10,6 +10,7 @@ import br.com.imobmatch.api.models.property.PropertyImage;
 import org.mapstruct.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @Mapper( componentModel = "spring",
         uses = {AddressMapper.class, PropertyCharacteristicMapper.class,
@@ -43,7 +44,7 @@ public interface PropertyMapper {
     @Mapping(target = "suites", source = "characteristic.numSuites")
     @Mapping(target = "bathrooms", source = "characteristic.numBathrooms")
     @Mapping(target = "garages", source = "characteristic.numGarageSpaces")
-    @Mapping(target = "updatedAt", expression = "java(resolveDate(property))")
+    @Mapping(target = "updatedAt", expression = "java(property.getUpdatedDate() != null ? property.getUpdatedDate() : property.getPublicationDate())")
     @Mapping(target = "location", source = "address", qualifiedByName = "formatLocation")
     @Mapping(target = "image", source = "imagens", qualifiedByName = "getFirstImage")
     FeedResponseDTO toFeedDTO(Property property);
@@ -59,14 +60,17 @@ public interface PropertyMapper {
 
     @Named("getFirstImage")
     default String getFirstImage(List<PropertyImage> images) {
-        if (images != null && !images.isEmpty()) {
-            return images.getFirst().getImagenKey();
+        if (images == null || images.isEmpty()) {
+            return null;
         }
-        return null;
-    }
 
-    default java.time.LocalDate resolveDate(Property p) {
-        return p.getUpdatedDate() != null ? p.getUpdatedDate() : p.getPublicationDate();
+        PropertyImage firstImage = images.get(0);
+
+        if (firstImage == null || firstImage.getId() == null) {
+            return null;
+        }
+
+        return firstImage.getId().toString();
     }
 
     @Named("mapToBoolean")

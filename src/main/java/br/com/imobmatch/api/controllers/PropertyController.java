@@ -85,8 +85,15 @@ public class PropertyController {
     @PreAuthorize("hasAnyRole('BROKER', 'OWNER')")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<byte[]> downloadProfileImage(
-            @RequestBody PropertiesImageDTO dto) {
-        return ResponseEntity.ok(this.service.downloadImage(dto));
+            @ModelAttribute PropertiesImageDTO dto) {
+
+        byte[] image = service.downloadImage(dto);
+
+        return ResponseEntity
+            .ok()
+            .contentType(MediaType.IMAGE_JPEG)
+            .contentLength(image.length)
+            .body(image);
     }
 
     @PostMapping(value = "/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
