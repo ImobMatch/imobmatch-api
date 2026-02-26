@@ -7,7 +7,7 @@ spring:
         active: dev  # Active profile: dev, test, or prod
 
     flyway:
-        enabled: true  # Enable Flyway database migrations
+        enabled: false  # Enable Flyway database migrations
         baseline-on-migrate: true  # Treat existing schema as baseline on first migration
 
     mail:

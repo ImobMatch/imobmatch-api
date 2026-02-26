@@ -8,7 +8,7 @@ spring:
 
     jpa:
         hibernate:
-            ddl-auto: none  # Automatically update schema (use cautiously in prod)
+            ddl-auto: update  # Automatically update schema (use cautiously in prod)
         show-sql: true  # Show SQL statements in logs
 
 
