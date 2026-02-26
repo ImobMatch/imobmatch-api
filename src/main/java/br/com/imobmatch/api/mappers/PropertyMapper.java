@@ -26,6 +26,7 @@ public interface PropertyMapper {
 
     @Mapping(source = "publisher.id", target = "publisher")
     @Mapping(target = "isAvailable", qualifiedByName = "mapToBoolean")
+    @Mapping(source = "imagens", target = "images")
     PropertyResponseDTO toDTO(Property property);
 
     @Mapping(target = "id", ignore = true)
@@ -43,7 +44,8 @@ public interface PropertyMapper {
     @Mapping(target = "suites", source = "characteristic.numSuites")
     @Mapping(target = "bathrooms", source = "characteristic.numBathrooms")
     @Mapping(target = "garages", source = "characteristic.numGarageSpaces")
-    @Mapping(target = "updatedAt", expression = "java(resolveDate(property))")
+    @Mapping(target = "updatedAt", expression = "java(property.getUpdatedDate() != " +
+            "null ? property.getUpdatedDate() : property.getPublicationDate())")
     @Mapping(target = "location", source = "address", qualifiedByName = "formatLocation")
     @Mapping(target = "image", source = "imagens", qualifiedByName = "getFirstImage")
     FeedResponseDTO toFeedDTO(Property property);
@@ -59,10 +61,17 @@ public interface PropertyMapper {
 
     @Named("getFirstImage")
     default String getFirstImage(List<PropertyImage> images) {
-        if (images != null && !images.isEmpty()) {
-            return images.getFirst().getImagenKey();
+        if (images == null || images.isEmpty()) {
+            return null;
         }
-        return null;
+
+        PropertyImage firstImage = images.get(0);
+
+        if (firstImage == null || firstImage.getId() == null) {
+            return null;
+        }
+
+        return firstImage.getId().toString();
     }
 
     default java.time.LocalDate resolveDate(Property p) {
