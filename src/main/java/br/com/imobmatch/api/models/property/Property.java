@@ -9,6 +9,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -39,14 +41,17 @@ public class Property {
     private BigDecimal iptuValue;
 
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "purpose",  nullable = false)
     private PropertyPurpose  purpose;
 
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "business_type", nullable = false)
     private PropertyBusinessType businessType;
 
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "type", nullable = false)
     private PropertyType type;
 
@@ -76,6 +81,7 @@ public class Property {
     private Boolean isAvailable;
 
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "managed_by", nullable = false)
     private PropertyManager managedBy;
 
