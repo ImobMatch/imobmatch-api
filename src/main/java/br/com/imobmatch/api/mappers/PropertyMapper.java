@@ -2,6 +2,7 @@ package br.com.imobmatch.api.mappers;
 
 import br.com.imobmatch.api.dtos.property.FeedResponseDTO;
 import br.com.imobmatch.api.dtos.property.PropertyCreateDTO;
+import br.com.imobmatch.api.dtos.property.PropertyImageDTO;
 import br.com.imobmatch.api.dtos.property.PropertyResponseDTO;
 import br.com.imobmatch.api.dtos.property.PropertyUpdateDTO;
 import br.com.imobmatch.api.models.property.Address;
@@ -27,6 +28,7 @@ public interface PropertyMapper {
 
     @Mapping(source = "publisher.id", target = "publisher")
     @Mapping(target = "isAvailable", qualifiedByName = "mapToBoolean")
+    @Mapping(source = "imagens", target = "images")
     PropertyResponseDTO toDTO(Property property);
 
     @Mapping(target = "id", ignore = true)
