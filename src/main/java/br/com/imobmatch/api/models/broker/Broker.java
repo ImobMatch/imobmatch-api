@@ -39,6 +39,8 @@ public class Broker {
     private String cpf;
 
     @ElementCollection
+    @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @CollectionTable(
         name = "brokers_regions_interest",
         joinColumns = @JoinColumn(name = "broker_id")
