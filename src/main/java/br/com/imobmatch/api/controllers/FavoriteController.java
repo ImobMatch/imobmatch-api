@@ -54,6 +54,8 @@ public class FavoriteController {
     }
 
     @GetMapping("/processed")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasAnyRole('BROKER', 'ADMIN')")
     public ResponseEntity<List<PropertyResponseDTO>> getAllProcessed() {
         return ResponseEntity.ok(
                 favoriteService.getAllBrokerFavoriteProperties());

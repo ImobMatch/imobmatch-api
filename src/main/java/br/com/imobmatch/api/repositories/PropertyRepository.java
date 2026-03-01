@@ -29,14 +29,14 @@ public interface PropertyRepository extends JpaRepository<Property, UUID>,
     AND p.address.state IN :regions
 
     ORDER BY (
-        (CASE  WHEN :businessType IS NOT NULL AND p.businessType = :businessType OR p.businessType = 'SALE_AND_RENT' THEN 40 ELSE 0 END) +
+        (CASE  WHEN cast(:businessType as string) IS NOT NULL AND p.businessType = :businessType OR p.businessType = 'SALE_AND_RENT' THEN 40 ELSE 0 END) +
         
         (CASE WHEN p.publicationDate >= :recentDateThreshold THEN 30 ELSE 0 END) +
         
         (CASE WHEN p.publicationDate >= :superRecentDateThreshold THEN 50 ELSE 0 END) +
         
         (CASE
-            WHEN :purpose IS NOT NULL AND p.purpose = :purpose THEN 20
+            WHEN cast(:purpose as string) IS NOT NULL AND p.purpose = :purpose THEN 20
             ELSE 0
         END) +
         

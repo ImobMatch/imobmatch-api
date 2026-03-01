@@ -12,6 +12,8 @@ import br.com.imobmatch.api.models.user.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Past;
 import lombok.*;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity(name = "brokers")
 @Table(name = "brokers")
@@ -37,6 +39,8 @@ public class Broker {
     private String cpf;
 
     @ElementCollection
+    @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @CollectionTable(
         name = "brokers_regions_interest",
         joinColumns = @JoinColumn(name = "broker_id")
@@ -46,6 +50,7 @@ public class Broker {
 
     @ElementCollection
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @CollectionTable(
         name = "brokers_property_types",
         joinColumns = @JoinColumn(name = "broker_id")
@@ -54,6 +59,7 @@ public class Broker {
     private Set<PropertyType> propertyTypes;
 
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "business_type", nullable = true)
     private PropertyBusinessType businessType;
 
@@ -73,6 +79,7 @@ public class Broker {
     private User user;
 
     @Enumerated(EnumType.STRING)
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(name = "account_status", nullable = false)
     private BrokerAccountStatus accountStatus;
 }

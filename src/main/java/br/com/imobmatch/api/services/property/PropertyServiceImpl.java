@@ -14,10 +14,12 @@ import br.com.imobmatch.api.exceptions.property.PropertyNotUploadImagen;
 import br.com.imobmatch.api.infra.s3.service.S3Service;
 import br.com.imobmatch.api.mappers.PropertyMapper;
 import br.com.imobmatch.api.models.enums.PropertyBusinessType;
+import br.com.imobmatch.api.models.enums.UserRole;
 import br.com.imobmatch.api.models.property.Property;
 import br.com.imobmatch.api.models.property.PropertyImage;
 import br.com.imobmatch.api.models.user.User;
 import br.com.imobmatch.api.repositories.BrokerRepository;
+import br.com.imobmatch.api.repositories.OwnerRepository;
 import br.com.imobmatch.api.repositories.PropertiesImagesRepository;
 import br.com.imobmatch.api.repositories.PropertyRepository;
 import br.com.imobmatch.api.services.auth.AuthService;
@@ -27,6 +29,7 @@ import br.com.imobmatch.api.specs.property.PropertySpecs;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,6 +48,7 @@ public class PropertyServiceImpl implements PropertyService {
     private final PropertyMapper mapper;
     private final UserService userService;
     private final BrokerRepository brokerRepository;
+    private final OwnerRepository ownerRepository;
     private final AuthService authService;
     private final PropertiesImagesRepository propertiesImagesRepository;
     private final S3Service s3Service;
@@ -65,9 +69,14 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Transactional(readOnly = true)
     public Page<PropertyResponseDTO> findAll(PropertyFilterDTO filter, Pageable pageable) {
-        Page<Property> propertiesPage = repository.findAll(PropertySpecs.usingFilter(filter), pageable);
+        UUID currentUserId = authService.getMe().getId();
 
-        return propertiesPage.map(mapper::toDTO);
+        Specification<Property> excludeCurrentUserSpec = (root, query, cb) ->
+                cb.notEqual(root.get("publisher").get("id"), currentUserId);
+        Specification<Property> finalSpec = PropertySpecs.usingFilter(filter).and(excludeCurrentUserSpec);
+        Page<Property> propertiesPage = repository.findAll(finalSpec, pageable);
+
+        return propertiesPage.map(p -> addPhoneInformationInResponseDto(p, mapper.toDTO(p)));
     }
 
     @Transactional()
@@ -78,13 +87,13 @@ public class PropertyServiceImpl implements PropertyService {
         brokerRepository.findById(currentUser.getId())
                 .ifPresent(broker -> viewService.trackView(property, broker));
 
-        return mapper.toDTO(property);
+        return addPhoneInformationInResponseDto(property, mapper.toDTO(property));
     }
 
     @Override
     public Page<PropertyResponseDTO> findPropertyByPublisherId(UUID publisherId, Pageable pageable) {
         return repository.findAllByPublisher_Id(publisherId, pageable)
-                .map(mapper :: toDTO);
+                .map(p -> addPhoneInformationInResponseDto(p, mapper.toDTO(p)));
     }
 
     @Transactional
@@ -192,5 +201,26 @@ public class PropertyServiceImpl implements PropertyService {
                 }
             }
         }
+    }
+
+    private PropertyResponseDTO addPhoneInformationInResponseDto(Property property, PropertyResponseDTO dto) {
+        if (property.getPublisher() == null) return dto;
+
+        UUID publisherId = property.getPublisher().getId();
+        UserRole role = property.getPublisher().getRole();
+
+        if (role == UserRole.BROKER) {
+            brokerRepository.findById(publisherId).ifPresent(broker -> {
+                dto.setWhatsAppPhoneNumber(broker.getWhatsAppPhoneNumber());
+                dto.setPersonalPhoneNumber(broker.getPersonalPhoneNumber());
+            });
+        } else if (role == UserRole.OWNER) {
+            ownerRepository.findById(publisherId).ifPresent(owner -> {
+                dto.setWhatsAppPhoneNumber(owner.getWhatsAppPhoneNumber());
+                dto.setPersonalPhoneNumber(owner.getPersonalPhoneNumber());
+            });
+        }
+
+        return dto;
     }
 }
