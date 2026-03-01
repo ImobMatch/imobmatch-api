@@ -25,6 +25,7 @@ public interface PropertyMapper {
     Property toEntity(PropertyCreateDTO propertyCreateDTO);
 
     @Mapping(source = "publisher.id", target = "publisher")
+    @Mapping(source = "publisher.profileKey", target = "publisherProfileKey")
     @Mapping(target = "isAvailable", qualifiedByName = "mapToBoolean")
     @Mapping(source = "imagens", target = "images")
     PropertyResponseDTO toDTO(Property property);
