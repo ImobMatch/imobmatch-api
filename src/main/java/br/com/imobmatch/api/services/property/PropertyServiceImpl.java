@@ -29,6 +29,7 @@ import br.com.imobmatch.api.specs.property.PropertySpecs;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -68,7 +69,12 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Transactional(readOnly = true)
     public Page<PropertyResponseDTO> findAll(PropertyFilterDTO filter, Pageable pageable) {
-        Page<Property> propertiesPage = repository.findAll(PropertySpecs.usingFilter(filter), pageable);
+        UUID currentUserId = authService.getMe().getId();
+
+        Specification<Property> excludeCurrentUserSpec = (root, query, cb) ->
+                cb.notEqual(root.get("publisher").get("id"), currentUserId);
+        Specification<Property> finalSpec = PropertySpecs.usingFilter(filter).and(excludeCurrentUserSpec);
+        Page<Property> propertiesPage = repository.findAll(finalSpec, pageable);
 
         return propertiesPage.map(p -> addPhoneInformationInResponseDto(p, mapper.toDTO(p)));
     }
