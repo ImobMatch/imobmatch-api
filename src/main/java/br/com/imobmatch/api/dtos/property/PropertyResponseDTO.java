@@ -32,6 +32,10 @@ public class PropertyResponseDTO {
 
     private String publisherProfileKey;
 
+    private String whatsAppPhoneNumber;
+
+    private String personalPhoneNumber;
+
     private BigDecimal salePrice;
 
     private BigDecimal rentPrice;
